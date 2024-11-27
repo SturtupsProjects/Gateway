@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  smm-api:
+    container_name: smm-api
+    build: .
+    ports:
+      - 1111:1111
+    networks:
+      - SMMNet
+
+
+networks:
+  SMMNet:
+    name: SMMNet
+    driver: bridge
+    external: true
+
+volumes:
+  db:
