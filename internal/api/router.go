@@ -24,11 +24,11 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 
 	// Apply middleware for CORS and permission checks
 	router.Use(middleware.CORSMiddleware())
-	router.Use(middleware.PermissionMiddleware(enf))
 
 	// Swagger Documentation Route
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	//router.Use(middleware.PermissionMiddleware(enf))
 	// Initialize the handler with config
 	h := handler.NewHandlerRepo(cfg)
 
@@ -36,7 +36,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	user := router.Group("/user")
 	{
 		user.POST("/admin/register", h.RegisterAdmin) // Register Admin
-		user.POST("/user/register", h.CreateUser)     // Register User
+		user.POST("/register", h.CreateUser)          // Register User
 		user.POST("/login", h.Login)                  // Login
 		user.GET("/get/:id", h.GetUser)               // Get User by ID
 		user.GET("/list", h.ListUser)                 // List all Users

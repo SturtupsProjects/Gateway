@@ -69,13 +69,13 @@ func (a *Handler) Login(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param CreateUser body user.UserRequest true "Create user"
+// @Param CreateUser body entity.UserUpdateRequest true "Create user"
 // @Success 200 {object} user.UserResponse
 // @Failure 400 {object} entity.Error
 // @Failure 500 {object} entity.Error
 // @Router /user/register [post]
 func (a *Handler) CreateUser(c *gin.Context) {
-	var req user.UserRequest
+	var req entity.UserUpdateRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		a.Logger.Error("Error parsing request body", "error", err)

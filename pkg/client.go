@@ -10,7 +10,7 @@ import (
 )
 
 func NewUserClient(cfg *config.Config) pbu.AuthServiceClient {
-	conn, err := grpc.NewClient("managesm_service-management-1"+cfg.TASK_MANAGEMENT, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("crm-admin_auth"+cfg.USER_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to Task Management Service: %v", err)
 	}
