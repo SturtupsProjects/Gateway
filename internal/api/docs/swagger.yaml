@@ -19,6 +19,240 @@ definitions:
       role:
         type: string
     type: object
+  products.Category:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  products.CategoryList:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/products.Category'
+        type: array
+    type: object
+  products.CreateCategoryRequest:
+    properties:
+      created_by:
+        type: string
+      name:
+        type: string
+    type: object
+  products.CreateProductRequest:
+    properties:
+      bill_format:
+        type: string
+      category_id:
+        type: string
+      created_by:
+        type: string
+      incoming_price:
+        type: number
+      name:
+        type: string
+      standard_price:
+        type: number
+    type: object
+  products.Error:
+    properties:
+      error:
+        type: string
+    type: object
+  products.Message:
+    properties:
+      message:
+        type: string
+    type: object
+  products.Product:
+    properties:
+      bill_format:
+        type: string
+      category_id:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        type: string
+      incoming_price:
+        type: number
+      name:
+        type: string
+      standard_price:
+        type: number
+      total_count:
+        type: integer
+    type: object
+  products.ProductList:
+    properties:
+      products:
+        items:
+          $ref: '#/definitions/products.Product'
+        type: array
+    type: object
+  products.PurchaseItem:
+    properties:
+      product_id:
+        type: string
+      purchase_price:
+        type: number
+      quantity:
+        type: integer
+    type: object
+  products.PurchaseItemResponse:
+    properties:
+      id:
+        type: string
+      product_id:
+        type: string
+      purchase_id:
+        type: string
+      purchase_price:
+        type: number
+      quantity:
+        type: integer
+      total_price:
+        type: number
+    type: object
+  products.PurchaseList:
+    properties:
+      purchases:
+        items:
+          $ref: '#/definitions/products.PurchaseResponse'
+        type: array
+    type: object
+  products.PurchaseRequest:
+    properties:
+      description:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/products.PurchaseItem'
+        type: array
+      payment_method:
+        type: string
+      purchased_by:
+        type: string
+      supplier_id:
+        type: string
+    type: object
+  products.PurchaseResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/products.PurchaseItemResponse'
+        type: array
+      payment_method:
+        type: string
+      purchased_by:
+        type: string
+      supplier_id:
+        type: string
+      total_cost:
+        type: number
+    type: object
+  products.PurchaseUpdate:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      payment_method:
+        type: string
+      supplier_id:
+        type: string
+    type: object
+  products.SaleList:
+    properties:
+      sales:
+        items:
+          $ref: '#/definitions/products.SaleResponse'
+        type: array
+    type: object
+  products.SaleRequest:
+    properties:
+      client_id:
+        type: string
+      payment_method:
+        type: string
+      sold_by:
+        type: string
+      sold_products:
+        items:
+          $ref: '#/definitions/products.SalesItem'
+        type: array
+    type: object
+  products.SaleResponse:
+    properties:
+      client_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      payment_method:
+        type: string
+      sold_by:
+        type: string
+      sold_products:
+        items:
+          $ref: '#/definitions/products.SalesItem'
+        type: array
+      total_sale_price:
+        type: number
+    type: object
+  products.SaleUpdate:
+    properties:
+      client_id:
+        type: string
+      id:
+        type: string
+      payment_method:
+        type: string
+    type: object
+  products.SalesItem:
+    properties:
+      id:
+        type: string
+      product_id:
+        type: string
+      quantity:
+        type: integer
+      sale_id:
+        type: string
+      sale_price:
+        type: number
+      total_price:
+        type: number
+    type: object
+  products.UpdateProductRequest:
+    properties:
+      bill_format:
+        type: string
+      category_id:
+        type: string
+      id:
+        type: string
+      incoming_price:
+        type: number
+      name:
+        type: string
+      standard_price:
+        type: number
+    type: object
   user.LogInRequest:
     properties:
       password:
@@ -47,23 +281,6 @@ definitions:
           $ref: '#/definitions/user.UserResponse'
         type: array
     type: object
-  user.UserRequest:
-    properties:
-      email:
-        type: string
-      first_name:
-        type: string
-      last_name:
-        type: string
-      password:
-        type: string
-      phone_number:
-        type: string
-      role:
-        type: string
-      user_id:
-        type: string
-    type: object
   user.UserResponse:
     properties:
       created_at:
@@ -87,6 +304,615 @@ info:
   title: API Gateway
   version: "1.0"
 paths:
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of products with optional filters
+      parameters:
+      - in: query
+        name: category_id
+        type: string
+      - in: query
+        name: created_at
+        type: string
+      - in: query
+        name: created_by
+        type: string
+      - in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.ProductList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: List all products
+      tags:
+      - Products
+    post:
+      consumes:
+      - application/json
+      description: Create a new product with the provided details
+      parameters:
+      - description: Product data
+        in: body
+        name: Product
+        required: true
+        schema:
+          $ref: '#/definitions/products.CreateProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/products.Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Create a new product
+      tags:
+      - Products
+  /products/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Delete a product
+      tags:
+      - Products
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Get a product
+      tags:
+      - Products
+    put:
+      consumes:
+      - application/json
+      description: Update the details of an existing product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated product data
+        in: body
+        name: Product
+        required: true
+        schema:
+          $ref: '#/definitions/products.UpdateProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Update an existing product
+      tags:
+      - Products
+  /products/category:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of product categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/products.CategoryList'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: List Product Categories
+      tags:
+      - Category
+    post:
+      consumes:
+      - application/json
+      description: Create a new product category
+      parameters:
+      - description: Category data
+        in: body
+        name: Category
+        required: true
+        schema:
+          $ref: '#/definitions/products.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/products.Category'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Create Product Category
+      tags:
+      - Category
+  /products/category/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a product category by ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Delete Product Category
+      tags:
+      - Category
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a product category by ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.Category'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Get Product Category
+      tags:
+      - Category
+  /purchases:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of purchases with optional filters
+      parameters:
+      - in: query
+        name: created_at
+        type: string
+      - in: query
+        name: product_id
+        type: string
+      - in: query
+        name: purchased_by
+        type: string
+      - in: query
+        name: supplier_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.PurchaseList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: List all purchases
+      tags:
+      - Purchases
+    post:
+      consumes:
+      - application/json
+      description: Create a new purchase with the provided details
+      parameters:
+      - description: Purchase data
+        in: body
+        name: Purchase
+        required: true
+        schema:
+          $ref: '#/definitions/products.PurchaseRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/products.PurchaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Create a new purchase
+      tags:
+      - Purchases
+  /purchases/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a purchase by ID
+      parameters:
+      - description: Purchase ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Delete a purchase
+      tags:
+      - Purchases
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a purchase by ID
+      parameters:
+      - description: Purchase ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.PurchaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Get a purchase
+      tags:
+      - Purchases
+    put:
+      consumes:
+      - application/json
+      description: Update the details of an existing purchase by ID
+      parameters:
+      - description: Purchase ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated purchase data
+        in: body
+        name: Purchase
+        required: true
+        schema:
+          $ref: '#/definitions/products.PurchaseUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.PurchaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Update an existing purchase
+      tags:
+      - Purchases
+  /sales:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of sales with optional filters
+      parameters:
+      - in: query
+        name: client_id
+        type: string
+      - in: query
+        name: end_date
+        type: string
+      - in: query
+        name: sold_by
+        type: string
+      - in: query
+        name: start_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.SaleList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: List all sales
+      tags:
+      - Sales
+    post:
+      consumes:
+      - application/json
+      description: Create a new sale with the provided details
+      parameters:
+      - description: Sale data
+        in: body
+        name: Sale
+        required: true
+        schema:
+          $ref: '#/definitions/products.SaleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/products.SaleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Create a new sale
+      tags:
+      - Sales
+  /sales/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a sale by ID
+      parameters:
+      - description: Sale ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Delete a sale
+      tags:
+      - Sales
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a sale by ID
+      parameters:
+      - description: Sale ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.SaleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Get a sale
+      tags:
+      - Sales
+    put:
+      consumes:
+      - application/json
+      description: Update the details of an existing sale by ID
+      parameters:
+      - description: Sale ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated sale data
+        in: body
+        name: Sale
+        required: true
+        schema:
+          $ref: '#/definitions/products.SaleUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.SaleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Update an existing sale
+      tags:
+      - Sales
+  /sales/calculate:
+    post:
+      consumes:
+      - application/json
+      description: Calculate the total sales based on the sale request
+      parameters:
+      - description: Sale data
+        in: body
+        name: Sale
+        required: true
+        schema:
+          $ref: '#/definitions/products.SaleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.SaleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      summary: Calculate total sales
+      tags:
+      - Sales
   /user/admin/register:
     post:
       consumes:
@@ -244,7 +1070,7 @@ paths:
         name: CreateUser
         required: true
         schema:
-          $ref: '#/definitions/user.UserRequest'
+          $ref: '#/definitions/entity.UserUpdateRequest'
       produces:
       - application/json
       responses:

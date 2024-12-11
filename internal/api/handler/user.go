@@ -21,7 +21,7 @@ func (a *Handler) RegisterAdmin(c *gin.Context) {
 	res, err := a.UserClient.RegisterAdmin(c.Request.Context(), &user.MessageResponse{Message: "Register Admin!"})
 
 	if err != nil {
-		a.Logger.Error("Error registering admin", "error", err)
+		a.log.Error("Error registering admin", "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -44,7 +44,7 @@ func (a *Handler) Login(c *gin.Context) {
 	var req user.LogInRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		a.Logger.Error("Error parsing request body", "error", err)
+		a.log.Error("Error parsing request body", "error", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -55,7 +55,7 @@ func (a *Handler) Login(c *gin.Context) {
 	})
 
 	if err != nil {
-		a.Logger.Error("Error logging in", "error", err)
+		a.log.Error("Error logging in", "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -78,7 +78,7 @@ func (a *Handler) CreateUser(c *gin.Context) {
 	var req entity.UserUpdateRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		a.Logger.Error("Error parsing request body", "error", err)
+		a.log.Error("Error parsing request body", "error", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -93,7 +93,7 @@ func (a *Handler) CreateUser(c *gin.Context) {
 	})
 
 	if err != nil {
-		a.Logger.Error("Error creating user", "error", err)
+		a.log.Error("Error creating user", "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -117,7 +117,7 @@ func (a *Handler) UpdateUser(c *gin.Context) {
 	var req entity.UserUpdateRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		a.Logger.Error("Error parsing request body", "error", err)
+		a.log.Error("Error parsing request body", "error", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -133,7 +133,7 @@ func (a *Handler) UpdateUser(c *gin.Context) {
 	})
 
 	if err != nil {
-		a.Logger.Error("Error updating user", "error", err)
+		a.log.Error("Error updating user", "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -160,7 +160,7 @@ func (a *Handler) DeleteUser(c *gin.Context) {
 	})
 
 	if err != nil {
-		a.Logger.Error("Error deleting user", "error", err)
+		a.log.Error("Error deleting user", "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -187,7 +187,7 @@ func (a *Handler) GetUser(c *gin.Context) {
 	})
 
 	if err != nil {
-		a.Logger.Error("Error retrieving user", "error", err)
+		a.log.Error("Error retrieving user", "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -210,7 +210,7 @@ func (a *Handler) ListUser(c *gin.Context) {
 	var req user.FilterUserRequest
 
 	if err := c.ShouldBindQuery(&req); err != nil {
-		a.Logger.Error("Error parsing query parameters", "error", err)
+		a.log.Error("Error parsing query parameters", "error", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -222,7 +222,7 @@ func (a *Handler) ListUser(c *gin.Context) {
 	})
 
 	if err != nil {
-		a.Logger.Error("Error retrieving user list", "error", err)
+		a.log.Error("Error retrieving user list", "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
