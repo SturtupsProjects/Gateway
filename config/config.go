@@ -9,10 +9,11 @@ import (
 )
 
 type Config struct {
-	USER_SERVICE string
-	API_GATEWAY  string
-	REFRESH_KEY  string
-	ACCESS_KEY   string
+	USER_SERVICE    string
+	API_GATEWAY     string
+	REFRESH_KEY     string
+	ACCESS_KEY      string
+	PRODUCT_SERVICE string
 }
 
 func Load() *Config {
@@ -25,6 +26,7 @@ func Load() *Config {
 	config.API_GATEWAY = cast.ToString(Coalesce("API_GATEWAY", ":1111"))
 	config.REFRESH_KEY = cast.ToString(Coalesce("REFRESH_KEY", "secret"))
 	config.ACCESS_KEY = cast.ToString(Coalesce("ACCESS_KEY", "secret"))
+	config.PRODUCT_SERVICE = cast.ToString(Coalesce("PRODUCT_SERVICE", ":9091"))
 
 	return &config
 }
