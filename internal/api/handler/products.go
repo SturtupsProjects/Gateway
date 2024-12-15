@@ -12,6 +12,7 @@ import (
 // @Tags Products
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param Product body products.CreateProductRequest true "Product data"
 // @Success 201 {object} products.Product
 // @Failure 400 {object} products.Error
@@ -42,6 +43,7 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 // @Tags Products
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path string true "Product ID"
 // @Param Product body products.UpdateProductRequest true "Updated product data"
 // @Success 200 {object} products.Product
@@ -75,6 +77,7 @@ func (h *Handler) UpdateProduct(c *gin.Context) {
 // @Tags Products
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path string true "Product ID"
 // @Success 200 {object} products.Message
 // @Failure 400 {object} products.Error
@@ -100,6 +103,7 @@ func (h *Handler) DeleteProduct(c *gin.Context) {
 // @Tags Products
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path string true "Product ID"
 // @Success 200 {object} products.Product
 // @Failure 400 {object} products.Error
@@ -125,6 +129,7 @@ func (h *Handler) GetProduct(c *gin.Context) {
 // @Tags Products
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param filter query products.ProductFilter false "Filter parameters"
 // @Success 200 {object} products.ProductList
 // @Failure 400 {object} products.Error

@@ -17,6 +17,11 @@ const docTemplate = `{
     "paths": {
         "/products": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of products with optional filters",
                 "consumes": [
                     "application/json"
@@ -72,6 +77,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create a new product with the provided details",
                 "consumes": [
                     "application/json"
@@ -118,6 +128,11 @@ const docTemplate = `{
         },
         "/products/category": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of product categories",
                 "consumes": [
                     "application/json"
@@ -129,24 +144,29 @@ const docTemplate = `{
                     "Category"
                 ],
                 "summary": "List Product Categories",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by category name",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "List of categories",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/products.CategoryList"
-                            }
+                            "$ref": "#/definitions/products.CategoryList"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Bad request due to invalid query parameters",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -154,6 +174,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create a new product category",
                 "consumes": [
                     "application/json"
@@ -200,6 +225,11 @@ const docTemplate = `{
         },
         "/products/category/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve a product category by ID",
                 "consumes": [
                     "application/json"
@@ -242,6 +272,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete a product category by ID",
                 "consumes": [
                     "application/json"
@@ -286,6 +321,11 @@ const docTemplate = `{
         },
         "/products/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve a product by ID",
                 "consumes": [
                     "application/json"
@@ -328,6 +368,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update the details of an existing product by ID",
                 "consumes": [
                     "application/json"
@@ -379,6 +424,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete a product by ID",
                 "consumes": [
                     "application/json"
@@ -423,6 +473,11 @@ const docTemplate = `{
         },
         "/purchases": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of purchases with optional filters",
                 "consumes": [
                     "application/json"
@@ -478,6 +533,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create a new purchase with the provided details",
                 "consumes": [
                     "application/json"
@@ -524,6 +584,11 @@ const docTemplate = `{
         },
         "/purchases/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve a purchase by ID",
                 "consumes": [
                     "application/json"
@@ -566,6 +631,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update the details of an existing purchase by ID",
                 "consumes": [
                     "application/json"
@@ -617,6 +687,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete a purchase by ID",
                 "consumes": [
                     "application/json"
@@ -661,6 +736,11 @@ const docTemplate = `{
         },
         "/sales": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of sales with optional filters",
                 "consumes": [
                     "application/json"
@@ -716,6 +796,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create a new sale with the provided details",
                 "consumes": [
                     "application/json"
@@ -762,6 +847,11 @@ const docTemplate = `{
         },
         "/sales/calculate": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Calculate the total sales based on the sale request",
                 "consumes": [
                     "application/json"
@@ -808,6 +898,11 @@ const docTemplate = `{
         },
         "/sales/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve a sale by ID",
                 "consumes": [
                     "application/json"
@@ -850,6 +945,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update the details of an existing sale by ID",
                 "consumes": [
                     "application/json"
@@ -901,6 +1001,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete a sale by ID",
                 "consumes": [
                     "application/json"

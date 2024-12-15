@@ -2,26 +2,22 @@ package token
 
 import (
 	"fmt"
-	"gateway/config"
 
 	"github.com/golang-jwt/jwt"
 )
 
-func ValidateToken(tokenstr string) (bool, error) {
-	_, err := ExtractClaims(tokenstr)
-	if err != nil {
-		return false, err
-	}
-	return true, nil
-}
+// ExtractClaims validates and extracts claims from the token
+func ExtractClaims(tokenStr string) (jwt.MapClaims, error) {
+	// Determine which secret key to use
+	var secretKey string
 
-func ExtractClaims(tokenstr string) (jwt.MapClaims, error) {
-	token, err := jwt.ParseWithClaims(tokenstr, jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
-		// Token imzosi HMAC bo'lishi kerak
+	// Parse the token with claims
+	token, err := jwt.ParseWithClaims(tokenStr, jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		// Ensure token uses HMAC signing
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
-		return []byte(config.Load().ACCESS_KEY), nil
+		return []byte(secretKey), nil
 	})
 
 	if err != nil {
@@ -29,13 +25,23 @@ func ExtractClaims(tokenstr string) (jwt.MapClaims, error) {
 	}
 
 	if !token.Valid {
-		return nil, fmt.Errorf("invalid token: %s", tokenstr)
+		return nil, fmt.Errorf("invalid token")
 	}
 
+	// Extract and return claims
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, fmt.Errorf("failed to parse token claims")
+		return nil, fmt.Errorf("failed to extract token claims")
 	}
 
 	return claims, nil
+}
+
+// ValidateToken checks the validity of the token
+func ValidateToken(tokenStr string) (bool, error) {
+	_, err := ExtractClaims(tokenStr)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }

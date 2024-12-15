@@ -12,6 +12,7 @@ import (
 // @Tags Sales
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param Sale body products.SaleRequest true "Sale data"
 // @Success 200 {object} products.SaleResponse
 // @Failure 400 {object} products.Error
@@ -42,6 +43,7 @@ func (h *Handler) CalculateTotalSales(c *gin.Context) {
 // @Tags Sales
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param Sale body products.SaleRequest true "Sale data"
 // @Success 201 {object} products.SaleResponse
 // @Failure 400 {object} products.Error
@@ -72,6 +74,7 @@ func (h *Handler) CreateSales(c *gin.Context) {
 // @Tags Sales
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path string true "Sale ID"
 // @Param Sale body products.SaleUpdate true "Updated sale data"
 // @Success 200 {object} products.SaleResponse
@@ -105,6 +108,7 @@ func (h *Handler) UpdateSales(c *gin.Context) {
 // @Tags Sales
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path string true "Sale ID"
 // @Success 200 {object} products.SaleResponse
 // @Failure 400 {object} products.Error
@@ -130,6 +134,7 @@ func (h *Handler) GetSales(c *gin.Context) {
 // @Tags Sales
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param filter query products.SaleFilter false "Filter parameters"
 // @Success 200 {object} products.SaleList
 // @Failure 400 {object} products.Error
@@ -160,6 +165,7 @@ func (h *Handler) GetListSales(c *gin.Context) {
 // @Tags Sales
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path string true "Sale ID"
 // @Success 200 {object} products.Message
 // @Failure 400 {object} products.Error

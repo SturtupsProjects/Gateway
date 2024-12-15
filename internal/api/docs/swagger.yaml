@@ -337,6 +337,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: List all products
       tags:
       - Products
@@ -366,6 +368,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Create a new product
       tags:
       - Products
@@ -395,6 +399,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Delete a product
       tags:
       - Products
@@ -423,6 +429,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Get a product
       tags:
       - Products
@@ -457,6 +465,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Update an existing product
       tags:
       - Products
@@ -465,23 +475,28 @@ paths:
       consumes:
       - application/json
       description: Retrieve a list of product categories
+      parameters:
+      - description: Filter by category name
+        in: query
+        name: name
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: List of categories
           schema:
-            items:
-              $ref: '#/definitions/products.CategoryList'
-            type: array
+            $ref: '#/definitions/products.CategoryList'
         "400":
-          description: Bad Request
+          description: Bad request due to invalid query parameters
           schema:
             $ref: '#/definitions/products.Error'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: List Product Categories
       tags:
       - Category
@@ -511,6 +526,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Create Product Category
       tags:
       - Category
@@ -540,6 +557,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Delete Product Category
       tags:
       - Category
@@ -568,6 +587,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Get Product Category
       tags:
       - Category
@@ -604,6 +625,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: List all purchases
       tags:
       - Purchases
@@ -633,6 +656,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Create a new purchase
       tags:
       - Purchases
@@ -662,6 +687,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Delete a purchase
       tags:
       - Purchases
@@ -690,6 +717,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Get a purchase
       tags:
       - Purchases
@@ -724,6 +753,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Update an existing purchase
       tags:
       - Purchases
@@ -760,6 +791,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: List all sales
       tags:
       - Sales
@@ -789,6 +822,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Create a new sale
       tags:
       - Sales
@@ -818,6 +853,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Delete a sale
       tags:
       - Sales
@@ -846,6 +883,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Get a sale
       tags:
       - Sales
@@ -880,6 +919,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Update an existing sale
       tags:
       - Sales
@@ -910,6 +951,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Calculate total sales
       tags:
       - Sales

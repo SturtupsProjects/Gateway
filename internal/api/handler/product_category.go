@@ -1,9 +1,10 @@
 package handler
 
 import (
+	"fmt"
 	"gateway/pkg/generated/products"
 	"github.com/gin-gonic/gin"
-	"github.com/golang/protobuf/ptypes/empty"
+	"github.com/google/uuid"
 	"net/http"
 )
 
@@ -13,6 +14,7 @@ import (
 // @Tags Category
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param Category body products.CreateCategoryRequest true "Category data"
 // @Success 201 {object} products.Category
 // @Failure 400 {object} products.Error
@@ -43,6 +45,7 @@ func (h *Handler) CreateCategory(c *gin.Context) {
 // @Tags Category
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path string true "Category ID"
 // @Success 200 {object} products.Category
 // @Failure 400 {object} products.Error
@@ -68,18 +71,27 @@ func (h *Handler) GetCategory(c *gin.Context) {
 // @Tags Category
 // @Accept json
 // @Produce json
-// @Success 200 {array} products.CategoryList
-// @Failure 400 {object} products.Error
-// @Failure 500 {object} products.Error
+// @Security ApiKeyAuth
+// @Param name query string false "Filter by category name"
+// @Success 200 {object} products.CategoryList "List of categories"
+// @Failure 400 {object} products.Error "Bad request due to invalid query parameters"
+// @Failure 500 {object} products.Error "Internal server error"
 // @Router /products/category [get]
 func (h *Handler) GetListCategory(c *gin.Context) {
-	res, err := h.ProductClient.GetListCategory(c.Request.Context(), &empty.Empty{})
+	var req products.CategoryName
+	req.Name = c.Query("name")
+	//req.CreatedBy = c.MustGet("id").(string)
+	req.CreatedBy = uuid.New().String()
+	fmt.Println(req.CreatedBy)
+	// Call the ProductClient to get the list of categories
+	res, err := h.ProductClient.GetListCategory(c.Request.Context(), &req)
 	if err != nil {
-		h.log.Error("Error retrieving category list", "error", err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		h.log.Error("Failed to retrieve category list", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error: " + err.Error()})
 		return
 	}
 
+	// Return the successful response
 	c.JSON(http.StatusOK, res)
 }
 
@@ -89,6 +101,7 @@ func (h *Handler) GetListCategory(c *gin.Context) {
 // @Tags Category
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path string true "Category ID"
 // @Success 200 {object} products.Message
 // @Failure 400 {object} products.Error

@@ -12,6 +12,7 @@ import (
 // @Tags Purchases
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param Purchase body products.PurchaseRequest true "Purchase data"
 // @Success 201 {object} products.PurchaseResponse
 // @Failure 400 {object} products.Error
@@ -42,6 +43,7 @@ func (h *Handler) CreatePurchase(c *gin.Context) {
 // @Tags Purchases
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path string true "Purchase ID"
 // @Success 200 {object} products.PurchaseResponse
 // @Failure 400 {object} products.Error
@@ -67,6 +69,7 @@ func (h *Handler) GetPurchase(c *gin.Context) {
 // @Tags Purchases
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param filter query products.FilterPurchase false "Filter parameters"
 // @Success 200 {object} products.PurchaseList
 // @Failure 400 {object} products.Error
@@ -97,6 +100,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 // @Tags Purchases
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path string true "Purchase ID"
 // @Param Purchase body products.PurchaseUpdate true "Updated purchase data"
 // @Success 200 {object} products.PurchaseResponse
@@ -130,6 +134,7 @@ func (h *Handler) UpdatePurchase(c *gin.Context) {
 // @Tags Purchases
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path string true "Purchase ID"
 // @Success 200 {object} products.Message
 // @Failure 400 {object} products.Error
