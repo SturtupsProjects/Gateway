@@ -1,8 +1,29 @@
 definitions:
+  entity.CreateProductRequest:
+    properties:
+      bill_format:
+        type: string
+      category_id:
+        type: string
+      incoming_price:
+        type: number
+      name:
+        type: string
+      standard_price:
+        type: number
+    type: object
   entity.Error:
     properties:
       message:
         type: string
+    type: object
+  entity.Names:
+    properties:
+      name:
+        example: Electronics
+        type: string
+    required:
+    - name
     type: object
   entity.UserUpdateRequest:
     properties:
@@ -36,28 +57,6 @@ definitions:
         items:
           $ref: '#/definitions/products.Category'
         type: array
-    type: object
-  products.CreateCategoryRequest:
-    properties:
-      created_by:
-        type: string
-      name:
-        type: string
-    type: object
-  products.CreateProductRequest:
-    properties:
-      bill_format:
-        type: string
-      category_id:
-        type: string
-      created_by:
-        type: string
-      incoming_price:
-        type: number
-      name:
-        type: string
-      standard_price:
-        type: number
     type: object
   products.Error:
     properties:
@@ -352,7 +351,7 @@ paths:
         name: Product
         required: true
         schema:
-          $ref: '#/definitions/products.CreateProductRequest'
+          $ref: '#/definitions/entity.CreateProductRequest'
       produces:
       - application/json
       responses:
@@ -503,14 +502,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new product category
+      description: Create a new product category by specifying its name
       parameters:
       - description: Category data
         in: body
         name: Category
         required: true
         schema:
-          $ref: '#/definitions/products.CreateCategoryRequest'
+          $ref: '#/definitions/entity.Names'
       produces:
       - application/json
       responses:
@@ -521,11 +520,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/products.Error'
+            $ref: '#/definitions/entity.Error'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/products.Error'
+            $ref: '#/definitions/entity.Error'
       security:
       - ApiKeyAuth: []
       summary: Create Product Category

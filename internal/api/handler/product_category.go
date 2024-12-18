@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"gateway/internal/entity"
 	"gateway/pkg/generated/products"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -10,26 +11,28 @@ import (
 
 // CreateCategory godoc
 // @Summary Create Product Category
-// @Description Create a new product category
+// @Description Create a new product category by specifying its name
 // @Tags Category
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param Category body products.CreateCategoryRequest true "Category data"
+// @Param Category body entity.Names true "Category data"
 // @Success 201 {object} products.Category
-// @Failure 400 {object} products.Error
-// @Failure 500 {object} products.Error
+// @Failure 400 {object} entity.Error
+// @Failure 500 {object} entity.Error
 // @Router /products/category [post]
 func (h *Handler) CreateCategory(c *gin.Context) {
-	var req products.CreateCategoryRequest
 
+	req := entity.Names{}
+
+	// Bind the JSON request to the struct
 	if err := c.ShouldBindJSON(&req); err != nil {
-		h.log.Error("Error parsing request body", "error", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		h.log.Error("Invalid request data", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
 		return
 	}
 
-	res, err := h.ProductClient.CreateCategory(c, &req)
+	res, err := h.ProductClient.CreateCategory(c, &products.CreateCategoryRequest{Name: req.Name, CreatedBy: c.MustGet("id").(string)})
 	if err != nil {
 		h.log.Error("Error creating category", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

@@ -100,7 +100,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/products.CreateProductRequest"
+                            "$ref": "#/definitions/entity.CreateProductRequest"
                         }
                     }
                 ],
@@ -179,7 +179,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Create a new product category",
+                "description": "Create a new product category by specifying its name",
                 "consumes": [
                     "application/json"
                 ],
@@ -197,7 +197,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/products.CreateCategoryRequest"
+                            "$ref": "#/definitions/entity.Names"
                         }
                     }
                 ],
@@ -211,13 +211,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/products.Error"
+                            "$ref": "#/definitions/entity.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/products.Error"
+                            "$ref": "#/definitions/entity.Error"
                         }
                     }
                 }
@@ -1373,11 +1373,43 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entity.CreateProductRequest": {
+            "type": "object",
+            "properties": {
+                "bill_format": {
+                    "type": "string"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "incoming_price": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "standard_price": {
+                    "type": "number"
+                }
+            }
+        },
         "entity.Error": {
             "type": "object",
             "properties": {
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.Names": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Electronics"
                 }
             }
         },
@@ -1429,40 +1461,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/products.Category"
                     }
-                }
-            }
-        },
-        "products.CreateCategoryRequest": {
-            "type": "object",
-            "properties": {
-                "created_by": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "products.CreateProductRequest": {
-            "type": "object",
-            "properties": {
-                "bill_format": {
-                    "type": "string"
-                },
-                "category_id": {
-                    "type": "string"
-                },
-                "created_by": {
-                    "type": "string"
-                },
-                "incoming_price": {
-                    "type": "number"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "standard_price": {
-                    "type": "number"
                 }
             }
         },

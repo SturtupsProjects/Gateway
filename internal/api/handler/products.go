@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"gateway/internal/entity"
 	"gateway/pkg/generated/products"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -13,13 +14,13 @@ import (
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param Product body products.CreateProductRequest true "Product data"
+// @Param Product body entity.CreateProductRequest true "Product data"
 // @Success 201 {object} products.Product
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
 // @Router /products [post]
 func (h *Handler) CreateProduct(c *gin.Context) {
-	var req products.CreateProductRequest
+	var req entity.CreateProductRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.log.Error("Error parsing CreateProduct request body", "error", err.Error())
@@ -27,7 +28,8 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 		return
 	}
 
-	res, err := h.ProductClient.CreateProduct(c, &req)
+	res, err := h.ProductClient.CreateProduct(c, &products.CreateProductRequest{CreatedBy: c.MustGet("id").(string), CategoryId: req.CategoryID, Name: req.Name,
+		BillFormat: req.BillFormat, IncomingPrice: req.IncomingPrice, StandardPrice: req.StandardPrice})
 	if err != nil {
 		h.log.Error("Error creating product", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

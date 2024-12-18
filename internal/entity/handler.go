@@ -11,3 +11,15 @@ type UserUpdateRequest struct {
 type Error struct {
 	Message string `json:"message"`
 }
+
+type Names struct {
+	Name string `json:"name" binding:"required" example:"Electronics"`
+}
+
+type CreateProductRequest struct {
+	CategoryID    string  `json:"category_id"`
+	Name          string  `json:"name"`
+	BillFormat    string  `json:"bill_format"`
+	IncomingPrice float32 `json:"incoming_price"`
+	StandardPrice float32 `json:"standard_price"`
+}
