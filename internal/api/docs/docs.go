@@ -1665,13 +1665,13 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "incoming_price": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
                 "standard_price": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
