@@ -13,7 +13,7 @@ import (
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param Sale body products.SaleRequest true "Sale data"
+// @Param Sale body entity.Sale true "Sale data"
 // @Success 200 {object} products.SaleResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -26,6 +26,7 @@ func (h *Handler) CalculateTotalSales(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	req.SoldBy = c.MustGet("id").(string)
 
 	res, err := h.ProductClient.CalculateTotalSales(c, &req)
 	if err != nil {

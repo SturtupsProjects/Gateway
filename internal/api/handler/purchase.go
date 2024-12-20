@@ -13,7 +13,7 @@ import (
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param Purchase body products.PurchaseRequest true "Purchase data"
+// @Param Purchase body entity.Purchase true "Purchase data"
 // @Success 201 {object} products.PurchaseResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -26,6 +26,7 @@ func (h *Handler) CreatePurchase(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	req.PurchasedBy = c.MustGet("id").(string)
 
 	res, err := h.ProductClient.CreatePurchase(c, &req)
 	if err != nil {

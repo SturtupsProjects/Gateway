@@ -556,7 +556,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/products.PurchaseRequest"
+                            "$ref": "#/definitions/entity.Purchase"
                         }
                     }
                 ],
@@ -870,7 +870,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/products.SaleRequest"
+                            "$ref": "#/definitions/entity.Sale"
                         }
                     }
                 ],
@@ -1413,6 +1413,80 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.Purchase": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.PurchaseItem"
+                    }
+                },
+                "payment_method": {
+                    "type": "string"
+                },
+                "supplier_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.PurchaseItem": {
+            "type": "object",
+            "properties": {
+                "product_id": {
+                    "type": "string"
+                },
+                "purchase_price": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.Sale": {
+            "type": "object",
+            "properties": {
+                "client_id": {
+                    "type": "string"
+                },
+                "payment_method": {
+                    "type": "string"
+                },
+                "sold_products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.SalesItem"
+                    }
+                }
+            }
+        },
+        "entity.SalesItem": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "product_id": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "sale_id": {
+                    "type": "string"
+                },
+                "sale_price": {
+                    "type": "number"
+                },
+                "total_price": {
+                    "type": "number"
+                }
+            }
+        },
         "entity.UserUpdateRequest": {
             "type": "object",
             "properties": {
@@ -1523,20 +1597,6 @@ const docTemplate = `{
                 }
             }
         },
-        "products.PurchaseItem": {
-            "type": "object",
-            "properties": {
-                "product_id": {
-                    "type": "string"
-                },
-                "purchase_price": {
-                    "type": "number"
-                },
-                "quantity": {
-                    "type": "integer"
-                }
-            }
-        },
         "products.PurchaseItemResponse": {
             "type": "object",
             "properties": {
@@ -1568,29 +1628,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/products.PurchaseResponse"
                     }
-                }
-            }
-        },
-        "products.PurchaseRequest": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/products.PurchaseItem"
-                    }
-                },
-                "payment_method": {
-                    "type": "string"
-                },
-                "purchased_by": {
-                    "type": "string"
-                },
-                "supplier_id": {
-                    "type": "string"
                 }
             }
         },
