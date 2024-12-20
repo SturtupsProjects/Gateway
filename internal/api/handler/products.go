@@ -2,7 +2,7 @@ package handler
 
 import (
 	"gateway/internal/entity"
-	"gateway/pkg/generated/products"
+	"gateway/internal/generated/products"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

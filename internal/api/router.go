@@ -84,6 +84,16 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		sales.POST("/calculate", h.CalculateTotalSales)
 	}
 
+	//Client routes group
+	client := router.Group("/clients")
+	{
+		client.POST("/", h.CreateClient)
+		client.GET("/", h.GetClientList)
+		client.GET("/:id", h.GetClient)
+		client.PUT("/:id", h.UpdateClient)
+		client.DELETE("/:id", h.DeleteClient)
+	}
+
 	// Return the configured router
 	return router
 }

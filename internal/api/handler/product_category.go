@@ -1,11 +1,9 @@
 package handler
 
 import (
-	"fmt"
 	"gateway/internal/entity"
-	"gateway/pkg/generated/products"
+	"gateway/internal/generated/products"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 )
 
@@ -84,8 +82,7 @@ func (h *Handler) GetListCategory(c *gin.Context) {
 	var req products.CategoryName
 	req.Name = c.Query("name")
 	//req.CreatedBy = c.MustGet("id").(string)
-	req.CreatedBy = uuid.New().String()
-	fmt.Println(req.CreatedBy)
+	//req.CreatedBy = uuid.New().String()
 	// Call the ProductClient to get the list of categories
 	res, err := h.ProductClient.GetListCategory(c.Request.Context(), &req)
 	if err != nil {

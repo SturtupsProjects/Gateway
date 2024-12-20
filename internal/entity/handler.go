@@ -17,11 +17,11 @@ type Names struct {
 }
 
 type CreateProductRequest struct {
-	CategoryID    string  `json:"category_id"`
-	Name          string  `json:"name"`
-	BillFormat    string  `json:"bill_format"`
-	IncomingPrice float32 `json:"incoming_price"`
-	StandardPrice float32 `json:"standard_price"`
+	CategoryID    string `json:"category_id"`
+	Name          string `json:"name"`
+	BillFormat    string `json:"bill_format"`
+	IncomingPrice int64  `json:"incoming_price"`
+	StandardPrice int64  `json:"standard_price"`
 }
 
 type Sale struct {
@@ -50,4 +50,10 @@ type PurchaseItem struct {
 	ProductId     string  `json:"product_id,omitempty"`
 	Quantity      int32   `json:"quantity,omitempty"`
 	PurchasePrice float64 `json:"purchase_price,omitempty"`
+}
+
+type Client struct {
+	FullName string `json:"full_name"`
+	Address  string `json:"address"`
+	Phone    string `json:"phone"`
 }

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"gateway/pkg/generated/products"
+	"gateway/internal/generated/products"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

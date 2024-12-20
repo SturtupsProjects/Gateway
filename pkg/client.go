@@ -3,8 +3,8 @@ package pkg
 import (
 	"gateway/config"
 
-	pbp "gateway/pkg/generated/products"
-	pbu "gateway/pkg/generated/user"
+	pbp "gateway/internal/generated/products"
+	pbu "gateway/internal/generated/user"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"

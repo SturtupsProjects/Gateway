@@ -1,4 +1,13 @@
 definitions:
+  entity.Client:
+    properties:
+      address:
+        type: string
+      full_name:
+        type: string
+      phone:
+        type: string
+    type: object
   entity.CreateProductRequest:
     properties:
       bill_format:
@@ -129,11 +138,11 @@ definitions:
       id:
         type: string
       incoming_price:
-        type: number
+        type: integer
       name:
         type: string
       standard_price:
-        type: number
+        type: integer
       total_count:
         type: integer
     type: object
@@ -153,11 +162,11 @@ definitions:
       purchase_id:
         type: string
       purchase_price:
-        type: number
+        type: integer
       quantity:
         type: integer
       total_price:
-        type: number
+        type: integer
     type: object
   products.PurchaseList:
     properties:
@@ -185,7 +194,7 @@ definitions:
       supplier_id:
         type: string
       total_cost:
-        type: number
+        type: integer
     type: object
   products.PurchaseUpdate:
     properties:
@@ -235,7 +244,7 @@ definitions:
           $ref: '#/definitions/products.SalesItem'
         type: array
       total_sale_price:
-        type: number
+        type: integer
     type: object
   products.SaleUpdate:
     properties:
@@ -257,9 +266,9 @@ definitions:
       sale_id:
         type: string
       sale_price:
-        type: number
+        type: integer
       total_price:
-        type: number
+        type: integer
     type: object
   products.UpdateProductRequest:
     properties:
@@ -270,11 +279,38 @@ definitions:
       id:
         type: string
       incoming_price:
-        type: number
+        type: integer
       name:
         type: string
       standard_price:
-        type: number
+        type: integer
+    type: object
+  user.ClientListResponse:
+    properties:
+      clients:
+        items:
+          $ref: '#/definitions/user.ClientResponse'
+        type: array
+    type: object
+  user.ClientRequest:
+    properties:
+      address:
+        type: string
+      full_name:
+        type: string
+      phone:
+        type: string
+    type: object
+  user.ClientResponse:
+    properties:
+      address:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      phone:
+        type: string
     type: object
   user.LogInRequest:
     properties:
@@ -327,6 +363,175 @@ info:
   title: API Gateway
   version: "1.0"
 paths:
+  /clients:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of clients with optional filters
+      parameters:
+      - in: query
+        name: address
+        type: string
+      - in: query
+        name: full_name
+        type: string
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: phone
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ClientListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: List all clients
+      tags:
+      - Clients
+    post:
+      consumes:
+      - application/json
+      description: Create a new client with the provided details
+      parameters:
+      - description: Client data
+        in: body
+        name: Client
+        required: true
+        schema:
+          $ref: '#/definitions/user.ClientRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/user.ClientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new client
+      tags:
+      - Clients
+  /clients/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a client by ID
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a client
+      tags:
+      - Clients
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a client by ID
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ClientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a client
+      tags:
+      - Clients
+    put:
+      consumes:
+      - application/json
+      description: Update the details of an existing client by ID
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated client data
+        in: body
+        name: Client
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Client'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ClientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update an existing client
+      tags:
+      - Clients
   /products:
     get:
       consumes:
