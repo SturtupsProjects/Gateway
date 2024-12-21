@@ -58,6 +58,9 @@ func (h *Handler) CreateSales(c *gin.Context) {
 		return
 	}
 
+	id := c.MustGet("id").(string)
+	req.SoldBy = id
+
 	res, err := h.ProductClient.CreateSales(c, &req)
 	if err != nil {
 		h.log.Error("Error creating sale", "error", err.Error())
