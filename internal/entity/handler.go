@@ -17,9 +17,43 @@ type Names struct {
 }
 
 type CreateProductRequest struct {
-	CategoryID    string  `json:"category_id"`
-	Name          string  `json:"name"`
-	BillFormat    string  `json:"bill_format"`
-	IncomingPrice float32 `json:"incoming_price"`
-	StandardPrice float32 `json:"standard_price"`
+	CategoryID    string `json:"category_id"`
+	Name          string `json:"name"`
+	BillFormat    string `json:"bill_format"`
+	IncomingPrice int64  `json:"incoming_price"`
+	StandardPrice int64  `json:"standard_price"`
+}
+
+type Sale struct {
+	ClientId      string       `json:"client_id,omitempty"`
+	PaymentMethod string       `json:"payment_method,omitempty"`
+	SoldProducts  []*SalesItem `json:"sold_products,omitempty"`
+}
+
+type SalesItem struct {
+	Id         string  `json:"id,omitempty"`
+	SaleId     string  `json:"sale_id,omitempty"`
+	ProductId  string  `json:"product_id,omitempty"`
+	Quantity   int32   `json:"quantity,omitempty"`
+	SalePrice  float64 `json:"sale_price,omitempty"`
+	TotalPrice float64 `json:"total_price,omitempty"`
+}
+
+type Purchase struct {
+	SupplierId    string          `json:"supplier_id,omitempty"`
+	Description   string          `json:"description,omitempty"`
+	PaymentMethod string          `json:"payment_method,omitempty"`
+	Items         []*PurchaseItem `json:"items,omitempty"`
+}
+
+type PurchaseItem struct {
+	ProductId     string  `json:"product_id,omitempty"`
+	Quantity      int32   `json:"quantity,omitempty"`
+	PurchasePrice float64 `json:"purchase_price,omitempty"`
+}
+
+type Client struct {
+	FullName string `json:"full_name"`
+	Address  string `json:"address"`
+	Phone    string `json:"phone"`
 }

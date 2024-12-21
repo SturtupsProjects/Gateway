@@ -2,11 +2,11 @@ package handler
 
 import (
 	"gateway/config"
-	pbp "gateway/pkg/generated/products"
-	pbu "gateway/pkg/generated/user"
+	pbp "gateway/internal/generated/products"
+	pbu "gateway/internal/generated/user"
+	"log/slog"
 
 	"gateway/pkg"
-	"log/slog"
 
 	logger "gateway/pkg/logs"
 )

@@ -15,6 +15,274 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/clients": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve a list of clients with optional filters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "List all clients",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "address",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "full_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "phone",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.ClientListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new client with the provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Create a new client",
+                "parameters": [
+                    {
+                        "description": "Client data",
+                        "name": "Client",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.ClientRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/user.ClientResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve a client by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Get a client",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.ClientResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update the details of an existing client by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Update an existing client",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated client data",
+                        "name": "Client",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Client"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.ClientResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete a client by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Delete a client",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/products": {
             "get": {
                 "security": [
@@ -556,7 +824,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/products.PurchaseRequest"
+                            "$ref": "#/definitions/entity.Purchase"
                         }
                     }
                 ],
@@ -870,7 +1138,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/products.SaleRequest"
+                            "$ref": "#/definitions/entity.Sale"
                         }
                     }
                 ],
@@ -1373,6 +1641,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entity.Client": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.CreateProductRequest": {
             "type": "object",
             "properties": {
@@ -1383,13 +1665,13 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "incoming_price": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
                 "standard_price": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -1410,6 +1692,80 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "Electronics"
+                }
+            }
+        },
+        "entity.Purchase": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.PurchaseItem"
+                    }
+                },
+                "payment_method": {
+                    "type": "string"
+                },
+                "supplier_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.PurchaseItem": {
+            "type": "object",
+            "properties": {
+                "product_id": {
+                    "type": "string"
+                },
+                "purchase_price": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.Sale": {
+            "type": "object",
+            "properties": {
+                "client_id": {
+                    "type": "string"
+                },
+                "payment_method": {
+                    "type": "string"
+                },
+                "sold_products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.SalesItem"
+                    }
+                }
+            }
+        },
+        "entity.SalesItem": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "product_id": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "sale_id": {
+                    "type": "string"
+                },
+                "sale_price": {
+                    "type": "number"
+                },
+                "total_price": {
+                    "type": "number"
                 }
             }
         },
@@ -1499,13 +1855,13 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "incoming_price": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
                 "standard_price": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_count": {
                     "type": "integer"
@@ -1523,20 +1879,6 @@ const docTemplate = `{
                 }
             }
         },
-        "products.PurchaseItem": {
-            "type": "object",
-            "properties": {
-                "product_id": {
-                    "type": "string"
-                },
-                "purchase_price": {
-                    "type": "number"
-                },
-                "quantity": {
-                    "type": "integer"
-                }
-            }
-        },
         "products.PurchaseItemResponse": {
             "type": "object",
             "properties": {
@@ -1550,13 +1892,13 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "purchase_price": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "quantity": {
                     "type": "integer"
                 },
                 "total_price": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -1568,29 +1910,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/products.PurchaseResponse"
                     }
-                }
-            }
-        },
-        "products.PurchaseRequest": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/products.PurchaseItem"
-                    }
-                },
-                "payment_method": {
-                    "type": "string"
-                },
-                "purchased_by": {
-                    "type": "string"
-                },
-                "supplier_id": {
-                    "type": "string"
                 }
             }
         },
@@ -1622,7 +1941,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "total_cost": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -1699,7 +2018,7 @@ const docTemplate = `{
                     }
                 },
                 "total_sale_price": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -1733,10 +2052,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "sale_price": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_price": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -1753,13 +2072,55 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "incoming_price": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
                 "standard_price": {
-                    "type": "number"
+                    "type": "integer"
+                }
+            }
+        },
+        "user.ClientListResponse": {
+            "type": "object",
+            "properties": {
+                "clients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.ClientResponse"
+                    }
+                }
+            }
+        },
+        "user.ClientRequest": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.ClientResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
                 }
             }
         },
