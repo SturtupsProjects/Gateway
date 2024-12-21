@@ -3,33 +3,56 @@ package handler
 import (
 	"gateway/internal/entity"
 	"gateway/internal/generated/products"
+	"gateway/internal/minio"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
 // CreateProduct godoc
 // @Summary Create a new product
-// @Description Create a new product with the provided details
-// @Tags Products
-// @Accept json
-// @Produce json
+// @Description Create a new product with the provided details, including an optional file upload for the product image
 // @Security ApiKeyAuth
-// @Param Product body entity.CreateProductRequest true "Product data"
-// @Success 201 {object} products.Product
-// @Failure 400 {object} products.Error
-// @Failure 500 {object} products.Error
+// @Tags Products
+// @Accept multipart/form-data
+// @Produce json
+// @Param file formData file false "Upload product image (optional)"
+// @Param category_id formData string true "ID of the product category"
+// @Param name formData string true "Name of the product"
+// @Param bill_format formData string true "Billing format of the product"
+// @Param incoming_price formData int64 true "Incoming price of the product"
+// @Param standard_price formData int64 true "Standard price of the product"
+// @Success 201 {object} products.Product "Product successfully created"
+// @Failure 400 {object} products.Error "Invalid input or bad request"
+// @Failure 500 {object} products.Error "Internal server error"
 // @Router /products [post]
 func (h *Handler) CreateProduct(c *gin.Context) {
+
 	var req entity.CreateProductRequest
 
-	if err := c.ShouldBindJSON(&req); err != nil {
-		h.log.Error("Error parsing CreateProduct request body", "error", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := c.ShouldBind(&req); err != nil {
+		h.log.Error("bind json err", "error", err)
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request", "error": err.Error()})
 		return
 	}
 
+	var url string
+	file, err := c.FormFile("file")
+	if err == nil {
+		url, err = minio.UploadMedia(file)
+		if err != nil {
+			log.Println("Error occurred while uploading file")
+			h.log.Error("Error occurred while uploading file:", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	} else {
+		url = "no image"
+		log.Println("No file uploaded, continuing without an image")
+	}
+
 	res, err := h.ProductClient.CreateProduct(c, &products.CreateProductRequest{CreatedBy: c.MustGet("id").(string), CategoryId: req.CategoryID, Name: req.Name,
-		BillFormat: req.BillFormat, IncomingPrice: req.IncomingPrice, StandardPrice: req.StandardPrice})
+		BillFormat: req.BillFormat, IncomingPrice: req.IncomingPrice, StandardPrice: req.StandardPrice, ImageUrl: url})
 	if err != nil {
 		h.log.Error("Error creating product", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

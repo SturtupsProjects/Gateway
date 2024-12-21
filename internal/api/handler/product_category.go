@@ -3,34 +3,51 @@ package handler
 import (
 	"gateway/internal/entity"
 	"gateway/internal/generated/products"
+	"gateway/internal/minio"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
 // CreateCategory godoc
 // @Summary Create Product Category
-// @Description Create a new product category by specifying its name
+// @Description Create a new product category by specifying its name and optionally uploading an image
 // @Tags Category
-// @Accept json
+// @Accept multipart/form-data
 // @Produce json
 // @Security ApiKeyAuth
-// @Param Category body entity.Names true "Category data"
-// @Success 201 {object} products.Category
-// @Failure 400 {object} entity.Error
-// @Failure 500 {object} entity.Error
+// @Param file formData file false "Upload category image (optional)"
+// @Param name formData string true "Name of the category"
+// @Success 201 {object} products.Category "Category successfully created"
+// @Failure 400 {object} entity.Error "Invalid input or bad request"
+// @Failure 500 {object} entity.Error "Internal server error"
 // @Router /products/category [post]
 func (h *Handler) CreateCategory(c *gin.Context) {
 
 	req := entity.Names{}
 
-	// Bind the JSON request to the struct
-	if err := c.ShouldBindJSON(&req); err != nil {
-		h.log.Error("Invalid request data", "error", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
+	if err := c.ShouldBind(&req); err != nil {
+		h.log.Error("bind json err", "error", err)
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request", "error": err.Error()})
 		return
 	}
 
-	res, err := h.ProductClient.CreateCategory(c, &products.CreateCategoryRequest{Name: req.Name, CreatedBy: c.MustGet("id").(string)})
+	var url string
+	file, err := c.FormFile("file")
+	if err == nil {
+		url, err = minio.UploadMedia(file)
+		if err != nil {
+			log.Println("Error occurred while uploading file")
+			h.log.Error("Error occurred while uploading file:", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	} else {
+		url = "no image"
+		log.Println("No file uploaded, continuing without an image")
+	}
+
+	res, err := h.ProductClient.CreateCategory(c, &products.CreateCategoryRequest{Name: req.Name, CreatedBy: c.MustGet("id").(string), ImageUrl: url})
 	if err != nil {
 		h.log.Error("Error creating category", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

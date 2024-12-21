@@ -3,6 +3,7 @@ package main
 import (
 	"gateway/config"
 	api "gateway/internal/api"
+	"gateway/internal/minio"
 	"log"
 	"os"
 
@@ -16,6 +17,11 @@ func main() {
 		log.Fatal(err)
 	}
 	casbinEnforcer, err := casbin.NewEnforcer(path+"/internal/casbin/model.conf", path+"/internal/casbin/policy.csv")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = minio.InitMiniOClient()
 	if err != nil {
 		log.Fatal(err)
 	}
