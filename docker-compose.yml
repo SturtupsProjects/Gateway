@@ -8,14 +8,9 @@ services:
       - CRMNet
     ports:
       - 1677:1677
-
-  product:
-    image: product
-    container_name: product
-    networks:
-      - CRMNet
-    ports:
-      - "8070:8070"
+    depends_on:
+      product:
+        condition: service_started
 
 networks:
   CRMNet:
