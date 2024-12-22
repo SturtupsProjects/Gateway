@@ -13,15 +13,15 @@ type Error struct {
 }
 
 type Names struct {
-	Name string `json:"name" binding:"required" example:"Electronics"`
+	Name string `json:"name" binding:"required" example:"Electronics" form:"name"`
 }
 
 type CreateProductRequest struct {
-	CategoryID    string `json:"category_id"`
-	Name          string `json:"name"`
-	BillFormat    string `json:"bill_format"`
-	IncomingPrice int64  `json:"incoming_price"`
-	StandardPrice int64  `json:"standard_price"`
+	CategoryID    string `json:"category_id" form:"category_id"`
+	Name          string `json:"name" form:"name"`
+	BillFormat    string `json:"bill_format" form:"bill_format"`
+	IncomingPrice int64  `json:"incoming_price" form:"incoming_price"`
+	StandardPrice int64  `json:"standard_price" form:"standard_price"`
 }
 
 type Sale struct {

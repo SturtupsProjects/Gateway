@@ -857,9 +857,9 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Create a new product with the provided details",
+                "description": "Create a new product with the provided details, including an optional file upload for the product image",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -870,30 +870,62 @@ const docTemplate = `{
                 "summary": "Create a new product",
                 "parameters": [
                     {
-                        "description": "Product data",
-                        "name": "Product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.CreateProductRequest"
-                        }
+                        "type": "file",
+                        "description": "Upload product image (optional)",
+                        "name": "file",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the product category",
+                        "name": "category_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name of the product",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Billing format of the product",
+                        "name": "bill_format",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Incoming price of the product",
+                        "name": "incoming_price",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Standard price of the product",
+                        "name": "standard_price",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "Product successfully created",
                         "schema": {
                             "$ref": "#/definitions/products.Product"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid input or bad request",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -954,9 +986,9 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Create a new product category by specifying its name",
+                "description": "Create a new product category by specifying its name and optionally uploading an image",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -967,30 +999,34 @@ const docTemplate = `{
                 "summary": "Create Product Category",
                 "parameters": [
                     {
-                        "description": "Category data",
-                        "name": "Category",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.Names"
-                        }
+                        "type": "file",
+                        "description": "Upload category image (optional)",
+                        "name": "file",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name of the category",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "Category successfully created",
                         "schema": {
                             "$ref": "#/definitions/products.Category"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid input or bad request",
                         "schema": {
                             "$ref": "#/definitions/entity.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/entity.Error"
                         }
@@ -2232,26 +2268,6 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.CreateProductRequest": {
-            "type": "object",
-            "properties": {
-                "bill_format": {
-                    "type": "string"
-                },
-                "category_id": {
-                    "type": "string"
-                },
-                "incoming_price": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "standard_price": {
-                    "type": "integer"
-                }
-            }
-        },
         "entity.CreateUserToCompanyRequest": {
             "type": "object",
             "properties": {
@@ -2284,18 +2300,6 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string"
-                }
-            }
-        },
-        "entity.Names": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "example": "Electronics"
                 }
             }
         },

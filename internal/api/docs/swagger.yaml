@@ -53,19 +53,6 @@ definitions:
       website:
         type: string
     type: object
-  entity.CreateProductRequest:
-    properties:
-      bill_format:
-        type: string
-      category_id:
-        type: string
-      incoming_price:
-        type: integer
-      name:
-        type: string
-      standard_price:
-        type: integer
-    type: object
   entity.CreateUserToCompanyRequest:
     properties:
       email:
@@ -88,14 +75,6 @@ definitions:
     properties:
       message:
         type: string
-    type: object
-  entity.Names:
-    properties:
-      name:
-        example: Electronics
-        type: string
-    required:
-    - name
     type: object
   entity.Purchase:
     properties:
@@ -972,28 +951,52 @@ paths:
       - Products
     post:
       consumes:
-      - application/json
-      description: Create a new product with the provided details
+      - multipart/form-data
+      description: Create a new product with the provided details, including an optional
+        file upload for the product image
       parameters:
-      - description: Product data
-        in: body
-        name: Product
+      - description: Upload product image (optional)
+        in: formData
+        name: file
+        type: file
+      - description: ID of the product category
+        in: formData
+        name: category_id
         required: true
-        schema:
-          $ref: '#/definitions/entity.CreateProductRequest'
+        type: string
+      - description: Name of the product
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Billing format of the product
+        in: formData
+        name: bill_format
+        required: true
+        type: string
+      - description: Incoming price of the product
+        in: formData
+        name: incoming_price
+        required: true
+        type: integer
+      - description: Standard price of the product
+        in: formData
+        name: standard_price
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
         "201":
-          description: Created
+          description: Product successfully created
           schema:
             $ref: '#/definitions/products.Product'
         "400":
-          description: Bad Request
+          description: Invalid input or bad request
           schema:
             $ref: '#/definitions/products.Error'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
             $ref: '#/definitions/products.Error'
       security:
@@ -1130,28 +1133,32 @@ paths:
       - Category
     post:
       consumes:
-      - application/json
-      description: Create a new product category by specifying its name
+      - multipart/form-data
+      description: Create a new product category by specifying its name and optionally
+        uploading an image
       parameters:
-      - description: Category data
-        in: body
-        name: Category
+      - description: Upload category image (optional)
+        in: formData
+        name: file
+        type: file
+      - description: Name of the category
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/entity.Names'
+        type: string
       produces:
       - application/json
       responses:
         "201":
-          description: Created
+          description: Category successfully created
           schema:
             $ref: '#/definitions/products.Category'
         "400":
-          description: Bad Request
+          description: Invalid input or bad request
           schema:
             $ref: '#/definitions/entity.Error'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
             $ref: '#/definitions/entity.Error'
       security:
