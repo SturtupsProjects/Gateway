@@ -1,4 +1,40 @@
 definitions:
+  company.CompanyResponse:
+    properties:
+      company_id:
+        type: string
+      created_at:
+        type: string
+      logo:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+      website:
+        type: string
+    type: object
+  company.ListCompanyUsersResponse:
+    properties:
+      users:
+        items:
+          $ref: '#/definitions/company.UserResponse'
+        type: array
+    type: object
+  company.Message:
+    properties:
+      message:
+        type: string
+    type: object
+  company.UserResponse:
+    properties:
+      name:
+        type: string
+      role:
+        type: string
+      user_id:
+        type: string
+    type: object
   entity.Client:
     properties:
       address:
@@ -6,6 +42,15 @@ definitions:
       full_name:
         type: string
       phone:
+        type: string
+    type: object
+  entity.CreateCompanyRequest:
+    properties:
+      logo:
+        type: string
+      name:
+        type: string
+      website:
         type: string
     type: object
   entity.CreateProductRequest:
@@ -20,6 +65,24 @@ definitions:
         type: string
       standard_price:
         type: integer
+    type: object
+  entity.CreateUserToCompanyRequest:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      role:
+        default: user
+        type: string
+      username:
+        type: string
     type: object
   entity.Error:
     properties:
@@ -82,6 +145,15 @@ definitions:
       total_price:
         type: number
     type: object
+  entity.UpdateCompanyRequest:
+    properties:
+      logo:
+        type: string
+      name:
+        type: string
+      website:
+        type: string
+    type: object
   entity.UserUpdateRequest:
     properties:
       email:
@@ -104,6 +176,8 @@ definitions:
       created_by:
         type: string
       id:
+        type: string
+      image_url:
         type: string
       name:
         type: string
@@ -136,6 +210,8 @@ definitions:
       created_by:
         type: string
       id:
+        type: string
+      image_url:
         type: string
       incoming_price:
         type: integer
@@ -278,6 +354,8 @@ definitions:
         type: string
       id:
         type: string
+      image_url:
+        type: string
       incoming_price:
         type: integer
       name:
@@ -342,6 +420,8 @@ definitions:
     type: object
   user.UserResponse:
     properties:
+      company_id:
+        type: string
       created_at:
         type: string
       email:
@@ -532,6 +612,326 @@ paths:
       summary: Update an existing client
       tags:
       - Clients
+  /companies:
+    get:
+      consumes:
+      - application/json
+      description: Get company details by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.CompanyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get Company
+      tags:
+      - companies
+    post:
+      consumes:
+      - application/json
+      description: Create a new company
+      parameters:
+      - description: Company details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CreateCompanyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.CompanyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Create Company
+      tags:
+      - companies
+    put:
+      consumes:
+      - application/json
+      description: Update company details
+      parameters:
+      - description: Updated company details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CreateCompanyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.CompanyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Update Company
+      tags:
+      - companies
+  /companies/admin/{company_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a company by ID
+      parameters:
+      - description: Company ID
+        in: path
+        name: company_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Company
+      tags:
+      - companies/admin
+    get:
+      consumes:
+      - application/json
+      description: Get company details by ID
+      parameters:
+      - description: Company ID
+        in: path
+        name: company_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.CompanyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get Company
+      tags:
+      - companies/admin
+    put:
+      consumes:
+      - application/json
+      description: Update company details admin
+      parameters:
+      - description: Company ID
+        in: path
+        name: company_id
+        required: true
+        type: string
+      - description: Updated company details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpdateCompanyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.CompanyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Update Company
+      tags:
+      - companies/admin
+  /companies/admin/{company_id}/users:
+    get:
+      consumes:
+      - application/json
+      description: Get all users for a company
+      parameters:
+      - description: Company ID
+        in: path
+        name: company_id
+        required: true
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/company.ListCompanyUsersResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: ListCompanyUsersA
+      tags:
+      - companies/admin
+    post:
+      consumes:
+      - application/json
+      description: Create a new user for a company
+      parameters:
+      - description: Company ID
+        in: path
+        name: company_id
+        required: true
+        type: string
+      - description: Company user details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CreateUserToCompanyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.Message'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Create Company User
+      tags:
+      - companies/admin
+  /companies/all:
+    get:
+      consumes:
+      - application/json
+      description: Get all companies
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/company.CompanyResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Companies
+      tags:
+      - companies
+  /companies/users:
+    get:
+      consumes:
+      - application/json
+      description: Get all users for a company
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/company.ListCompanyUsersResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: ListCompanyUsers
+      tags:
+      - companies
+    post:
+      consumes:
+      - application/json
+      description: Create a new user for a company
+      parameters:
+      - description: Company user details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CreateUserToCompanyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.Message'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Create Company User
+      tags:
+      - companies
   /products:
     get:
       consumes:

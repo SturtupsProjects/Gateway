@@ -57,3 +57,23 @@ type Client struct {
 	Address  string `json:"address"`
 	Phone    string `json:"phone"`
 }
+
+type CreateCompanyRequest struct {
+	Name    string `json:"name"`
+	Website string `json:"website"`
+	Logo    string `json:"logo"`
+}
+type CreateUserToCompanyRequest struct {
+	FirstName   string `json:"first_name"`
+	LastName    string `json:"last_name"`
+	Username    string `json:"username"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	PhoneNumber string `json:"phone_number"`
+	Role        string `json:"role" default:"user"`
+}
+type UpdateCompanyRequest struct {
+	Name    string `json:"name"`
+	Website string `json:"website"`
+	Logo    string `json:"logo"`
+}
