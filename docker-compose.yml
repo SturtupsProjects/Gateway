@@ -8,9 +8,6 @@ services:
       - CRMNet
     ports:
       - 1677:1677
-    depends_on:
-      product:
-        condition: service_started
 
   product:
     image: product
