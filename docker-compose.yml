@@ -5,16 +5,15 @@ services:
     container_name: crm-api
     build: .
     ports:
-      - 1677:1677
+      - "1677:1677"
     networks:
       - CRMNet
-
 
 networks:
   CRMNet:
     name: CRMNet
     driver: bridge
-    external: true
+    external: true  # Ensure this network exists or change to `external: false` if you want Docker Compose to create it
 
 volumes:
-  db:
+  db:  # Remove if not required for this service
