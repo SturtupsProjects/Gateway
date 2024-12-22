@@ -1,20 +1,27 @@
-version: '3.9'
+version: "3.9"
 
 services:
   crm-api:
     container_name: crm-api
     build: .
-    ports:
-      - 1677:1677
     networks:
       - CRMNet
+    ports:
+      - 1677:1677
+    depends_on:
+      product:
+        condition: service_started
 
+  product:
+    image: product
+    container_name: product
+    networks:
+      - CRMNet
+    ports:
+      - "8070:8070"
 
 networks:
   CRMNet:
     name: CRMNet
     driver: bridge
-    external: false
-
-volumes:
-  db:
+    external: true
