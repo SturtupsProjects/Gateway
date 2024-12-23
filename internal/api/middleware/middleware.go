@@ -108,19 +108,20 @@ func PermissionMiddleware(enf *casbin.Enforcer) gin.HandlerFunc {
 }
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Set the required CORS headers
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*") // Replace * with specific domains in production
+		origin := c.Request.Header.Get("Origin")
+		if origin != "" {
+			c.Writer.Header().Set("Access-Control-Allow-Origin", origin) // Echo back the request origin
+			c.Writer.Header().Set("Vary", "Origin")                      // Avoid caching of CORS responses
+		}
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type, Origin, Accept")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true") // Enable if credentials are required
 
-		// Handle preflight request
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)
 			return
 		}
 
-		// Continue with the request
 		c.Next()
 	}
 }
