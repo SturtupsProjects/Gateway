@@ -116,3 +116,7 @@ type SaleFilter struct {
 	ClientId  string `protobuf:"bytes,3,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
 	SoldBy    string `protobuf:"bytes,4,opt,name=sold_by,json=soldBy,proto3" json:"sold_by,omitempty"`
 }
+
+type UpdateCategoryRequest struct {
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+}

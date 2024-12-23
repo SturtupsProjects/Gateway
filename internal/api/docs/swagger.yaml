@@ -142,6 +142,11 @@ definitions:
       total_price:
         type: number
     type: object
+  entity.UpdateCategoryRequest:
+    properties:
+      name:
+        type: string
+    type: object
   entity.UpdateCompanyRequest:
     properties:
       logo:
@@ -1218,6 +1223,42 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get Product Category
+      tags:
+      - Category
+    put:
+      consumes:
+      - application/json
+      description: Update a product category by ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Category data
+        in: body
+        name: Category
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpdateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.Category'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Product Category
       tags:
       - Category
   /purchases:

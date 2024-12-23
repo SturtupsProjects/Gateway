@@ -57,6 +57,54 @@ func (h *Handler) CreateCategory(c *gin.Context) {
 	c.JSON(http.StatusCreated, res)
 }
 
+// UpdateCategory godoc
+// @Summary Update Product Category
+// @Description Update a product category by ID
+// @Tags Category
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param id path string true "Category ID"
+// @Param Category body entity.UpdateCategoryRequest true "Category data"
+// @Success 200 {object} products.Category
+// @Failure 400 {object} products.Error
+// @Failure 500 {object} products.Error
+// @Router /products/category/{id} [put]
+func (h *Handler) UpdateCategory(c *gin.Context) {
+	id := c.Param("id")
+	req := &products.UpdateCategoryRequest{Id: id, CompanyId: c.MustGet("company_id").(string)}
+
+	if err := c.ShouldBindJSON(req); err != nil {
+		h.log.Error("Error parsing UpdateCategory request body", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var url string
+	file, err := c.FormFile("file")
+	if err == nil {
+		url, err = minio.UploadMedia(file)
+		if err != nil {
+			log.Println("Error occurred while uploading file")
+			h.log.Error("Error occurred while uploading file:", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	} else {
+		url = "no image"
+		log.Println("No file uploaded, continuing without an image")
+	}
+	req.ImageUrl = url
+
+	res, err := h.ProductClient.UpdateCategory(c, req)
+	if err != nil {
+		h.log.Error("Error updating category", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
 // GetCategory godoc
 // @Summary Get Product Category
 // @Description Retrieve a product category by ID

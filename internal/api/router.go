@@ -49,7 +49,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		pcategory.POST("", h.CreateCategory)
 		pcategory.GET("", h.GetListCategory)
 		pcategory.GET("/:id", h.GetCategory)
-		//pcategory.PUT("/update/:id", h.)
+		pcategory.PUT("/:id", h.UpdateCategory)
 		pcategory.DELETE("/:id", h.DeleteCategory)
 	}
 
