@@ -77,3 +77,42 @@ type UpdateCompanyRequest struct {
 	Website string `json:"website"`
 	Logo    string `json:"logo"`
 }
+
+type UpdateProductRequest struct {
+	CategoryId    string `json:"category_id,omitempty"`
+	Name          string `json:"name,omitempty"`
+	ImageUrl      string `json:"image_url,omitempty"`
+	BillFormat    string `json:"bill_format,omitempty"`
+	IncomingPrice int64  `json:"incoming_price,omitempty"`
+	StandardPrice int64  `json:"standard_price,omitempty"`
+}
+type ProductFilter struct {
+	CategoryId string `json:"category_id,omitempty"`
+	Name       string `json:"name,omitempty"`
+	CreatedAt  string `json:"created_at,omitempty"`
+}
+
+type FilterPurchase struct {
+	ProductId   string `json:"product_id,omitempty"`
+	SupplierId  string `json:"supplier_id,omitempty"`
+	PurchasedBy string `json:"purchased_by,omitempty"`
+	CreatedAt   string `json:"created_at,omitempty"`
+}
+
+type PurchaseUpdate struct {
+	Id            string `json:"id,omitempty"`
+	SupplierId    string `json:"supplier_id,omitempty"`
+	Description   string `json:"description,omitempty"`
+	PaymentMethod string `json:"payment_method,omitempty"`
+}
+
+type SaleUpdate struct {
+	ClientId      string `json:"client_id,omitempty"`
+	PaymentMethod string `json:"payment_method,omitempty"`
+}
+type SaleFilter struct {
+	StartDate string `protobuf:"bytes,1,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
+	EndDate   string `protobuf:"bytes,2,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
+	ClientId  string `protobuf:"bytes,3,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	SoldBy    string `protobuf:"bytes,4,opt,name=sold_by,json=soldBy,proto3" json:"sold_by,omitempty"`
+}

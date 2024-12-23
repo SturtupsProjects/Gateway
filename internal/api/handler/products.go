@@ -52,7 +52,7 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 	}
 
 	res, err := h.ProductClient.CreateProduct(c, &products.CreateProductRequest{CreatedBy: c.MustGet("id").(string), CategoryId: req.CategoryID, Name: req.Name,
-		BillFormat: req.BillFormat, IncomingPrice: req.IncomingPrice, StandardPrice: req.StandardPrice, ImageUrl: url})
+		BillFormat: req.BillFormat, IncomingPrice: req.IncomingPrice, StandardPrice: req.StandardPrice, ImageUrl: url, CompanyId: c.MustGet("company_id").(string)})
 	if err != nil {
 		h.log.Error("Error creating product", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -70,7 +70,7 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param id path string true "Product ID"
-// @Param Product body products.UpdateProductRequest true "Updated product data"
+// @Param Product body entity.UpdateProductRequest true "Updated product data"
 // @Success 200 {object} products.Product
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -85,6 +85,7 @@ func (h *Handler) UpdateProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	req.CompanyId = c.MustGet("company_id").(string)
 
 	res, err := h.ProductClient.UpdateProduct(c, &req)
 	if err != nil {
@@ -110,7 +111,7 @@ func (h *Handler) UpdateProduct(c *gin.Context) {
 // @Router /products/{id} [delete]
 func (h *Handler) DeleteProduct(c *gin.Context) {
 	id := c.Param("id")
-	req := &products.GetProductRequest{Id: id}
+	req := &products.GetProductRequest{Id: id, CompanyId: c.MustGet("company_id").(string)}
 
 	res, err := h.ProductClient.DeleteProduct(c, req)
 	if err != nil {
@@ -136,7 +137,7 @@ func (h *Handler) DeleteProduct(c *gin.Context) {
 // @Router /products/{id} [get]
 func (h *Handler) GetProduct(c *gin.Context) {
 	id := c.Param("id")
-	req := &products.GetProductRequest{Id: id}
+	req := &products.GetProductRequest{Id: id, CompanyId: c.MustGet("company_id").(string)}
 
 	res, err := h.ProductClient.GetProduct(c, req)
 	if err != nil {
@@ -155,7 +156,7 @@ func (h *Handler) GetProduct(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param filter query products.ProductFilter false "Filter parameters"
+// @Param filter query entity.ProductFilter false "Filter parameters"
 // @Success 200 {object} products.ProductList
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -168,6 +169,8 @@ func (h *Handler) GetProductList(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	filter.CreatedBy = c.MustGet("id").(string)
+	filter.CompanyId = c.MustGet("company_id").(string)
 
 	res, err := h.ProductClient.GetProductList(c, &filter)
 	if err != nil {

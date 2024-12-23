@@ -27,19 +27,19 @@ type ProductsClient interface {
 	DeleteCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*Message, error)
 	GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*Category, error)
 	GetListCategory(ctx context.Context, in *CategoryName, opts ...grpc.CallOption) (*CategoryList, error)
-	// ------------- Products ---------------------------------------
+	// ------------- Products -----------------------------------
 	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*Product, error)
 	UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*Product, error)
 	DeleteProduct(ctx context.Context, in *GetProductRequest, opts ...grpc.CallOption) (*Message, error)
 	GetProduct(ctx context.Context, in *GetProductRequest, opts ...grpc.CallOption) (*Product, error)
 	GetProductList(ctx context.Context, in *ProductFilter, opts ...grpc.CallOption) (*ProductList, error)
-	// -------------- Purchase --------------------------------------
+	// -------------- Purchases ---------------------------------
 	CreatePurchase(ctx context.Context, in *PurchaseRequest, opts ...grpc.CallOption) (*PurchaseResponse, error)
 	GetPurchase(ctx context.Context, in *PurchaseID, opts ...grpc.CallOption) (*PurchaseResponse, error)
 	GetListPurchase(ctx context.Context, in *FilterPurchase, opts ...grpc.CallOption) (*PurchaseList, error)
 	UpdatePurchase(ctx context.Context, in *PurchaseUpdate, opts ...grpc.CallOption) (*PurchaseResponse, error)
 	DeletePurchase(ctx context.Context, in *PurchaseID, opts ...grpc.CallOption) (*Message, error)
-	// ------------------ Sales --------------------------------------
+	// ------------------ Sales ---------------------------------
 	CalculateTotalSales(ctx context.Context, in *SaleRequest, opts ...grpc.CallOption) (*SaleResponse, error)
 	CreateSales(ctx context.Context, in *SaleRequest, opts ...grpc.CallOption) (*SaleResponse, error)
 	UpdateSales(ctx context.Context, in *SaleUpdate, opts ...grpc.CallOption) (*SaleResponse, error)
@@ -245,19 +245,19 @@ type ProductsServer interface {
 	DeleteCategory(context.Context, *GetCategoryRequest) (*Message, error)
 	GetCategory(context.Context, *GetCategoryRequest) (*Category, error)
 	GetListCategory(context.Context, *CategoryName) (*CategoryList, error)
-	// ------------- Products ---------------------------------------
+	// ------------- Products -----------------------------------
 	CreateProduct(context.Context, *CreateProductRequest) (*Product, error)
 	UpdateProduct(context.Context, *UpdateProductRequest) (*Product, error)
 	DeleteProduct(context.Context, *GetProductRequest) (*Message, error)
 	GetProduct(context.Context, *GetProductRequest) (*Product, error)
 	GetProductList(context.Context, *ProductFilter) (*ProductList, error)
-	// -------------- Purchase --------------------------------------
+	// -------------- Purchases ---------------------------------
 	CreatePurchase(context.Context, *PurchaseRequest) (*PurchaseResponse, error)
 	GetPurchase(context.Context, *PurchaseID) (*PurchaseResponse, error)
 	GetListPurchase(context.Context, *FilterPurchase) (*PurchaseList, error)
 	UpdatePurchase(context.Context, *PurchaseUpdate) (*PurchaseResponse, error)
 	DeletePurchase(context.Context, *PurchaseID) (*Message, error)
-	// ------------------ Sales --------------------------------------
+	// ------------------ Sales ---------------------------------
 	CalculateTotalSales(context.Context, *SaleRequest) (*SaleResponse, error)
 	CreateSales(context.Context, *SaleRequest) (*SaleResponse, error)
 	UpdateSales(context.Context, *SaleUpdate) (*SaleResponse, error)

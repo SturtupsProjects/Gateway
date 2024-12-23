@@ -821,11 +821,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "name": "created_by",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
                         "name": "name",
                         "in": "query"
                     }
@@ -1209,7 +1204,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/products.UpdateProductRequest"
+                            "$ref": "#/definitions/entity.UpdateProductRequest"
                         }
                     }
                 ],
@@ -1472,7 +1467,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/products.PurchaseUpdate"
+                            "$ref": "#/definitions/entity.PurchaseUpdate"
                         }
                     }
                 ],
@@ -1630,7 +1625,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/products.SaleRequest"
+                            "$ref": "#/definitions/entity.Sale"
                         }
                     }
                 ],
@@ -1786,7 +1781,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/products.SaleUpdate"
+                            "$ref": "#/definitions/entity.SaleUpdate"
                         }
                     }
                 ],
@@ -2337,6 +2332,23 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.PurchaseUpdate": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "payment_method": {
+                    "type": "string"
+                },
+                "supplier_id": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Sale": {
             "type": "object",
             "properties": {
@@ -2351,6 +2363,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/entity.SalesItem"
                     }
+                }
+            }
+        },
+        "entity.SaleUpdate": {
+            "type": "object",
+            "properties": {
+                "client_id": {
+                    "type": "string"
+                },
+                "payment_method": {
+                    "type": "string"
                 }
             }
         },
@@ -2391,6 +2414,29 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.UpdateProductRequest": {
+            "type": "object",
+            "properties": {
+                "bill_format": {
+                    "type": "string"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "incoming_price": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "standard_price": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.UserUpdateRequest": {
             "type": "object",
             "properties": {
@@ -2417,6 +2463,10 @@ const docTemplate = `{
         "products.Category": {
             "type": "object",
             "properties": {
+                "company_id": {
+                    "description": "Company ID added",
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -2468,6 +2518,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "category_id": {
+                    "type": "string"
+                },
+                "company_id": {
+                    "description": "Company ID added",
                     "type": "string"
                 },
                 "created_at": {
@@ -2544,6 +2598,10 @@ const docTemplate = `{
         "products.PurchaseResponse": {
             "type": "object",
             "properties": {
+                "company_id": {
+                    "description": "Company ID added",
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -2573,23 +2631,6 @@ const docTemplate = `{
                 }
             }
         },
-        "products.PurchaseUpdate": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "payment_method": {
-                    "type": "string"
-                },
-                "supplier_id": {
-                    "type": "string"
-                }
-            }
-        },
         "products.SaleList": {
             "type": "object",
             "properties": {
@@ -2601,30 +2642,14 @@ const docTemplate = `{
                 }
             }
         },
-        "products.SaleRequest": {
-            "type": "object",
-            "properties": {
-                "client_id": {
-                    "type": "string"
-                },
-                "payment_method": {
-                    "type": "string"
-                },
-                "sold_by": {
-                    "type": "string"
-                },
-                "sold_products": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/products.SalesItem"
-                    }
-                }
-            }
-        },
         "products.SaleResponse": {
             "type": "object",
             "properties": {
                 "client_id": {
+                    "type": "string"
+                },
+                "company_id": {
+                    "description": "Company ID added",
                     "type": "string"
                 },
                 "created_at": {
@@ -2650,20 +2675,6 @@ const docTemplate = `{
                 }
             }
         },
-        "products.SaleUpdate": {
-            "type": "object",
-            "properties": {
-                "client_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "payment_method": {
-                    "type": "string"
-                }
-            }
-        },
         "products.SalesItem": {
             "type": "object",
             "properties": {
@@ -2683,32 +2694,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "total_price": {
-                    "type": "integer"
-                }
-            }
-        },
-        "products.UpdateProductRequest": {
-            "type": "object",
-            "properties": {
-                "bill_format": {
-                    "type": "string"
-                },
-                "category_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "image_url": {
-                    "type": "string"
-                },
-                "incoming_price": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "standard_price": {
                     "type": "integer"
                 }
             }

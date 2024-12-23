@@ -98,6 +98,17 @@ definitions:
       quantity:
         type: integer
     type: object
+  entity.PurchaseUpdate:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      payment_method:
+        type: string
+      supplier_id:
+        type: string
+    type: object
   entity.Sale:
     properties:
       client_id:
@@ -108,6 +119,13 @@ definitions:
         items:
           $ref: '#/definitions/entity.SalesItem'
         type: array
+    type: object
+  entity.SaleUpdate:
+    properties:
+      client_id:
+        type: string
+      payment_method:
+        type: string
     type: object
   entity.SalesItem:
     properties:
@@ -133,6 +151,21 @@ definitions:
       website:
         type: string
     type: object
+  entity.UpdateProductRequest:
+    properties:
+      bill_format:
+        type: string
+      category_id:
+        type: string
+      image_url:
+        type: string
+      incoming_price:
+        type: integer
+      name:
+        type: string
+      standard_price:
+        type: integer
+    type: object
   entity.UserUpdateRequest:
     properties:
       email:
@@ -150,6 +183,9 @@ definitions:
     type: object
   products.Category:
     properties:
+      company_id:
+        description: Company ID added
+        type: string
       created_at:
         type: string
       created_by:
@@ -183,6 +219,9 @@ definitions:
       bill_format:
         type: string
       category_id:
+        type: string
+      company_id:
+        description: Company ID added
         type: string
       created_at:
         type: string
@@ -232,6 +271,9 @@ definitions:
     type: object
   products.PurchaseResponse:
     properties:
+      company_id:
+        description: Company ID added
+        type: string
       created_at:
         type: string
       description:
@@ -251,17 +293,6 @@ definitions:
       total_cost:
         type: integer
     type: object
-  products.PurchaseUpdate:
-    properties:
-      description:
-        type: string
-      id:
-        type: string
-      payment_method:
-        type: string
-      supplier_id:
-        type: string
-    type: object
   products.SaleList:
     properties:
       sales:
@@ -269,22 +300,12 @@ definitions:
           $ref: '#/definitions/products.SaleResponse'
         type: array
     type: object
-  products.SaleRequest:
-    properties:
-      client_id:
-        type: string
-      payment_method:
-        type: string
-      sold_by:
-        type: string
-      sold_products:
-        items:
-          $ref: '#/definitions/products.SalesItem'
-        type: array
-    type: object
   products.SaleResponse:
     properties:
       client_id:
+        type: string
+      company_id:
+        description: Company ID added
         type: string
       created_at:
         type: string
@@ -301,15 +322,6 @@ definitions:
       total_sale_price:
         type: integer
     type: object
-  products.SaleUpdate:
-    properties:
-      client_id:
-        type: string
-      id:
-        type: string
-      payment_method:
-        type: string
-    type: object
   products.SalesItem:
     properties:
       id:
@@ -323,23 +335,6 @@ definitions:
       sale_price:
         type: integer
       total_price:
-        type: integer
-    type: object
-  products.UpdateProductRequest:
-    properties:
-      bill_format:
-        type: string
-      category_id:
-        type: string
-      id:
-        type: string
-      image_url:
-        type: string
-      incoming_price:
-        type: integer
-      name:
-        type: string
-      standard_price:
         type: integer
     type: object
   user.ClientListResponse:
@@ -924,9 +919,6 @@ paths:
         name: created_at
         type: string
       - in: query
-        name: created_by
-        type: string
-      - in: query
         name: name
         type: string
       produces:
@@ -1080,7 +1072,7 @@ paths:
         name: Product
         required: true
         schema:
-          $ref: '#/definitions/products.UpdateProductRequest'
+          $ref: '#/definitions/entity.UpdateProductRequest'
       produces:
       - application/json
       responses:
@@ -1372,7 +1364,7 @@ paths:
         name: Purchase
         required: true
         schema:
-          $ref: '#/definitions/products.PurchaseUpdate'
+          $ref: '#/definitions/entity.PurchaseUpdate'
       produces:
       - application/json
       responses:
@@ -1441,7 +1433,7 @@ paths:
         name: Sale
         required: true
         schema:
-          $ref: '#/definitions/products.SaleRequest'
+          $ref: '#/definitions/entity.Sale'
       produces:
       - application/json
       responses:
@@ -1538,7 +1530,7 @@ paths:
         name: Sale
         required: true
         schema:
-          $ref: '#/definitions/products.SaleUpdate'
+          $ref: '#/definitions/entity.SaleUpdate'
       produces:
       - application/json
       responses:

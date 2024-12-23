@@ -27,6 +27,7 @@ func (h *Handler) CreatePurchase(c *gin.Context) {
 		return
 	}
 	req.PurchasedBy = c.MustGet("id").(string)
+	req.CompanyId = c.MustGet("company_id").(string)
 
 	res, err := h.ProductClient.CreatePurchase(c, &req)
 	if err != nil {
@@ -52,7 +53,7 @@ func (h *Handler) CreatePurchase(c *gin.Context) {
 // @Router /purchases/{id} [get]
 func (h *Handler) GetPurchase(c *gin.Context) {
 	id := c.Param("id")
-	req := &products.PurchaseID{Id: id}
+	req := &products.PurchaseID{Id: id, CompanyId: c.MustGet("company_id").(string)}
 
 	res, err := h.ProductClient.GetPurchase(c, req)
 	if err != nil {
@@ -71,7 +72,7 @@ func (h *Handler) GetPurchase(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param filter query products.FilterPurchase false "Filter parameters"
+// @Param filter query entity.FilterPurchase false "Filter parameters"
 // @Success 200 {object} products.PurchaseList
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -84,6 +85,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	filter.CompanyId = c.MustGet("company_id").(string)
 
 	res, err := h.ProductClient.GetListPurchase(c, &filter)
 	if err != nil {
@@ -103,7 +105,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param id path string true "Purchase ID"
-// @Param Purchase body products.PurchaseUpdate true "Updated purchase data"
+// @Param Purchase body entity.PurchaseUpdate true "Updated purchase data"
 // @Success 200 {object} products.PurchaseResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -118,6 +120,7 @@ func (h *Handler) UpdatePurchase(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	req.CompanyId = c.MustGet("company_id").(string)
 
 	res, err := h.ProductClient.UpdatePurchase(c, &req)
 	if err != nil {
@@ -143,7 +146,7 @@ func (h *Handler) UpdatePurchase(c *gin.Context) {
 // @Router /purchases/{id} [delete]
 func (h *Handler) DeletePurchase(c *gin.Context) {
 	id := c.Param("id")
-	req := &products.PurchaseID{Id: id}
+	req := &products.PurchaseID{Id: id, CompanyId: c.MustGet("company_id").(string)}
 
 	res, err := h.ProductClient.DeletePurchase(c, req)
 	if err != nil {

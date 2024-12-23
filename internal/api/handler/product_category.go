@@ -47,7 +47,7 @@ func (h *Handler) CreateCategory(c *gin.Context) {
 		log.Println("No file uploaded, continuing without an image")
 	}
 
-	res, err := h.ProductClient.CreateCategory(c, &products.CreateCategoryRequest{Name: req.Name, CreatedBy: c.MustGet("id").(string), ImageUrl: url})
+	res, err := h.ProductClient.CreateCategory(c, &products.CreateCategoryRequest{Name: req.Name, CreatedBy: c.MustGet("id").(string), ImageUrl: url, CompanyId: c.MustGet("company_id").(string)})
 	if err != nil {
 		h.log.Error("Error creating category", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -71,7 +71,7 @@ func (h *Handler) CreateCategory(c *gin.Context) {
 // @Router /products/category/{id} [get]
 func (h *Handler) GetCategory(c *gin.Context) {
 	id := c.Param("id")
-	req := &products.GetCategoryRequest{Id: id}
+	req := &products.GetCategoryRequest{Id: id, CompanyId: c.MustGet("company_id").(string)}
 
 	res, err := h.ProductClient.GetCategory(c, req)
 	if err != nil {
@@ -98,6 +98,7 @@ func (h *Handler) GetCategory(c *gin.Context) {
 func (h *Handler) GetListCategory(c *gin.Context) {
 	var req products.CategoryName
 	req.Name = c.Query("name")
+	req.CompanyId = c.MustGet("company_id").(string)
 	//req.CreatedBy = c.MustGet("id").(string)
 	//req.CreatedBy = uuid.New().String()
 	// Call the ProductClient to get the list of categories
@@ -126,7 +127,7 @@ func (h *Handler) GetListCategory(c *gin.Context) {
 // @Router /products/category/{id} [delete]
 func (h *Handler) DeleteCategory(c *gin.Context) {
 	id := c.Param("id")
-	req := &products.GetCategoryRequest{Id: id}
+	req := &products.GetCategoryRequest{Id: id, CompanyId: c.MustGet("company_id").(string)}
 
 	res, err := h.ProductClient.DeleteCategory(c, req)
 	if err != nil {

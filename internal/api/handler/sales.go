@@ -27,7 +27,7 @@ func (h *Handler) CalculateTotalSales(c *gin.Context) {
 		return
 	}
 	req.SoldBy = c.MustGet("id").(string)
-
+	req.CompanyId = c.MustGet("company_id").(string)
 	res, err := h.ProductClient.CalculateTotalSales(c, &req)
 	if err != nil {
 		h.log.Error("Error calculating total sales", "error", err.Error())
@@ -45,7 +45,7 @@ func (h *Handler) CalculateTotalSales(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param Sale body products.SaleRequest true "Sale data"
+// @Param Sale body entity.Sale true "Sale data"
 // @Success 201 {object} products.SaleResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -61,6 +61,7 @@ func (h *Handler) CreateSales(c *gin.Context) {
 
 	id := c.MustGet("id").(string)
 	req.SoldBy = id
+	req.CompanyId = c.MustGet("company_id").(string)
 
 	res, err := h.ProductClient.CreateSales(c, &req)
 	if err != nil {
@@ -80,14 +81,14 @@ func (h *Handler) CreateSales(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param id path string true "Sale ID"
-// @Param Sale body products.SaleUpdate true "Updated sale data"
+// @Param Sale body entity.SaleUpdate true "Updated sale data"
 // @Success 200 {object} products.SaleResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
 // @Router /sales/{id} [put]
 func (h *Handler) UpdateSales(c *gin.Context) {
-	id := c.Param("id")
 	var req products.SaleUpdate
+	id := c.Param("id")
 	req.Id = id
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -96,6 +97,7 @@ func (h *Handler) UpdateSales(c *gin.Context) {
 		return
 	}
 
+	req.CompanyId = c.MustGet("company_id").(string)
 	res, err := h.ProductClient.UpdateSales(c, &req)
 	if err != nil {
 		h.log.Error("Error updating sale", "error", err.Error())
@@ -120,7 +122,7 @@ func (h *Handler) UpdateSales(c *gin.Context) {
 // @Router /sales/{id} [get]
 func (h *Handler) GetSales(c *gin.Context) {
 	id := c.Param("id")
-	req := &products.SaleID{Id: id}
+	req := &products.SaleID{Id: id, CompanyId: c.MustGet("company_id").(string)}
 
 	res, err := h.ProductClient.GetSales(c, req)
 	if err != nil {
@@ -139,7 +141,7 @@ func (h *Handler) GetSales(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param filter query products.SaleFilter false "Filter parameters"
+// @Param filter query entity.SaleFilter false "Filter parameters"
 // @Success 200 {object} products.SaleList
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -152,6 +154,7 @@ func (h *Handler) GetListSales(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	filter.CompanyId = c.MustGet("company_id").(string)
 
 	res, err := h.ProductClient.GetListSales(c, &filter)
 	if err != nil {
@@ -177,7 +180,7 @@ func (h *Handler) GetListSales(c *gin.Context) {
 // @Router /sales/{id} [delete]
 func (h *Handler) DeleteSales(c *gin.Context) {
 	id := c.Param("id")
-	req := &products.SaleID{Id: id}
+	req := &products.SaleID{Id: id, CompanyId: c.MustGet("company_id").(string)}
 
 	res, err := h.ProductClient.DeleteSales(c, req)
 	if err != nil {
