@@ -358,7 +358,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
+            }
+        },
+        "/companies/admin": {
             "post": {
                 "security": [
                     {
@@ -373,7 +375,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "companies"
+                    "Admin Companies"
                 ],
                 "summary": "Create Company",
                 "parameters": [
@@ -403,6 +405,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/companies/admin/all": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all companies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Companies"
+                ],
+                "summary": "Get All Companies",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/company.CompanyResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/companies/admin/{company_id}": {
             "get": {
                 "security": [
@@ -418,7 +471,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "companies/admin"
+                    "Admin Companies"
                 ],
                 "summary": "Get Company",
                 "parameters": [
@@ -459,7 +512,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "companies/admin"
+                    "Admin Companies"
                 ],
                 "summary": "Update Company",
                 "parameters": [
@@ -509,7 +562,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "companies/admin"
+                    "Admin Companies"
                 ],
                 "summary": "Delete Company",
                 "parameters": [
@@ -552,7 +605,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "companies/admin"
+                    "Admin Companies"
                 ],
                 "summary": "ListCompanyUsersA",
                 "parameters": [
@@ -608,7 +661,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "companies/admin"
+                    "Admin Companies"
                 ],
                 "summary": "Create Company User",
                 "parameters": [
@@ -634,57 +687,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/company.Message"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/companies/all": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get all companies",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "companies"
-                ],
-                "summary": "Get All Companies",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Page",
-                        "name": "page",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/company.CompanyResponse"
-                            }
                         }
                     },
                     "400": {

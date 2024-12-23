@@ -607,33 +607,6 @@ paths:
       summary: Get Company
       tags:
       - companies
-    post:
-      consumes:
-      - application/json
-      description: Create a new company
-      parameters:
-      - description: Company details
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/entity.CreateCompanyRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/company.CompanyResponse'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: Create Company
-      tags:
-      - companies
     put:
       consumes:
       - application/json
@@ -661,6 +634,34 @@ paths:
       summary: Update Company
       tags:
       - companies
+  /companies/admin:
+    post:
+      consumes:
+      - application/json
+      description: Create a new company
+      parameters:
+      - description: Company details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CreateCompanyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.CompanyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Create Company
+      tags:
+      - Admin Companies
   /companies/admin/{company_id}:
     delete:
       consumes:
@@ -687,7 +688,7 @@ paths:
       - ApiKeyAuth: []
       summary: Delete Company
       tags:
-      - companies/admin
+      - Admin Companies
     get:
       consumes:
       - application/json
@@ -713,7 +714,7 @@ paths:
       - ApiKeyAuth: []
       summary: Get Company
       tags:
-      - companies/admin
+      - Admin Companies
     put:
       consumes:
       - application/json
@@ -745,7 +746,7 @@ paths:
       - ApiKeyAuth: []
       summary: Update Company
       tags:
-      - companies/admin
+      - Admin Companies
   /companies/admin/{company_id}/users:
     get:
       consumes:
@@ -782,7 +783,7 @@ paths:
       - ApiKeyAuth: []
       summary: ListCompanyUsersA
       tags:
-      - companies/admin
+      - Admin Companies
     post:
       consumes:
       - application/json
@@ -814,8 +815,8 @@ paths:
       - ApiKeyAuth: []
       summary: Create Company User
       tags:
-      - companies/admin
-  /companies/all:
+      - Admin Companies
+  /companies/admin/all:
     get:
       consumes:
       - application/json
@@ -846,7 +847,7 @@ paths:
       - ApiKeyAuth: []
       summary: Get All Companies
       tags:
-      - companies
+      - Admin Companies
   /companies/users:
     get:
       consumes:

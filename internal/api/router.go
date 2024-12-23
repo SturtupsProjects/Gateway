@@ -95,18 +95,21 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	}
 	company := router.Group("/companies")
 	{
-		company.POST("/", h.CreateCompany)
-		company.GET("/", h.GetCompany)
+		// admin
+		company.POST("/admin", h.CreateCompanyA)
 		company.GET("/admin/:company_id", h.GetCompanyA)
-		company.PUT("/", h.UpdateCompany)
 		company.PUT("/admin/:company_id", h.UpdateCompanyA)
-		//company.DELETE("/:company_id", h.DeleteCompany)
 		company.DELETE("/admin/:company_id", h.DeleteCompanyA)
-		company.GET("/all", h.GetAllCompanies)
-		company.GET("/users", h.ListCompanyUsers)
+		company.GET("/admin/all", h.GetAllCompaniesA)
 		company.GET("/admin/:company_id/users", h.ListCompanyUsersA)
-		company.POST("/users", h.CreateCompanyUser)
 		company.POST("/admin/:company_id/users", h.CreateCompanyUserA)
+
+		// user
+		company.GET("/", h.GetCompany)
+		company.PUT("/", h.UpdateCompany)
+		company.GET("/users", h.ListCompanyUsers)
+		company.POST("/users", h.CreateCompanyUser)
+
 	}
 	// Return the configured router
 	return router

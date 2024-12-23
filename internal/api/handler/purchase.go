@@ -3,6 +3,7 @@ package handler
 import (
 	"gateway/internal/generated/products"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -28,6 +29,8 @@ func (h *Handler) CreatePurchase(c *gin.Context) {
 	}
 	req.PurchasedBy = c.MustGet("id").(string)
 	req.CompanyId = c.MustGet("company_id").(string)
+
+	log.Println(req.CompanyId)
 
 	res, err := h.ProductClient.CreatePurchase(c, &req)
 	if err != nil {

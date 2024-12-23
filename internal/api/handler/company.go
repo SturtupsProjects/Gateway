@@ -12,15 +12,15 @@ import (
 
 // @Summary Create Company
 // @Description Create a new company
-// @Tags companies
+// @Tags Admin Companies
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
 // @Param input body entity.CreateCompanyRequest true "Company details"
 // @Success 200 {object} company.CompanyResponse
 // @Failure 400 {object} string
-// @Router /companies [post]
-func (h *Handler) CreateCompany(c *gin.Context) {
+// @Router /companies/admin [post]
+func (h *Handler) CreateCompanyA(c *gin.Context) {
 	var req entity.CreateCompanyRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -61,7 +61,7 @@ func (h *Handler) GetCompany(c *gin.Context) {
 
 // @Summary Get Company
 // @Description Get company details by ID
-// @Tags companies/admin
+// @Tags Admin Companies
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
@@ -113,7 +113,7 @@ func (h *Handler) UpdateCompany(c *gin.Context) {
 
 // @Summary Update Company
 // @Description Update company details admin
-// @Tags companies/admin
+// @Tags Admin Companies
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
@@ -166,7 +166,7 @@ func (h *Handler) UpdateCompanyA(c *gin.Context) {
 
 // @Summary Delete Company
 // @Description Delete a company by ID
-// @Tags companies/admin
+// @Tags Admin Companies
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
@@ -192,7 +192,7 @@ func (h *Handler) DeleteCompanyA(c *gin.Context) {
 
 // @Summary Get All Companies
 // @Description Get all companies
-// @Tags companies
+// @Tags Admin Companies
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
@@ -200,8 +200,8 @@ func (h *Handler) DeleteCompanyA(c *gin.Context) {
 // @Param page query string false "Page"
 // @Success 200 {object} []company.CompanyResponse
 // @Failure 400 {object} string
-// @Router /companies/all [get]
-func (h *Handler) GetAllCompanies(c *gin.Context) {
+// @Router /companies/admin/all [get]
+func (h *Handler) GetAllCompaniesA(c *gin.Context) {
 	limit := c.Query("limit")
 	page := c.Query("page")
 	if limit == "" {
@@ -280,7 +280,7 @@ func (h *Handler) ListCompanyUsers(c *gin.Context) {
 
 // @Summary ListCompanyUsersA
 // @Description Get all users for a company
-// @Tags companies/admin
+// @Tags Admin Companies
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
@@ -347,7 +347,7 @@ func (h *Handler) CreateCompanyUser(c *gin.Context) {
 
 // @Summary Create Company User
 // @Description Create a new user for a company
-// @Tags companies/admin
+// @Tags Admin Companies
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
