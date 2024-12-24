@@ -62,3 +62,8 @@ time=2024-12-23T22:50:01.795+05:00 level=ERROR msg="Error creating purchase" err
 time=2024-12-23T22:52:50.300+05:00 level=ERROR msg="Error creating purchase" error="rpc error: code = Internal desc = Failed to create purchase: error creating purchase: pq: invalid input syntax for type uuid: \"\""
 time=2024-12-24T12:42:24.246+05:00 level=ERROR msg="Error parsing UpdateCategory request body" error="invalid character '-' in numeric literal"
 time=2024-12-24T12:44:43.416+05:00 level=ERROR msg="Error updating category" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2024-12-24T17:11:04.837+05:00 level=ERROR msg="Error updating category" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2024-12-24T17:11:54.875+05:00 level=ERROR msg="Error updating category" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2024-12-24T17:12:01.271+05:00 level=ERROR msg="Error updating category" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2024-12-24T17:12:14.968+05:00 level=ERROR msg="Error updating category" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2024-12-24T17:13:22.301+05:00 level=ERROR msg="Error updating category" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"

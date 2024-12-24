@@ -74,15 +74,16 @@ func (h *Handler) UpdateCategory(c *gin.Context) {
 	id := c.Param("id")
 	req := &products.UpdateCategoryRequest{Id: id, CompanyId: c.MustGet("company_id").(string)}
 
-	var name struct {
-		name string `form:"name"`
-	}
+	name := entity.Names{}
 
 	if err := c.ShouldBind(&name); err != nil {
 		h.log.Error("Error parsing UpdateCategory request body", "error", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	log.Println(name.Name)
+
 	var url string
 	file, err := c.FormFile("file")
 	if err == nil {
@@ -98,7 +99,7 @@ func (h *Handler) UpdateCategory(c *gin.Context) {
 	}
 
 	req.ImageUrl = url
-	req.Name = name.name
+	req.Name = name.Name
 
 	res, err := h.ProductClient.UpdateCategory(c, req)
 	if err != nil {
