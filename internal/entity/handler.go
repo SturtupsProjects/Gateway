@@ -120,3 +120,11 @@ type SaleFilter struct {
 type UpdateCategoryRequest struct {
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 }
+
+type UpdateProductForm struct {
+	Name          string `form:"name" binding:"required"`                   // Name of the product
+	CategoryId    string `form:"category_id" binding:"required"`            // ID of the product category
+	BillFormat    string `form:"bill_format"`                               // Optional billing format
+	IncomingPrice int64  `form:"incoming_price" binding:"required,numeric"` // Incoming price of the product
+	StandardPrice int64  `form:"standard_price" binding:"required,numeric"` // Standard price of the product
+}

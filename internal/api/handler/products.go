@@ -64,29 +64,58 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 
 // UpdateProduct godoc
 // @Summary Update an existing product
-// @Description Update the details of an existing product by ID
+// @Description Update the details of an existing product by ID, with optional media upload
 // @Tags Products
-// @Accept json
+// @Accept multipart/form-data
 // @Produce json
 // @Security ApiKeyAuth
 // @Param id path string true "Product ID"
-// @Param Product body entity.UpdateProductRequest true "Updated product data"
+// @Param file formData file false "Upload product image (optional)"
+// @Param product body entity.UpdateProductRequest true "Updated product data"
 // @Success 200 {object} products.Product
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
 // @Router /products/{id} [put]
 func (h *Handler) UpdateProduct(c *gin.Context) {
 	id := c.Param("id")
+
+	prod := entity.UpdateProductForm{}
+
 	var req products.UpdateProductRequest
 	req.Id = id
+	req.CompanyId = c.MustGet("company_id").(string)
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+	// Parse the JSON body for product details
+	if err := c.ShouldBindJSON(&prod); err != nil {
 		h.log.Error("Error parsing UpdateProduct request body", "error", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	req.CompanyId = c.MustGet("company_id").(string)
 
+	var url string
+	file, err := c.FormFile("file")
+	if err == nil {
+		// Upload the media file if provided
+		url, err = minio.UploadMedia(file)
+		if err != nil {
+			h.log.Error("Error occurred while uploading file", "error", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		req.ImageUrl = url
+	} else {
+		h.log.Info("No file uploaded, continuing without an image")
+	}
+
+	req.Id = id
+	req.CategoryId = prod.CategoryId
+	req.Name = prod.Name
+	req.CompanyId = c.MustGet("company_id").(string)
+	req.BillFormat = prod.BillFormat
+	req.IncomingPrice = prod.IncomingPrice
+	req.StandardPrice = prod.StandardPrice
+
+	// Call the product service to update the product
 	res, err := h.ProductClient.UpdateProduct(c, &req)
 	if err != nil {
 		h.log.Error("Error updating product", "error", err.Error())
