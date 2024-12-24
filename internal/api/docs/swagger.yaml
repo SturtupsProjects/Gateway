@@ -151,21 +151,6 @@ definitions:
       website:
         type: string
     type: object
-  entity.UpdateProductRequest:
-    properties:
-      bill_format:
-        type: string
-      category_id:
-        type: string
-      image_url:
-        type: string
-      incoming_price:
-        type: integer
-      name:
-        type: string
-      standard_price:
-        type: integer
-    type: object
   entity.UserUpdateRequest:
     properties:
       email:
@@ -1075,12 +1060,30 @@ paths:
         in: formData
         name: file
         type: file
-      - description: Updated product data
-        in: body
-        name: product
+      - description: Name of the product
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/entity.UpdateProductRequest'
+        type: string
+      - description: Category ID
+        in: formData
+        name: category_id
+        required: true
+        type: string
+      - description: Billing format
+        in: formData
+        name: bill_format
+        type: string
+      - description: Incoming price
+        in: formData
+        name: incoming_price
+        required: true
+        type: integer
+      - description: Standard price
+        in: formData
+        name: standard_price
+        required: true
+        type: integer
       produces:
       - application/json
       responses:

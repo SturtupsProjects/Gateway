@@ -71,7 +71,11 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param id path string true "Product ID"
 // @Param file formData file false "Upload product image (optional)"
-// @Param product body entity.UpdateProductRequest true "Updated product data"
+// @Param name formData string true "Name of the product"
+// @Param category_id formData string true "Category ID"
+// @Param bill_format formData string false "Billing format"
+// @Param incoming_price formData int64 true "Incoming price"
+// @Param standard_price formData int64 true "Standard price"
 // @Success 200 {object} products.Product
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -79,15 +83,9 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 func (h *Handler) UpdateProduct(c *gin.Context) {
 	id := c.Param("id")
 
-	prod := entity.UpdateProductForm{}
-
-	var req products.UpdateProductRequest
-	req.Id = id
-	req.CompanyId = c.MustGet("company_id").(string)
-
-	// Parse the JSON body for product details
-	if err := c.ShouldBindJSON(&prod); err != nil {
-		h.log.Error("Error parsing UpdateProduct request body", "error", err.Error())
+	var form UpdateProductForm
+	if err := c.ShouldBind(&form); err != nil {
+		h.log.Error("Error binding form data", "error", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -102,18 +100,21 @@ func (h *Handler) UpdateProduct(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		req.ImageUrl = url
 	} else {
 		h.log.Info("No file uploaded, continuing without an image")
 	}
 
-	req.Id = id
-	req.CategoryId = prod.CategoryId
-	req.Name = prod.Name
-	req.CompanyId = c.MustGet("company_id").(string)
-	req.BillFormat = prod.BillFormat
-	req.IncomingPrice = prod.IncomingPrice
-	req.StandardPrice = prod.StandardPrice
+	// Build the update request
+	req := products.UpdateProductRequest{
+		Id:            id,
+		CompanyId:     c.MustGet("company_id").(string),
+		Name:          form.Name,
+		CategoryId:    form.CategoryId,
+		BillFormat:    form.BillFormat,
+		IncomingPrice: form.IncomingPrice,
+		StandardPrice: form.StandardPrice,
+		ImageUrl:      url,
+	}
 
 	// Call the product service to update the product
 	res, err := h.ProductClient.UpdateProduct(c, &req)
@@ -124,6 +125,15 @@ func (h *Handler) UpdateProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, res)
+}
+
+// UpdateProductForm defines the structure for form data binding
+type UpdateProductForm struct {
+	Name          string `form:"name" binding:"required"`                   // Name of the product
+	CategoryId    string `form:"category_id" binding:"required"`            // ID of the product category
+	BillFormat    string `form:"bill_format"`                               // Optional billing format
+	IncomingPrice int64  `form:"incoming_price" binding:"required,numeric"` // Incoming price of the product
+	StandardPrice int64  `form:"standard_price" binding:"required,numeric"` // Standard price of the product
 }
 
 // DeleteProduct godoc

@@ -1261,13 +1261,38 @@ const docTemplate = `{
                         "in": "formData"
                     },
                     {
-                        "description": "Updated product data",
-                        "name": "product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.UpdateProductRequest"
-                        }
+                        "type": "string",
+                        "description": "Name of the product",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "category_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Billing format",
+                        "name": "bill_format",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Incoming price",
+                        "name": "incoming_price",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Standard price",
+                        "name": "standard_price",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2473,29 +2498,6 @@ const docTemplate = `{
                 },
                 "website": {
                     "type": "string"
-                }
-            }
-        },
-        "entity.UpdateProductRequest": {
-            "type": "object",
-            "properties": {
-                "bill_format": {
-                    "type": "string"
-                },
-                "category_id": {
-                    "type": "string"
-                },
-                "image_url": {
-                    "type": "string"
-                },
-                "incoming_price": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "standard_price": {
-                    "type": "integer"
                 }
             }
         },
