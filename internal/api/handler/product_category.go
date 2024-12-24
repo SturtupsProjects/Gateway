@@ -65,8 +65,8 @@ func (h *Handler) CreateCategory(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param id path string true "Category ID"
-// @Param Category body entity.UpdateCategoryRequest true "Category data"
-// @Success 200 {object} products.Category
+// @Param file formData file false "Upload category image (optional)"
+// @Param name formData string true "Name of the category"// @Success 200 {object} products.Category
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
 // @Router /products/category/{id} [put]
@@ -90,7 +90,6 @@ func (h *Handler) UpdateCategory(c *gin.Context) {
 			return
 		}
 	} else {
-		url = "no image"
 		log.Println("No file uploaded, continuing without an image")
 	}
 	req.ImageUrl = url

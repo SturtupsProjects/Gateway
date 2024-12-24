@@ -142,11 +142,6 @@ definitions:
       total_price:
         type: number
     type: object
-  entity.UpdateCategoryRequest:
-    properties:
-      name:
-        type: string
-    type: object
   entity.UpdateCompanyRequest:
     properties:
       logo:
@@ -1235,19 +1230,18 @@ paths:
         name: id
         required: true
         type: string
-      - description: Category data
-        in: body
-        name: Category
+      - description: Upload category image (optional)
+        in: formData
+        name: file
+        type: file
+      - description: Name of the category
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/entity.UpdateCategoryRequest'
+        type: string
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/products.Category'
         "400":
           description: Bad Request
           schema:
