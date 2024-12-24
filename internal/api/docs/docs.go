@@ -1235,9 +1235,9 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Update the details of an existing product by ID",
+                "description": "Update the details of an existing product by ID, with optional media upload",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -1255,8 +1255,14 @@ const docTemplate = `{
                         "required": true
                     },
                     {
+                        "type": "file",
+                        "description": "Upload product image (optional)",
+                        "name": "file",
+                        "in": "formData"
+                    },
+                    {
                         "description": "Updated product data",
-                        "name": "Product",
+                        "name": "product",
                         "in": "body",
                         "required": true,
                         "schema": {

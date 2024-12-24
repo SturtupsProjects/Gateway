@@ -1062,17 +1062,22 @@ paths:
       - Products
     put:
       consumes:
-      - application/json
-      description: Update the details of an existing product by ID
+      - multipart/form-data
+      description: Update the details of an existing product by ID, with optional
+        media upload
       parameters:
       - description: Product ID
         in: path
         name: id
         required: true
         type: string
+      - description: Upload product image (optional)
+        in: formData
+        name: file
+        type: file
       - description: Updated product data
         in: body
-        name: Product
+        name: product
         required: true
         schema:
           $ref: '#/definitions/entity.UpdateProductRequest'
