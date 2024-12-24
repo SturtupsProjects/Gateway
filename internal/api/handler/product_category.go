@@ -74,7 +74,11 @@ func (h *Handler) UpdateCategory(c *gin.Context) {
 	id := c.Param("id")
 	req := &products.UpdateCategoryRequest{Id: id, CompanyId: c.MustGet("company_id").(string)}
 
-	if err := c.ShouldBindJSON(req); err != nil {
+	var name struct {
+		name string `form:"name"`
+	}
+
+	if err := c.ShouldBind(&name); err != nil {
 		h.log.Error("Error parsing UpdateCategory request body", "error", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -92,7 +96,9 @@ func (h *Handler) UpdateCategory(c *gin.Context) {
 	} else {
 		log.Println("No file uploaded, continuing without an image")
 	}
+
 	req.ImageUrl = url
+	req.Name = name.name
 
 	res, err := h.ProductClient.UpdateCategory(c, req)
 	if err != nil {
