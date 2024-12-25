@@ -1186,8 +1186,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/products/most-sold-by-day": {
-            "post": {
+        "/products/most-sold": {
+            "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -1201,18 +1201,23 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Products"
+                    "Statistics"
                 ],
                 "summary": "Get the most sold products by day",
                 "parameters": [
                     {
-                        "description": "Date Range and Company ID",
-                        "name": "MostSoldProductsRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.MostSoldProductsRequest"
-                        }
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1238,7 +1243,7 @@ const docTemplate = `{
             }
         },
         "/products/top-clients": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -1252,18 +1257,23 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Products"
+                    "Statistics"
                 ],
                 "summary": "Get top clients by value of purchases",
                 "parameters": [
                     {
-                        "description": "Date Range and Company ID",
-                        "name": "GetTopEntitiesRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.GetTopEntitiesRequest"
-                        }
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1289,7 +1299,7 @@ const docTemplate = `{
             }
         },
         "/products/top-suppliers": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -1303,18 +1313,23 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Products"
+                    "Statistics"
                 ],
                 "summary": "Get top suppliers by value of products supplied",
                 "parameters": [
                     {
-                        "description": "Date Range and Company ID",
-                        "name": "GetTopEntitiesRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.GetTopEntitiesRequest"
-                        }
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1340,7 +1355,7 @@ const docTemplate = `{
             }
         },
         "/products/total-price": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -1354,18 +1369,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Products"
+                    "Statistics"
                 ],
                 "summary": "Calculate the total price of products",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Company ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1389,7 +1395,7 @@ const docTemplate = `{
             }
         },
         "/products/total-purchased": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -1403,20 +1409,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Products"
+                    "Statistics"
                 ],
                 "summary": "Calculate the total purchase amount of products",
-                "parameters": [
-                    {
-                        "description": "Company ID",
-                        "name": "CompanyID",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/products.CompanyID"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1440,7 +1435,7 @@ const docTemplate = `{
             }
         },
         "/products/total-sold": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -1454,20 +1449,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Products"
+                    "Statistics"
                 ],
                 "summary": "Calculate the total quantity of sold products",
-                "parameters": [
-                    {
-                        "description": "Company ID",
-                        "name": "CompanyID",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/products.CompanyID"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2697,31 +2681,6 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.GetTopEntitiesRequest": {
-            "type": "object",
-            "properties": {
-                "end_date": {
-                    "type": "string"
-                },
-                "limit": {
-                    "type": "integer"
-                },
-                "start_date": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.MostSoldProductsRequest": {
-            "type": "object",
-            "properties": {
-                "end_date": {
-                    "type": "string"
-                },
-                "start_date": {
-                    "type": "string"
-                }
-            }
-        },
         "entity.Purchase": {
             "type": "object",
             "properties": {
@@ -2896,14 +2855,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/products.Category"
                     }
-                }
-            }
-        },
-        "products.CompanyID": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
                 }
             }
         },
@@ -3160,7 +3111,7 @@ const docTemplate = `{
         "products.TopEntity": {
             "type": "object",
             "properties": {
-                "name": {
+                "supplier_id": {
                     "type": "string"
                 },
                 "total_value": {
