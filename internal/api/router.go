@@ -87,8 +87,8 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	//Client routes group
 	client := router.Group("/clients")
 	{
-		client.POST("/", h.CreateClient)
-		client.GET("/", h.GetClientList)
+		client.POST("", h.CreateClient)
+		client.GET("", h.GetClientList)
 		client.GET("/:id", h.GetClient)
 		client.PUT("/:id", h.UpdateClient)
 		client.DELETE("/:id", h.DeleteClient)
@@ -105,8 +105,8 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		company.POST("/admin/:company_id/users", h.CreateCompanyUserA)
 
 		// user
-		company.GET("/", h.GetCompany)
-		company.PUT("/", h.UpdateCompany)
+		company.GET("", h.GetCompany)
+		company.PUT("", h.UpdateCompany)
 		company.GET("/users", h.ListCompanyUsers)
 		company.POST("/users", h.CreateCompanyUser)
 
