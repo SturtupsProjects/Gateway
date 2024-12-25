@@ -2512,6 +2512,9 @@ const docTemplate = `{
         "entity.UserUpdateRequest": {
             "type": "object",
             "properties": {
+                "company_id": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
