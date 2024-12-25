@@ -111,6 +111,15 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		company.POST("/users", h.CreateCompanyUser)
 
 	}
+	statics := router.Group("")
+	{
+		statics.POST("/products/total-price", h.TotalPriceOfProducts)
+		statics.POST("/products/total-sold", h.TotalSoldProducts)
+		statics.POST("/products/total-purchased", h.TotalPurchaseProducts)
+		statics.POST("/products/get-most-sold-by-day", h.GetMostSoldProductsByDay)
+		statics.POST("/products/top-clients", h.GetTopClients)
+		statics.POST("/products/top-suppliers", h.GetTopSuppliers)
+	}
 	// Return the configured router
 	return router
 }

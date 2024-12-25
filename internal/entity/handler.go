@@ -130,3 +130,13 @@ type UpdateProductForm struct {
 	IncomingPrice int64  `form:"incoming_price" binding:"required,numeric"` // Incoming price of the product
 	StandardPrice int64  `form:"standard_price" binding:"required,numeric"` // Standard price of the product
 }
+
+type MostSoldProductsRequest struct {
+	StartDate string `json:"start_date,omitempty"`
+	EndDate   string `json:"end_date,omitempty"`
+}
+type GetTopEntitiesRequest struct {
+	StartDate string `json:"start_date,omitempty"`
+	EndDate   string `json:"end_date,omitempty"`
+	Limit     int32  `json:"limit,omitempty"`
+}

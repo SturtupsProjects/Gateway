@@ -78,6 +78,22 @@ definitions:
       message:
         type: string
     type: object
+  entity.GetTopEntitiesRequest:
+    properties:
+      end_date:
+        type: string
+      limit:
+        type: integer
+      start_date:
+        type: string
+    type: object
+  entity.MostSoldProductsRequest:
+    properties:
+      end_date:
+        type: string
+      start_date:
+        type: string
+    type: object
   entity.Purchase:
     properties:
       description:
@@ -193,15 +209,50 @@ definitions:
           $ref: '#/definitions/products.Category'
         type: array
     type: object
+  products.CompanyID:
+    properties:
+      id:
+        type: string
+    type: object
+  products.DailySales:
+    properties:
+      day:
+        type: string
+      product_name:
+        type: string
+      total_quantity:
+        type: integer
+    type: object
   products.Error:
     properties:
       error:
         type: string
     type: object
+  products.GetTopEntitiesResponse:
+    properties:
+      entities:
+        items:
+          $ref: '#/definitions/products.TopEntity'
+        type: array
+    type: object
   products.Message:
     properties:
       message:
         type: string
+    type: object
+  products.MostSoldProductsResponse:
+    properties:
+      daily_sales:
+        items:
+          $ref: '#/definitions/products.DailySales'
+        type: array
+    type: object
+  products.PriceProducts:
+    properties:
+      company_id:
+        type: string
+      total_price:
+        type: integer
     type: object
   products.Product:
     properties:
@@ -325,6 +376,14 @@ definitions:
         type: integer
       total_price:
         type: integer
+    type: object
+  products.TopEntity:
+    properties:
+      name:
+        type: string
+      total_value:
+        description: Total value of products purchased
+        type: number
     type: object
   user.ClientListResponse:
     properties:
@@ -1276,6 +1335,200 @@ paths:
       summary: Update Product Category
       tags:
       - Category
+  /products/most-sold-by-day:
+    post:
+      consumes:
+      - application/json
+      description: Get a list of the most sold products between a given date range
+      parameters:
+      - description: Date Range and Company ID
+        in: body
+        name: MostSoldProductsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/entity.MostSoldProductsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.MostSoldProductsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get the most sold products by day
+      tags:
+      - Products
+  /products/top-clients:
+    post:
+      consumes:
+      - application/json
+      description: Get the top clients for a company based on their purchase value
+        in a given date range
+      parameters:
+      - description: Date Range and Company ID
+        in: body
+        name: GetTopEntitiesRequest
+        required: true
+        schema:
+          $ref: '#/definitions/entity.GetTopEntitiesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.GetTopEntitiesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get top clients by value of purchases
+      tags:
+      - Products
+  /products/top-suppliers:
+    post:
+      consumes:
+      - application/json
+      description: Get the top suppliers for a company based on the value of products
+        supplied in a given date range
+      parameters:
+      - description: Date Range and Company ID
+        in: body
+        name: GetTopEntitiesRequest
+        required: true
+        schema:
+          $ref: '#/definitions/entity.GetTopEntitiesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.GetTopEntitiesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get top suppliers by value of products supplied
+      tags:
+      - Products
+  /products/total-price:
+    post:
+      consumes:
+      - application/json
+      description: Calculate the total price of all products for a specific company
+      parameters:
+      - description: Company ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.PriceProducts'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Calculate the total price of products
+      tags:
+      - Products
+  /products/total-purchased:
+    post:
+      consumes:
+      - application/json
+      description: Calculate the total purchase amount of products for a specific
+        company
+      parameters:
+      - description: Company ID
+        in: body
+        name: CompanyID
+        required: true
+        schema:
+          $ref: '#/definitions/products.CompanyID'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.PriceProducts'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Calculate the total purchase amount of products
+      tags:
+      - Products
+  /products/total-sold:
+    post:
+      consumes:
+      - application/json
+      description: Calculate the total quantity of sold products for a specific company
+      parameters:
+      - description: Company ID
+        in: body
+        name: CompanyID
+        required: true
+        schema:
+          $ref: '#/definitions/products.CompanyID'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.PriceProducts'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Calculate the total quantity of sold products
+      tags:
+      - Products
   /purchases:
     get:
       consumes:
