@@ -7,6 +7,7 @@ type UserUpdateRequest struct {
 	Email       string `json:"email"`
 	Role        string `json:"role"`
 	Password    string `json:"password"`
+	CompanyId   string `json:"company_id"`
 }
 type Error struct {
 	Message string `json:"message"`

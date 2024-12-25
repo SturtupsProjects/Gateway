@@ -130,7 +130,7 @@ func (a *Handler) UpdateUser(c *gin.Context) {
 		PhoneNumber: req.PhoneNumber,
 		Email:       req.Email,
 		Role:        req.Role,
-		CompanyId:   c.MustGet("company_id").(string),
+		CompanyId:   req.CompanyId,
 	})
 
 	if err != nil {
