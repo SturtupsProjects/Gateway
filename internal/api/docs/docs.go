@@ -58,6 +58,11 @@ const docTemplate = `{
                         "type": "string",
                         "name": "phone",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "type",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2333,6 +2338,9 @@ const docTemplate = `{
                 },
                 "phone": {
                     "type": "string"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
@@ -2784,6 +2792,9 @@ const docTemplate = `{
                 },
                 "phone": {
                     "type": "string"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
@@ -2800,6 +2811,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }

@@ -56,6 +56,7 @@ type Client struct {
 	FullName string `json:"full_name"`
 	Address  string `json:"address"`
 	Phone    string `json:"phone"`
+	Type     string `json:"type"`
 }
 
 type CreateCompanyRequest struct {

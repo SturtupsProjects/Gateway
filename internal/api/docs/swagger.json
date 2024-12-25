@@ -50,6 +50,11 @@
                         "type": "string",
                         "name": "phone",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "type",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2325,6 +2330,9 @@
                 },
                 "phone": {
                     "type": "string"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
@@ -2776,6 +2784,9 @@
                 },
                 "phone": {
                     "type": "string"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
@@ -2792,6 +2803,9 @@
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }

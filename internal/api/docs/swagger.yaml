@@ -43,6 +43,8 @@ definitions:
         type: string
       phone:
         type: string
+      type:
+        type: string
     type: object
   entity.CreateCompanyRequest:
     properties:
@@ -337,6 +339,8 @@ definitions:
         type: string
       phone:
         type: string
+      type:
+        type: string
     type: object
   user.ClientResponse:
     properties:
@@ -347,6 +351,8 @@ definitions:
       id:
         type: string
       phone:
+        type: string
+      type:
         type: string
     type: object
   user.LogInRequest:
@@ -424,6 +430,9 @@ paths:
         type: integer
       - in: query
         name: phone
+        type: string
+      - in: query
+        name: type
         type: string
       produces:
       - application/json
