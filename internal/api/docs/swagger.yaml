@@ -78,22 +78,6 @@ definitions:
       message:
         type: string
     type: object
-  entity.GetTopEntitiesRequest:
-    properties:
-      end_date:
-        type: string
-      limit:
-        type: integer
-      start_date:
-        type: string
-    type: object
-  entity.MostSoldProductsRequest:
-    properties:
-      end_date:
-        type: string
-      start_date:
-        type: string
-    type: object
   entity.Purchase:
     properties:
       description:
@@ -208,11 +192,6 @@ definitions:
         items:
           $ref: '#/definitions/products.Category'
         type: array
-    type: object
-  products.CompanyID:
-    properties:
-      id:
-        type: string
     type: object
   products.DailySales:
     properties:
@@ -391,7 +370,7 @@ definitions:
     type: object
   products.TopEntity:
     properties:
-      name:
+      supplier_id:
         type: string
       total_value:
         description: Total value of products purchased
@@ -1347,18 +1326,22 @@ paths:
       summary: Update Product Category
       tags:
       - Category
-  /products/most-sold-by-day:
-    post:
+  /products/most-sold:
+    get:
       consumes:
       - application/json
       description: Get a list of the most sold products between a given date range
       parameters:
-      - description: Date Range and Company ID
-        in: body
-        name: MostSoldProductsRequest
+      - description: Start Date (YYYY-MM-DD)
+        in: query
+        name: start_date
         required: true
-        schema:
-          $ref: '#/definitions/entity.MostSoldProductsRequest'
+        type: string
+      - description: End Date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1378,20 +1361,24 @@ paths:
       - ApiKeyAuth: []
       summary: Get the most sold products by day
       tags:
-      - Products
+      - Statistics
   /products/top-clients:
-    post:
+    get:
       consumes:
       - application/json
       description: Get the top clients for a company based on their purchase value
         in a given date range
       parameters:
-      - description: Date Range and Company ID
-        in: body
-        name: GetTopEntitiesRequest
+      - description: Start Date (YYYY-MM-DD)
+        in: query
+        name: start_date
         required: true
-        schema:
-          $ref: '#/definitions/entity.GetTopEntitiesRequest'
+        type: string
+      - description: End Date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1411,20 +1398,24 @@ paths:
       - ApiKeyAuth: []
       summary: Get top clients by value of purchases
       tags:
-      - Products
+      - Statistics
   /products/top-suppliers:
-    post:
+    get:
       consumes:
       - application/json
       description: Get the top suppliers for a company based on the value of products
         supplied in a given date range
       parameters:
-      - description: Date Range and Company ID
-        in: body
-        name: GetTopEntitiesRequest
+      - description: Start Date (YYYY-MM-DD)
+        in: query
+        name: start_date
         required: true
-        schema:
-          $ref: '#/definitions/entity.GetTopEntitiesRequest'
+        type: string
+      - description: End Date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1444,18 +1435,12 @@ paths:
       - ApiKeyAuth: []
       summary: Get top suppliers by value of products supplied
       tags:
-      - Products
+      - Statistics
   /products/total-price:
-    post:
+    get:
       consumes:
       - application/json
       description: Calculate the total price of all products for a specific company
-      parameters:
-      - description: Company ID
-        in: path
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -1475,20 +1460,13 @@ paths:
       - ApiKeyAuth: []
       summary: Calculate the total price of products
       tags:
-      - Products
+      - Statistics
   /products/total-purchased:
-    post:
+    get:
       consumes:
       - application/json
       description: Calculate the total purchase amount of products for a specific
         company
-      parameters:
-      - description: Company ID
-        in: body
-        name: CompanyID
-        required: true
-        schema:
-          $ref: '#/definitions/products.CompanyID'
       produces:
       - application/json
       responses:
@@ -1508,19 +1486,12 @@ paths:
       - ApiKeyAuth: []
       summary: Calculate the total purchase amount of products
       tags:
-      - Products
+      - Statistics
   /products/total-sold:
-    post:
+    get:
       consumes:
       - application/json
       description: Calculate the total quantity of sold products for a specific company
-      parameters:
-      - description: Company ID
-        in: body
-        name: CompanyID
-        required: true
-        schema:
-          $ref: '#/definitions/products.CompanyID'
       produces:
       - application/json
       responses:
@@ -1540,7 +1511,7 @@ paths:
       - ApiKeyAuth: []
       summary: Calculate the total quantity of sold products
       tags:
-      - Products
+      - Statistics
   /purchases:
     get:
       consumes:
