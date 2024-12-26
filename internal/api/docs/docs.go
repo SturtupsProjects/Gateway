@@ -3029,6 +3029,9 @@ const docTemplate = `{
                 "product_id": {
                     "type": "string"
                 },
+                "product_name": {
+                    "type": "string"
+                },
                 "purchase_id": {
                     "type": "string"
                 },
@@ -3082,7 +3085,13 @@ const docTemplate = `{
                 "purchased_by": {
                     "type": "string"
                 },
+                "purchaser_phone_number": {
+                    "type": "string"
+                },
                 "supplier_id": {
+                    "type": "string"
+                },
+                "supplier_name": {
                     "type": "string"
                 },
                 "total_cost": {
@@ -3105,6 +3114,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "client_id": {
+                    "type": "string"
+                },
+                "client_name": {
+                    "type": "string"
+                },
+                "client_phone_number": {
                     "type": "string"
                 },
                 "company_id": {
@@ -3141,6 +3156,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "product_id": {
+                    "type": "string"
+                },
+                "product_name": {
                     "type": "string"
                 },
                 "quantity": {

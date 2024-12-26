@@ -2,6 +2,7 @@ package handler
 
 import (
 	"gateway/internal/generated/products"
+	"gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -90,11 +91,44 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 	}
 	filter.CompanyId = c.MustGet("company_id").(string)
 
+	// Fetch the list of purchases
 	res, err := h.ProductClient.GetListPurchase(c, &filter)
 	if err != nil {
 		h.log.Error("Error retrieving purchase list", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	// Enhance the response with additional details
+	for i, purchase := range res.Purchases {
+		// Fetch client (supplier) details
+		clientRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.SupplierId})
+		if err != nil {
+			h.log.Error("Error fetching client details", "supplier_id", purchase.SupplierId, "error", err.Error())
+			continue // Skip adding client details for this purchase
+		}
+		res.Purchases[i].SupplierName = clientRes.FullName
+
+		// Fetch user (purchaser) details for phone number
+		purchaserRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.PurchasedBy})
+		if err != nil {
+			h.log.Error("Error fetching purchaser details", "purchased_by", purchase.PurchasedBy, "error", err.Error())
+			continue // Skip adding phone number for this purchase
+		}
+		res.Purchases[i].PurchaserPhoneNumber = purchaserRes.Phone
+
+		// Fetch product names for each item
+		for j, item := range purchase.Items {
+			productRes, err := h.ProductClient.GetProduct(c, &products.GetProductRequest{
+				Id:        item.ProductId,
+				CompanyId: filter.CompanyId,
+			})
+			if err != nil {
+				h.log.Error("Error fetching product details", "product_id", item.ProductId, "error", err.Error())
+				continue // Skip adding product name for this item
+			}
+			res.Purchases[i].Items[j].ProductName = productRes.Name
+		}
 	}
 
 	c.JSON(http.StatusOK, res)

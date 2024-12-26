@@ -293,6 +293,8 @@ definitions:
         type: string
       product_id:
         type: string
+      product_name:
+        type: string
       purchase_id:
         type: string
       purchase_price:
@@ -328,7 +330,11 @@ definitions:
         type: string
       purchased_by:
         type: string
+      purchaser_phone_number:
+        type: string
       supplier_id:
+        type: string
+      supplier_name:
         type: string
       total_cost:
         type: integer
@@ -343,6 +349,10 @@ definitions:
   products.SaleResponse:
     properties:
       client_id:
+        type: string
+      client_name:
+        type: string
+      client_phone_number:
         type: string
       company_id:
         description: Company ID added
@@ -367,6 +377,8 @@ definitions:
       id:
         type: string
       product_id:
+        type: string
+      product_name:
         type: string
       quantity:
         type: integer
