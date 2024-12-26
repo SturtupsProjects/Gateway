@@ -6,6 +6,7 @@ import (
 	"gateway/internal/api/handler"
 	"gateway/internal/api/middleware"
 	"github.com/casbin/casbin/v2"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -22,8 +23,10 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	// Initialize the Gin router
 	router := gin.Default()
 
-	// Apply middleware for CORS and permission checks
 	router.Use(middleware.CORSMiddleware())
+
+	// Apply middleware for CORS and permission checks
+	router.Use(cors.Default())
 
 	// Swagger Documentation Route
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
