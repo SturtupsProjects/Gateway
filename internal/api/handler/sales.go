@@ -4,6 +4,7 @@ import (
 	"gateway/internal/generated/products"
 	"gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -165,35 +166,36 @@ func (h *Handler) GetListSales(c *gin.Context) {
 		return
 	}
 
-	// Enhance the response with additional details
 	for i, sale := range res.Sales {
-		// Fetch client (customer) details
+
 		clientRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: sale.ClientId})
-		if err != nil {
+		if err == nil {
+			res.Sales[i].ClientName = clientRes.FullName
+			res.Sales[i].ClientPhoneNumber = clientRes.Phone
+		} else {
 			h.log.Error("Error fetching customer details", "customer_id", sale.ClientId, "error", err.Error())
-			continue // Skip adding client details for this sale
+			log.Println("1", err)
 		}
-		res.Sales[i].ClientName = clientRes.FullName
 
-		// Fetch user (salesperson) details for phone number
-		salespersonRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: sale.SoldBy})
-		if err != nil {
-			h.log.Error("Error fetching salesperson details", "sold_by", sale.SoldBy, "error", err.Error())
-			continue // Skip adding phone number for this sale
+		supplier, err := h.UserClient.GetUser(c, &user.UserIDRequest{Id: sale.SoldBy})
+		if err == nil {
+			res.Sales[i].SoldByName = supplier.FirstName
+		} else {
+			h.log.Error("Error fetching customer details", "customer_id", sale.SoldBy, "error", err.Error())
+			log.Println("2", err)
 		}
-		res.Sales[i].ClientPhoneNumber = salespersonRes.Phone
 
-		// Fetch product names for each item
 		for j, item := range sale.SoldProducts {
 			productRes, err := h.ProductClient.GetProduct(c, &products.GetProductRequest{
 				Id:        item.ProductId,
 				CompanyId: filter.CompanyId,
 			})
-			if err != nil {
-				h.log.Error("Error fetching product details", "product_id", item.ProductId, "error", err.Error())
-				continue // Skip adding product name for this item
+			if err == nil {
+				res.Sales[i].SoldProducts[j].ProductName = productRes.Name
+			} else {
+				h.log.Error("Error fetching customer details", "customer_id", filter.CompanyId, "error", err.Error())
+				log.Println("3", err)
 			}
-			res.Sales[i].SoldProducts[j].ProductName = productRes.Name
 		}
 	}
 
