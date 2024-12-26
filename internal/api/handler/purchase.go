@@ -126,6 +126,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 			})
 			if err == nil {
 				res.Purchases[i].Items[j].ProductName = productRes.Name
+				res.Purchases[i].Items[j].ProductImage = productRes.ImageUrl
 			} else {
 				h.log.Error("Error fetching product details", "product_id", item.ProductId, "error", err.Error())
 			}

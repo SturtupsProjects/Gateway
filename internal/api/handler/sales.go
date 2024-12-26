@@ -192,6 +192,7 @@ func (h *Handler) GetListSales(c *gin.Context) {
 			})
 			if err == nil {
 				res.Sales[i].SoldProducts[j].ProductName = productRes.Name
+				res.Sales[i].SoldProducts[j].ProductImage = productRes.ImageUrl
 			} else {
 				h.log.Error("Error fetching customer details", "customer_id", filter.CompanyId, "error", err.Error())
 				log.Println("3", err)
