@@ -27,6 +27,8 @@ func (h *Handler) CreateClient(c *gin.Context) {
 		return
 	}
 
+	req.CompanyId = c.MustGet("company_id").(string)
+
 	res, err := h.UserClient.CreateClient(c, &req)
 	if err != nil {
 		h.log.Error("Error creating client", "error", err.Error())
@@ -52,6 +54,8 @@ func (h *Handler) CreateClient(c *gin.Context) {
 func (h *Handler) GetClient(c *gin.Context) {
 	id := c.Param("id")
 	req := &user.UserIDRequest{Id: id}
+
+	req.CompanyId = c.MustGet("company_id").(string)
 
 	res, err := h.UserClient.GetClient(c, req)
 	if err != nil {
@@ -83,6 +87,8 @@ func (h *Handler) GetClientList(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	filter.CompanyId = c.MustGet("company_id").(string)
 
 	res, err := h.UserClient.GetListClient(c, &filter)
 	if err != nil {
@@ -117,6 +123,8 @@ func (h *Handler) UpdateClient(c *gin.Context) {
 		return
 	}
 
+	req.CompanyId = c.MustGet("company_id").(string)
+
 	res, err := h.UserClient.UpdateClient(c, &user.ClientUpdateRequest{Id: id, FullName: req.FullName, Address: req.Address, Phone: req.Phone})
 	if err != nil {
 		h.log.Error("Error updating client", "client_id", id, "error", err.Error())
@@ -142,6 +150,8 @@ func (h *Handler) UpdateClient(c *gin.Context) {
 func (h *Handler) DeleteClient(c *gin.Context) {
 	id := c.Param("id")
 	req := &user.UserIDRequest{Id: id}
+
+	req.CompanyId = c.MustGet("company_id").(string)
 
 	res, err := h.UserClient.DeleteClient(c, req)
 	if err != nil {
