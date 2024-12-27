@@ -226,12 +226,21 @@ definitions:
           $ref: '#/definitions/products.DailySales'
         type: array
     type: object
+  products.Price:
+    properties:
+      many_type:
+        type: string
+      total_price:
+        type: number
+    type: object
   products.PriceProducts:
     properties:
       company_id:
         type: string
-      total_price:
-        type: integer
+      sum:
+        items:
+          $ref: '#/definitions/products.Price'
+        type: array
     type: object
   products.Product:
     properties:
@@ -251,11 +260,13 @@ definitions:
       image_url:
         type: string
       incoming_price:
-        type: integer
+        description: Changed to double
+        type: number
       name:
         type: string
       standard_price:
-        type: integer
+        description: Changed to double
+        type: number
       total_count:
         type: integer
     type: object
@@ -272,16 +283,20 @@ definitions:
         type: string
       product_id:
         type: string
+      product_image:
+        type: string
       product_name:
         type: string
       purchase_id:
         type: string
       purchase_price:
-        type: integer
+        description: Changed to double
+        type: number
       quantity:
         type: integer
       total_price:
-        type: integer
+        description: Changed to double
+        type: number
     type: object
   products.PurchaseList:
     properties:
@@ -316,7 +331,8 @@ definitions:
       supplier_name:
         type: string
       total_cost:
-        type: integer
+        description: Changed to double
+        type: number
     type: object
   products.SaleList:
     properties:
@@ -344,18 +360,23 @@ definitions:
         type: string
       sold_by:
         type: string
+      sold_by_name:
+        type: string
       sold_products:
         items:
           $ref: '#/definitions/products.SalesItem'
         type: array
       total_sale_price:
-        type: integer
+        description: Changed to double
+        type: number
     type: object
   products.SalesItem:
     properties:
       id:
         type: string
       product_id:
+        type: string
+      product_image:
         type: string
       product_name:
         type: string
@@ -364,9 +385,11 @@ definitions:
       sale_id:
         type: string
       sale_price:
-        type: integer
+        description: Changed to double
+        type: number
       total_price:
-        type: integer
+        description: Changed to double
+        type: number
     type: object
   products.TopEntity:
     properties:
@@ -387,6 +410,8 @@ definitions:
     properties:
       address:
         type: string
+      company_id:
+        type: string
       full_name:
         type: string
       phone:
@@ -397,6 +422,8 @@ definitions:
   user.ClientResponse:
     properties:
       address:
+        type: string
+      company_id:
         type: string
       full_name:
         type: string
@@ -470,6 +497,9 @@ paths:
       parameters:
       - in: query
         name: address
+        type: string
+      - in: query
+        name: company_id
         type: string
       - in: query
         name: full_name
@@ -1441,6 +1471,17 @@ paths:
       consumes:
       - application/json
       description: Calculate the total price of all products for a specific company
+      parameters:
+      - description: Start Date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: End Date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1467,6 +1508,17 @@ paths:
       - application/json
       description: Calculate the total purchase amount of products for a specific
         company
+      parameters:
+      - description: Start Date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: End Date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1492,6 +1544,17 @@ paths:
       consumes:
       - application/json
       description: Calculate the total quantity of sold products for a specific company
+      parameters:
+      - description: Start Date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: End Date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        required: true
+        type: string
       produces:
       - application/json
       responses:

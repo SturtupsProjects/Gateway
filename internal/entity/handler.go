@@ -18,11 +18,11 @@ type Names struct {
 }
 
 type CreateProductRequest struct {
-	CategoryID    string `json:"category_id" form:"category_id"`
-	Name          string `json:"name" form:"name"`
-	BillFormat    string `json:"bill_format" form:"bill_format"`
-	IncomingPrice int64  `json:"incoming_price" form:"incoming_price"`
-	StandardPrice int64  `json:"standard_price" form:"standard_price"`
+	CategoryID    string  `json:"category_id" form:"category_id"`
+	Name          string  `json:"name" form:"name"`
+	BillFormat    string  `json:"bill_format" form:"bill_format"`
+	IncomingPrice float64 `json:"incoming_price" form:"incoming_price"`
+	StandardPrice float64 `json:"standard_price" form:"standard_price"`
 }
 
 type Sale struct {

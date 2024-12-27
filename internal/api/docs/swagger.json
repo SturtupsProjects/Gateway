@@ -33,6 +33,11 @@
                     },
                     {
                         "type": "string",
+                        "name": "company_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "full_name",
                         "in": "query"
                     },
@@ -1364,6 +1369,22 @@
                     "Statistics"
                 ],
                 "summary": "Calculate the total price of products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1404,6 +1425,22 @@
                     "Statistics"
                 ],
                 "summary": "Calculate the total purchase amount of products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1444,6 +1481,22 @@
                     "Statistics"
                 ],
                 "summary": "Calculate the total quantity of sold products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2902,14 +2955,28 @@
                 }
             }
         },
+        "products.Price": {
+            "type": "object",
+            "properties": {
+                "many_type": {
+                    "type": "string"
+                },
+                "total_price": {
+                    "type": "number"
+                }
+            }
+        },
         "products.PriceProducts": {
             "type": "object",
             "properties": {
                 "company_id": {
                     "type": "string"
                 },
-                "total_price": {
-                    "type": "integer"
+                "sum": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/products.Price"
+                    }
                 }
             }
         },
@@ -2939,13 +3006,15 @@
                     "type": "string"
                 },
                 "incoming_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 },
                 "name": {
                     "type": "string"
                 },
                 "standard_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 },
                 "total_count": {
                     "type": "integer"
@@ -2972,6 +3041,9 @@
                 "product_id": {
                     "type": "string"
                 },
+                "product_image": {
+                    "type": "string"
+                },
                 "product_name": {
                     "type": "string"
                 },
@@ -2979,13 +3051,15 @@
                     "type": "string"
                 },
                 "purchase_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 },
                 "quantity": {
                     "type": "integer"
                 },
                 "total_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 }
             }
         },
@@ -3038,7 +3112,8 @@
                     "type": "string"
                 },
                 "total_cost": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 }
             }
         },
@@ -3081,6 +3156,9 @@
                 "sold_by": {
                     "type": "string"
                 },
+                "sold_by_name": {
+                    "type": "string"
+                },
                 "sold_products": {
                     "type": "array",
                     "items": {
@@ -3088,7 +3166,8 @@
                     }
                 },
                 "total_sale_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 }
             }
         },
@@ -3101,6 +3180,9 @@
                 "product_id": {
                     "type": "string"
                 },
+                "product_image": {
+                    "type": "string"
+                },
                 "product_name": {
                     "type": "string"
                 },
@@ -3111,10 +3193,12 @@
                     "type": "string"
                 },
                 "sale_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 },
                 "total_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 }
             }
         },
@@ -3147,6 +3231,9 @@
                 "address": {
                     "type": "string"
                 },
+                "company_id": {
+                    "type": "string"
+                },
                 "full_name": {
                     "type": "string"
                 },
@@ -3162,6 +3249,9 @@
             "type": "object",
             "properties": {
                 "address": {
+                    "type": "string"
+                },
+                "company_id": {
                     "type": "string"
                 },
                 "full_name": {

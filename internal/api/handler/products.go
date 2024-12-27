@@ -51,8 +51,11 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 		log.Println("No file uploaded, continuing without an image")
 	}
 
-	res, err := h.ProductClient.CreateProduct(c, &products.CreateProductRequest{CreatedBy: c.MustGet("id").(string), CategoryId: req.CategoryID, Name: req.Name,
-		BillFormat: req.BillFormat, IncomingPrice: req.IncomingPrice, StandardPrice: req.StandardPrice, ImageUrl: url, CompanyId: c.MustGet("company_id").(string)})
+	res, err := h.ProductClient.CreateProduct(c, &products.CreateProductRequest{CreatedBy: c.MustGet("id").(string),
+		CategoryId:    req.CategoryID,
+		Name:          req.Name,
+		BillFormat:    req.BillFormat,
+		IncomingPrice: req.IncomingPrice, StandardPrice: req.StandardPrice, ImageUrl: url, CompanyId: c.MustGet("company_id").(string)})
 	if err != nil {
 		h.log.Error("Error creating product", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -129,11 +132,11 @@ func (h *Handler) UpdateProduct(c *gin.Context) {
 
 // UpdateProductForm defines the structure for form data binding
 type UpdateProductForm struct {
-	Name          string `form:"name" binding:"required"`                   // Name of the product
-	CategoryId    string `form:"category_id" binding:"required"`            // ID of the product category
-	BillFormat    string `form:"bill_format"`                               // Optional billing format
-	IncomingPrice int64  `form:"incoming_price" binding:"required,numeric"` // Incoming price of the product
-	StandardPrice int64  `form:"standard_price" binding:"required,numeric"` // Standard price of the product
+	Name          string  `form:"name" binding:"required"`                   // Name of the product
+	CategoryId    string  `form:"category_id" binding:"required"`            // ID of the product category
+	BillFormat    string  `form:"bill_format"`                               // Optional billing format
+	IncomingPrice float64 `form:"incoming_price" binding:"required,numeric"` // Incoming price of the product
+	StandardPrice float64 `form:"standard_price" binding:"required,numeric"` // Standard price of the product
 }
 
 // DeleteProduct godoc

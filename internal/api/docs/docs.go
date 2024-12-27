@@ -41,6 +41,11 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "name": "company_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "full_name",
                         "in": "query"
                     },
@@ -1372,6 +1377,22 @@ const docTemplate = `{
                     "Statistics"
                 ],
                 "summary": "Calculate the total price of products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1412,6 +1433,22 @@ const docTemplate = `{
                     "Statistics"
                 ],
                 "summary": "Calculate the total purchase amount of products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1452,6 +1489,22 @@ const docTemplate = `{
                     "Statistics"
                 ],
                 "summary": "Calculate the total quantity of sold products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2910,14 +2963,28 @@ const docTemplate = `{
                 }
             }
         },
+        "products.Price": {
+            "type": "object",
+            "properties": {
+                "many_type": {
+                    "type": "string"
+                },
+                "total_price": {
+                    "type": "number"
+                }
+            }
+        },
         "products.PriceProducts": {
             "type": "object",
             "properties": {
                 "company_id": {
                     "type": "string"
                 },
-                "total_price": {
-                    "type": "integer"
+                "sum": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/products.Price"
+                    }
                 }
             }
         },
@@ -2947,13 +3014,15 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "incoming_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 },
                 "name": {
                     "type": "string"
                 },
                 "standard_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 },
                 "total_count": {
                     "type": "integer"
@@ -2980,6 +3049,9 @@ const docTemplate = `{
                 "product_id": {
                     "type": "string"
                 },
+                "product_image": {
+                    "type": "string"
+                },
                 "product_name": {
                     "type": "string"
                 },
@@ -2987,13 +3059,15 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "purchase_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 },
                 "quantity": {
                     "type": "integer"
                 },
                 "total_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 }
             }
         },
@@ -3046,7 +3120,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "total_cost": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 }
             }
         },
@@ -3089,6 +3164,9 @@ const docTemplate = `{
                 "sold_by": {
                     "type": "string"
                 },
+                "sold_by_name": {
+                    "type": "string"
+                },
                 "sold_products": {
                     "type": "array",
                     "items": {
@@ -3096,7 +3174,8 @@ const docTemplate = `{
                     }
                 },
                 "total_sale_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 }
             }
         },
@@ -3109,6 +3188,9 @@ const docTemplate = `{
                 "product_id": {
                     "type": "string"
                 },
+                "product_image": {
+                    "type": "string"
+                },
                 "product_name": {
                     "type": "string"
                 },
@@ -3119,10 +3201,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "sale_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 },
                 "total_price": {
-                    "type": "integer"
+                    "description": "Changed to double",
+                    "type": "number"
                 }
             }
         },
@@ -3155,6 +3239,9 @@ const docTemplate = `{
                 "address": {
                     "type": "string"
                 },
+                "company_id": {
+                    "type": "string"
+                },
                 "full_name": {
                     "type": "string"
                 },
@@ -3170,6 +3257,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "address": {
+                    "type": "string"
+                },
+                "company_id": {
                     "type": "string"
                 },
                 "full_name": {
