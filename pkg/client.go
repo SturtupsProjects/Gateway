@@ -19,7 +19,7 @@ func NewUserClient(cfg *config.Config) pbu.AuthServiceClient {
 	return pbu.NewAuthServiceClient(conn)
 }
 func NewProductClient(cfg *config.Config) pbp.ProductsClient {
-	conn, err := grpc.NewClient("localhost"+cfg.PRODUCT_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("product"+cfg.PRODUCT_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to Task Management Service: %v", err)
 	}
