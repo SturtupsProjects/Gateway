@@ -123,9 +123,9 @@ func (h *Handler) UpdateClient(c *gin.Context) {
 		return
 	}
 
-	req.CompanyId = c.MustGet("company_id").(string)
+	companyID := c.MustGet("company_id").(string)
 
-	res, err := h.UserClient.UpdateClient(c, &user.ClientUpdateRequest{Id: id, FullName: req.FullName, Address: req.Address, Phone: req.Phone})
+	res, err := h.UserClient.UpdateClient(c, &user.ClientUpdateRequest{Id: id, FullName: req.FullName, Address: req.Address, Phone: req.Phone, CompanyId: companyID})
 	if err != nil {
 		h.log.Error("Error updating client", "client_id", id, "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
