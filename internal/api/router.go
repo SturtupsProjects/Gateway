@@ -127,16 +127,13 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	{
 		debt.POST("", h.CreateDebt)
 		debt.GET("/:id", h.GetDebt)
-		debt.POST("/pay", h.PayDebt)
 		debt.GET("", h.GetListDebts)
 		debt.GET("/client/:client_id", h.GetClientDebts)
-	}
 
-	payment := router.Group("/payments")
-	{
-		payment.GET("/:id", h.GetPayment)
-		payment.GET("/debt/:debt_id", h.GetPaymentsByDebtId)
-		payment.GET("", h.GetPayments)
+		debt.POST("/pay", h.PayDebt)
+		debt.GET("/payments/:debt_id", h.GetPaymentsByDebtId)
+		debt.GET("/payment/:id", h.GetPayment)
+		//debt.GET("/payment", h.GetPayments)
 	}
 
 	cash := router.Group("/cash-flow")

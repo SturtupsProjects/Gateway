@@ -18,7 +18,6 @@ type Handler struct {
 	ProductClient pbp.ProductsClient
 	CompanyClient pbc.CompanyServiceClient
 	DebtClient    pbd.DebtsServiceClient
-	PaymentClient pbd.PaymentServiceClient
 	log           *slog.Logger
 }
 
@@ -28,7 +27,6 @@ func NewHandlerRepo(cfg *config.Config) *Handler {
 		ProductClient: pkg.NewProductClient(cfg),
 		CompanyClient: pkg.NewCompanyClient(cfg),
 		DebtClient:    pkg.NewDebtClient(cfg),
-		PaymentClient: pkg.NewPaymentClient(cfg),
 		log:           logger.NewLogger(),
 	}
 }

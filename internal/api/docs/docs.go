@@ -981,6 +981,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "name": "company_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "created_after",
                         "in": "query"
                     },
@@ -990,17 +995,17 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
-                        "name": "months_duration",
+                        "type": "string",
+                        "name": "currency_code",
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "number",
                         "name": "total_amount_max",
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "number",
                         "name": "total_amount_min",
                         "in": "query"
                     }
@@ -1015,13 +1020,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/debts.Error"
+                            "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/debts.Error"
+                            "$ref": "#/definitions/products.Error"
                         }
                     }
                 }
@@ -1050,7 +1055,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/debts.DebtRequest"
+                            "$ref": "#/definitions/debts.DebtsRequest"
                         }
                     }
                 ],
@@ -1058,19 +1063,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Debt successfully created",
                         "schema": {
-                            "$ref": "#/definitions/debts.Debt"
+                            "$ref": "#/definitions/debts.Debts"
                         }
                     },
                     "400": {
                         "description": "Invalid input or bad request",
                         "schema": {
-                            "$ref": "#/definitions/debts.Error"
+                            "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/debts.Error"
+                            "$ref": "#/definitions/products.Error"
                         }
                     }
                 }
@@ -1113,13 +1118,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/debts.Error"
+                            "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/debts.Error"
+                            "$ref": "#/definitions/products.Error"
                         }
                     }
                 }
@@ -1150,7 +1155,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/debts.PayDebtReq"
+                            "$ref": "#/definitions/debts.PayDebtsReq"
                         }
                     }
                 ],
@@ -1158,19 +1163,117 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/debts.Debt"
+                            "$ref": "#/definitions/debts.Debts"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/debts.Error"
+                            "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/debts.Error"
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/debts/payment/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve details of a specific payment by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Debts"
+                ],
+                "summary": "Get a payment by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/debts.Payment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/debts/payments/{debt_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve all payments associated with a specific debt",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Debts"
+                ],
+                "summary": "Get payments by debt ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Debt ID",
+                        "name": "debt_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/debts.PaymentList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
                         }
                     }
                 }
@@ -1207,174 +1310,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/debts.Debt"
+                            "$ref": "#/definitions/debts.Debts"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/debts.Error"
+                            "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/debts.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/payments": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Retrieve a list of payments with optional filters",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Payments"
-                ],
-                "summary": "Get a list of payments",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "name": "end_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "installment_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "start_date",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/debts.PaymentList"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/debts.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/debts.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/payments/debt/{debt_id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Retrieve all payments associated with a specific debt",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Payments"
-                ],
-                "summary": "Get payments by debt ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Debt ID",
-                        "name": "debt_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/debts.PaymentList"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/debts.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/debts.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/payments/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Retrieve a payment by its unique ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Payments"
-                ],
-                "summary": "Get a payment by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Payment ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/debts.Payment"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/debts.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/debts.Error"
+                            "$ref": "#/definitions/products.Error"
                         }
                     }
                 }
@@ -3246,13 +3194,22 @@ const docTemplate = `{
                 }
             }
         },
-        "debts.Debt": {
+        "debts.Debts": {
             "type": "object",
             "properties": {
                 "amount_paid": {
-                    "type": "integer"
+                    "type": "number"
+                },
+                "client_id": {
+                    "type": "string"
+                },
+                "company_id": {
+                    "type": "string"
                 },
                 "created_at": {
+                    "type": "string"
+                },
+                "currency_code": {
                     "type": "string"
                 },
                 "id": {
@@ -3264,58 +3221,50 @@ const docTemplate = `{
                 "last_payment_date": {
                     "type": "string"
                 },
-                "months_duration": {
-                    "type": "integer"
-                },
-                "present_month": {
-                    "type": "integer"
-                },
                 "total_amount": {
-                    "type": "integer"
-                }
-            }
-        },
-        "debts.DebtRequest": {
-            "type": "object",
-            "properties": {
-                "client_id": {
-                    "type": "string"
-                },
-                "months_duration": {
-                    "type": "integer"
-                },
-                "total_amount": {
-                    "type": "integer"
+                    "type": "number"
                 }
             }
         },
         "debts.DebtsList": {
             "type": "object",
             "properties": {
-                "debts": {
+                "installments": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/debts.Debt"
+                        "$ref": "#/definitions/debts.Debts"
                     }
                 }
             }
         },
-        "debts.Error": {
+        "debts.DebtsRequest": {
             "type": "object",
             "properties": {
-                "message": {
+                "client_id": {
                     "type": "string"
+                },
+                "company_id": {
+                    "type": "string"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "total_amount": {
+                    "type": "number"
                 }
             }
         },
-        "debts.PayDebtReq": {
+        "debts.PayDebtsReq": {
             "type": "object",
             "properties": {
+                "company_id": {
+                    "type": "string"
+                },
                 "debt_id": {
                     "type": "string"
                 },
                 "paid_amount": {
-                    "type": "integer"
+                    "type": "number"
                 }
             }
         },
@@ -3332,7 +3281,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "payment_amount": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "payment_date": {
                     "type": "string"
