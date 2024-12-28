@@ -123,6 +123,21 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		statics.GET("/products/top-clients", h.GetTopClients)
 		statics.GET("/products/top-suppliers", h.GetTopSuppliers)
 	}
+	debt := router.Group("/debts")
+	{
+		debt.POST("", h.CreateDebt)
+		debt.GET("/:id", h.GetDebt)
+		debt.POST("/pay", h.PayDebt)
+		debt.GET("", h.GetListDebts)
+		debt.GET("/client/:client_id", h.GetClientDebts)
+	}
+	payment := router.Group("/payments")
+	{
+		payment.GET("/:id", h.GetPayment)
+		payment.GET("/debt/:debt_id", h.GetPaymentsByDebtId)
+		payment.GET("", h.GetPayments)
+	}
+
 	// Return the configured router
 	return router
 }

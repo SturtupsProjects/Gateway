@@ -35,6 +35,73 @@ definitions:
       user_id:
         type: string
     type: object
+  debts.Debt:
+    properties:
+      amount_paid:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: string
+      is_fully_paid:
+        type: boolean
+      last_payment_date:
+        type: string
+      months_duration:
+        type: integer
+      present_month:
+        type: integer
+      total_amount:
+        type: integer
+    type: object
+  debts.DebtRequest:
+    properties:
+      client_id:
+        type: string
+      months_duration:
+        type: integer
+      total_amount:
+        type: integer
+    type: object
+  debts.DebtsList:
+    properties:
+      debts:
+        items:
+          $ref: '#/definitions/debts.Debt'
+        type: array
+    type: object
+  debts.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  debts.PayDebtReq:
+    properties:
+      debt_id:
+        type: string
+      paid_amount:
+        type: integer
+    type: object
+  debts.Payment:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      installment_id:
+        type: string
+      payment_amount:
+        type: integer
+      payment_date:
+        type: string
+    type: object
+  debts.PaymentList:
+    properties:
+      payments:
+        items:
+          $ref: '#/definitions/debts.Payment'
+        type: array
+    type: object
   entity.Client:
     properties:
       address:
@@ -985,6 +1052,269 @@ paths:
       summary: Create Company User
       tags:
       - companies
+  /debts:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of debts with optional filters
+      parameters:
+      - in: query
+        name: created_after
+        type: string
+      - in: query
+        name: created_before
+        type: string
+      - in: query
+        name: months_duration
+        type: integer
+      - in: query
+        name: total_amount_max
+        type: integer
+      - in: query
+        name: total_amount_min
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/debts.DebtsList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/debts.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/debts.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get list of debts
+      tags:
+      - Debts
+    post:
+      consumes:
+      - application/json
+      description: Add a new debt for a client with the specified details
+      parameters:
+      - description: Debt creation details
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/debts.DebtRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Debt successfully created
+          schema:
+            $ref: '#/definitions/debts.Debt'
+        "400":
+          description: Invalid input or bad request
+          schema:
+            $ref: '#/definitions/debts.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/debts.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new debt
+      tags:
+      - Debts
+  /debts/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve details of a specific debt by ID
+      parameters:
+      - description: Debt ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/debts.Debt'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/debts.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/debts.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a debt by ID
+      tags:
+      - Debts
+  /debts/client/{client_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of debts associated with a specific client
+      parameters:
+      - description: Client ID
+        in: path
+        name: client_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/debts.DebtsList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/debts.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/debts.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get debts for a client
+      tags:
+      - Debts
+  /debts/pay:
+    post:
+      consumes:
+      - application/json
+      description: Make a payment towards a specific debt
+      parameters:
+      - description: Payment details
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/debts.PayDebtReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/debts.Debt'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/debts.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/debts.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Pay a debt
+      tags:
+      - Debts
+  /payments:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of payments with optional filters
+      parameters:
+      - in: query
+        name: end_date
+        type: string
+      - in: query
+        name: installment_id
+        type: string
+      - in: query
+        name: start_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/debts.PaymentList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/debts.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/debts.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a list of payments
+      tags:
+      - Payments
+  /payments/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a payment by its unique ID
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/debts.Payment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/debts.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/debts.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a payment by ID
+      tags:
+      - Payments
+  /payments/debt/{debt_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all payments associated with a specific debt
+      parameters:
+      - description: Debt ID
+        in: path
+        name: debt_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/debts.PaymentList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/debts.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/debts.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get payments by debt ID
+      tags:
+      - Payments
   /products:
     get:
       consumes:
