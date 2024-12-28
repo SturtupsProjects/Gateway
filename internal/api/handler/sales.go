@@ -168,7 +168,7 @@ func (h *Handler) GetListSales(c *gin.Context) {
 
 	for i, sale := range res.Sales {
 
-		clientRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: sale.ClientId})
+		clientRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: sale.ClientId, CompanyId: c.MustGet("company_id").(string)})
 		if err == nil {
 			res.Sales[i].ClientName = clientRes.FullName
 			res.Sales[i].ClientPhoneNumber = clientRes.Phone
@@ -177,7 +177,7 @@ func (h *Handler) GetListSales(c *gin.Context) {
 			log.Println("1", err)
 		}
 
-		supplier, err := h.UserClient.GetUser(c, &user.UserIDRequest{Id: sale.SoldBy})
+		supplier, err := h.UserClient.GetUser(c, &user.UserIDRequest{Id: sale.SoldBy, CompanyId: c.MustGet("company_id").(string)})
 		if err == nil {
 			res.Sales[i].SoldByName = supplier.FirstName
 		} else {

@@ -103,7 +103,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 	// Enhance the response with additional details
 	for i, purchase := range res.Purchases {
 		// Fetch client (supplier) details
-		clientRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.SupplierId})
+		clientRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.SupplierId, CompanyId: c.MustGet("company_id").(string)})
 		if err == nil {
 			res.Purchases[i].SupplierName = clientRes.FullName
 		} else {
@@ -111,7 +111,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 		}
 
 		// Fetch purchaser details for phone number
-		purchaserRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.PurchasedBy})
+		purchaserRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.PurchasedBy, CompanyId: c.MustGet("company_id").(string)})
 		if err == nil {
 			res.Purchases[i].PurchaserPhoneNumber = purchaserRes.Phone
 		} else {
