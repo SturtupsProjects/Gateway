@@ -170,6 +170,38 @@ definitions:
       role:
         type: string
     type: object
+  products.CashFlow:
+    properties:
+      amount:
+        type: number
+      company_id:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      payment_method:
+        type: string
+      transaction_date:
+        type: string
+      transaction_type:
+        type: string
+      user_id:
+        type: string
+    type: object
+  products.CashFlowRequest:
+    properties:
+      amount:
+        type: number
+      company_id:
+        type: string
+      description:
+        type: string
+      payment_method:
+        type: string
+      user_id:
+        type: string
+    type: object
   products.Category:
     properties:
       company_id:
@@ -212,6 +244,13 @@ definitions:
       entities:
         items:
           $ref: '#/definitions/products.TopEntity'
+        type: array
+    type: object
+  products.ListCashFlow:
+    properties:
+      cash:
+        items:
+          $ref: '#/definitions/products.CashFlow'
         type: array
     type: object
   products.Message:
@@ -489,6 +528,107 @@ info:
   title: API Gateway
   version: "1.0"
 paths:
+  /cash-flow:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of cash flow transactions for a company based on a given
+        date range
+      parameters:
+      - description: Start Date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: End Date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.ListCashFlow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get cash flow details for a company within a given date range
+      tags:
+      - Cash Flow
+  /cash-flow/expense:
+    post:
+      consumes:
+      - application/json
+      description: Create an expense record in the cash flow system
+      parameters:
+      - description: Expense Cash Flow Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/products.CashFlowRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.CashFlow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create an expense cash flow transaction for a company
+      tags:
+      - Cash Flow
+  /cash-flow/income:
+    post:
+      consumes:
+      - application/json
+      description: Create an income record in the cash flow system
+      parameters:
+      - description: Income Cash Flow Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/products.CashFlowRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.CashFlow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create an income cash flow transaction for a company
+      tags:
+      - Cash Flow
   /clients:
     get:
       consumes:
@@ -1049,12 +1189,12 @@ paths:
         in: formData
         name: incoming_price
         required: true
-        type: integer
+        type: number
       - description: Standard price of the product
         in: formData
         name: standard_price
         required: true
-        type: integer
+        type: number
       produces:
       - application/json
       responses:

@@ -353,3 +353,128 @@ func (h *Handler) GetTopSuppliers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, res)
 }
+
+// GetCashFlow godoc
+// @Summary Get cash flow details for a company within a given date range
+// @Description Get a list of cash flow transactions for a company based on a given date range
+// @Tags Cash Flow
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param start_date query string true "Start Date (YYYY-MM-DD)"
+// @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Success 200 {object} products.ListCashFlow
+// @Failure 400 {object} products.Error
+// @Failure 500 {object} products.Error
+// @Router /cash-flow [get]
+func (h *Handler) GetCashFlow(c *gin.Context) {
+
+	companyId := c.MustGet("company_id").(string)
+
+	startDate := c.DefaultQuery("start_date", "")
+	endDate := c.DefaultQuery("end_date", "")
+
+	if startDate == "" || endDate == "" {
+		h.log.Error("Missing required query parameters: start_date or end_date")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "start_date and end_date are required"})
+		return
+	}
+
+	layout := "2006-01-02" // Человечный формат
+	parsedStartDate, err := time.Parse(layout, startDate)
+	if err != nil {
+		h.log.Error("Invalid start_date format", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid start_date format, expected YYYY-MM-DD"})
+		return
+	}
+
+	parsedEndDate, err := time.Parse(layout, endDate)
+	if err != nil {
+		h.log.Error("Invalid end_date format", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid end_date format, expected YYYY-MM-DD"})
+		return
+	}
+
+	req := &products.StatisticReq{
+		CompanyId: companyId,
+		StartDate: parsedStartDate.Format(time.RFC3339),
+		EndDate:   parsedEndDate.Format(time.RFC3339),
+	}
+
+	res, err := h.ProductClient.GetCashFlow(c, req)
+	if err != nil {
+		h.log.Error("Error getting cash flow", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// CreateIncome godoc
+// @Summary Create an income cash flow transaction for a company
+// @Description Create an income record in the cash flow system
+// @Tags Cash Flow
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param request body products.CashFlowRequest true "Income Cash Flow Data"
+// @Success 200 {object} products.CashFlow
+// @Failure 400 {object} products.Error
+// @Failure 500 {object} products.Error
+// @Router /cash-flow/income [post]
+func (h *Handler) CreateIncome(c *gin.Context) {
+
+	var request products.CashFlowRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		h.log.Error("Invalid request data", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
+		return
+	}
+
+	request.CompanyId = c.MustGet("company_id").(string)
+	request.UserId = c.MustGet("id").(string)
+
+	res, err := h.ProductClient.CreateIncome(c, &request)
+	if err != nil {
+		h.log.Error("Error creating income", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// CreateExpense godoc
+// @Summary Create an expense cash flow transaction for a company
+// @Description Create an expense record in the cash flow system
+// @Tags Cash Flow
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param request body products.CashFlowRequest true "Expense Cash Flow Data"
+// @Success 200 {object} products.CashFlow
+// @Failure 400 {object} products.Error
+// @Failure 500 {object} products.Error
+// @Router /cash-flow/expense [post]
+func (h *Handler) CreateExpense(c *gin.Context) {
+
+	var request products.CashFlowRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		h.log.Error("Invalid request data", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
+		return
+	}
+
+	request.UserId = c.MustGet("id").(string)
+	request.CompanyId = c.MustGet("company_id").(string)
+
+	res, err := h.ProductClient.CreateExpense(c, &request)
+	if err != nil {
+		h.log.Error("Error creating expense", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
