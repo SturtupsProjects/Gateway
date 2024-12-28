@@ -139,7 +139,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		payment.GET("", h.GetPayments)
 	}
 
-	cash := router.Group("/cash")
+	cash := router.Group("/cash-flow")
 	{
 		cash.GET("", h.GetCashFlow)
 		cash.POST("/income", h.CreateIncome)
