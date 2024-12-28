@@ -14,6 +14,7 @@ type Config struct {
 	REFRESH_TOKEN   string
 	ACCESS_TOKEN    string
 	PRODUCT_SERVICE string
+	DEBT_SERVICE    string
 }
 
 func Load() *Config {
@@ -27,6 +28,7 @@ func Load() *Config {
 	config.REFRESH_TOKEN = cast.ToString(Coalesce("REFRESH_TOKEN", "secret"))
 	config.ACCESS_TOKEN = cast.ToString(Coalesce("ACCESS_TOKEN", "secret"))
 	config.PRODUCT_SERVICE = cast.ToString(Coalesce("PRODUCT_SERVICE", ":9091"))
+	config.DEBT_SERVICE = cast.ToString(Coalesce("DEBT_SERVICE", ":8075"))
 
 	return &config
 }
