@@ -211,8 +211,10 @@ func (h *Handler) GetProductList(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	filter.CreatedBy = c.MustGet("id").(string)
+
 	filter.CompanyId = c.MustGet("company_id").(string)
+
+	log.Println(filter.CompanyId)
 
 	res, err := h.ProductClient.GetProductList(c, &filter)
 	if err != nil {
