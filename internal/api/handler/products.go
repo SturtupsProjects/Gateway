@@ -1,10 +1,16 @@
 package handler
 
 import (
+	"bytes"
 	"gateway/internal/entity"
 	"gateway/internal/generated/products"
 	"gateway/internal/minio"
 	"github.com/gin-gonic/gin"
+	"github.com/xuri/excelize/v2"
+	"strconv"
+	"strings"
+
+	"io"
 	"log"
 	"net/http"
 )
@@ -224,4 +230,101 @@ func (h *Handler) GetProductList(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, res)
+}
+
+// UploadAndProcessExcel godoc
+// @Summary Upload an Excel file and create products
+// @Description Upload an Excel file containing product data, process it, and create products in bulk
+// @Tags Products
+// @Accept multipart/form-data
+// @Produce json
+// @Security ApiKeyAuth
+// @Param file formData file true "Excel file containing products data"
+// @Success 200 {object} entity.Error
+// @Failure 400 {object} entity.Error
+// @Failure 500 {object} entity.Error
+// @Router /products/excel-upload [post]
+func (h *Handler) UploadAndProcessExcel(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		h.log.Error("Error retrieving file", "error", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File is required"})
+		return
+	}
+
+	// Open the file
+	fileContent, err := file.Open()
+	if err != nil {
+		h.log.Error("Error opening file", "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to open file"})
+		return
+	}
+	defer fileContent.Close()
+
+	// Read the Excel file
+	buffer := bytes.NewBuffer(nil)
+	if _, err := io.Copy(buffer, fileContent); err != nil {
+		h.log.Error("Error reading file content", "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error reading file"})
+		return
+	}
+	excelFile, err := excelize.OpenReader(buffer)
+	if err != nil {
+		h.log.Error("Error parsing Excel file", "error", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Read the "Sheet1"
+	rows, err := excelFile.GetRows("Оценка текущих товарных запасов")
+	if err != nil {
+		h.log.Error("Error reading sheet", "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Process rows to create products
+	var createdProducts []products.Product
+	for i, row := range rows {
+		// Skip header row
+		if i == 0 {
+			continue
+		}
+		if len(row) < 8 { // Ensure the row has all required columns
+			h.log.Warn("Incomplete data in row", "row", i+1)
+			continue
+		}
+
+		req := &products.CreateProductRequest{
+			CategoryId:    "fec5dd49-9e44-4ee4-8499-4e332fac26a7", // Код (Column A)
+			Name:          row[2],                                 // Наименование (Column B)
+			BillFormat:    row[4],                                 // Ед. изм (Column D)
+			IncomingPrice: parseToFloat64(row[7]),                 // Сумма себестоим. (Column G)
+			StandardPrice: parseToFloat64(row[7]) * 1.1,           // Цена (Column H)
+			ImageUrl:      "no image",                             // Default value
+			CompanyId:     c.MustGet("company_id").(string),
+			CreatedBy:     c.MustGet("id").(string),
+		}
+
+		// Call the product service
+		product, err := h.ProductClient.CreateProduct(c, req)
+		if err != nil {
+			h.log.Error("Error creating product from row", "row", i+1, "error", err)
+			continue
+		}
+		createdProducts = append(createdProducts, *product)
+	}
+
+	// Respond with created products
+	c.JSON(http.StatusOK, gin.H{"message": "Products created successfully", "products": createdProducts})
+}
+
+// Helper function to parse string to float64
+func parseToFloat64(value string) float64 {
+	value = strings.ReplaceAll(value, ",", "") // Remove commas
+	parsedValue, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		return 0.0
+	}
+	return parsedValue
 }

@@ -64,6 +64,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		products.GET("/:id", h.GetProduct)
 		products.PUT("/:id", h.UpdateProduct)
 		products.DELETE("/:id", h.DeleteProduct)
+		products.POST("/excel-upload", h.UploadAndProcessExcel)
 	}
 
 	// Purchase routes group

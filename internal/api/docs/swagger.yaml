@@ -1795,6 +1795,38 @@ paths:
       summary: Update Product Category
       tags:
       - Category
+  /products/excel-upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload an Excel file containing product data, process it, and create
+        products in bulk
+      parameters:
+      - description: Excel file containing products data
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Upload an Excel file and create products
+      tags:
+      - Products
   /products/most-sold:
     get:
       consumes:
