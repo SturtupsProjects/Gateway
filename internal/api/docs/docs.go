@@ -1742,6 +1742,13 @@ const docTemplate = `{
                         "name": "file",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sheet name of file",
+                        "name": "sheet_name",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {

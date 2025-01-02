@@ -240,6 +240,7 @@ func (h *Handler) GetProductList(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param file formData file true "Excel file containing products data"
+// @Param sheet_name formData string true "Sheet name of file"
 // @Success 200 {object} entity.Error
 // @Failure 400 {object} entity.Error
 // @Failure 500 {object} entity.Error
@@ -248,6 +249,16 @@ func (h *Handler) UploadAndProcessExcel(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		h.log.Error("Error retrieving file", "error", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File is required"})
+		return
+	}
+
+	var sheet struct {
+		SheetName string `form:"sheet_name"`
+	}
+
+	if err := c.ShouldBind(&sheet); err != nil {
+		h.log.Error("Error parsing file", "error", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": "File is required"})
 		return
 	}
@@ -276,7 +287,7 @@ func (h *Handler) UploadAndProcessExcel(c *gin.Context) {
 	}
 
 	// Read the "Sheet1"
-	rows, err := excelFile.GetRows("Оценка текущих товарных запасов")
+	rows, err := excelFile.GetRows(sheet.SheetName)
 	if err != nil {
 		h.log.Error("Error reading sheet", "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

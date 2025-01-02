@@ -1807,6 +1807,11 @@ paths:
         name: file
         required: true
         type: file
+      - description: Sheet name of file
+        in: formData
+        name: sheet_name
+        required: true
+        type: string
       produces:
       - application/json
       responses:
