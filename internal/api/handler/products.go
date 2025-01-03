@@ -212,7 +212,7 @@ func (h *Handler) GetProduct(c *gin.Context) {
 // @Failure 500 {object} products.Error
 // @Router /products [get]
 func (h *Handler) GetProductList(c *gin.Context) {
-	var filter products.ProductFilter
+	var filter entity.ProductFilter
 
 	if err := c.ShouldBindQuery(&filter); err != nil {
 		h.log.Error("Error parsing ProductFilter", "error", err.Error())
@@ -220,17 +220,23 @@ func (h *Handler) GetProductList(c *gin.Context) {
 		return
 	}
 
-	filter.CompanyId = c.MustGet("company_id").(string)
+	// Apply default pagination values if not provided
+	if filter.Limit <= 0 {
+		filter.Limit = 10 // Default limit
+	}
+	if filter.Page <= 0 {
+		filter.Page = 1 // Default page
+	}
 
-	log.Println(filter.CompanyId)
-
-	res, err := h.ProductClient.GetProductList(c, &filter)
+	// Call the ProductClient to retrieve the product list
+	res, err := h.ProductClient.GetProductList(c, &products.ProductFilter{CategoryId: filter.CategoryId, Name: filter.Name, CompanyId: c.MustGet("company_id").(string), CreatedBy: filter.CreatedBy, Limit: filter.Limit, Page: filter.Page, CreatedAt: filter.CreatedAt})
 	if err != nil {
-		h.log.Error("Error retrieving product list", "error", err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		h.log.Error("Error retrieving product list", "filter", filter, "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve product list: " + err.Error()})
 		return
 	}
 
+	// Return the result
 	c.JSON(http.StatusOK, res)
 }
 
@@ -358,7 +364,7 @@ func (h *Handler) CreateBulkProducts(c *gin.Context) {
 	req.CreatedBy = c.MustGet("id").(string)
 	req.CompanyId = c.MustGet("company_id").(string)
 	req.CategoryId = c.Param("category_id")
-	
+
 	// Call the gRPC service
 	resp, err := h.ProductClient.CreateBulkProducts(c, &req)
 	if err != nil {

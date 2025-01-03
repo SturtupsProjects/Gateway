@@ -1461,15 +1461,30 @@ paths:
       - application/json
       description: Retrieve a list of products with optional filters
       parameters:
-      - in: query
+      - description: Optional
+        in: query
         name: category_id
         type: string
-      - in: query
+      - description: Optional
+        in: query
         name: created_at
         type: string
-      - in: query
+      - description: Optional
+        in: query
+        name: created_by
+        type: string
+      - description: Optional
+        in: query
+        name: limit
+        type: integer
+      - description: Optional
+        in: query
         name: name
         type: string
+      - description: Optional
+        in: query
+        name: page
+        type: integer
       produces:
       - application/json
       responses:

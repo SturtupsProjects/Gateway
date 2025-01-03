@@ -1349,17 +1349,38 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Optional",
                         "name": "category_id",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "description": "Optional",
                         "name": "created_at",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "description": "Optional",
+                        "name": "created_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Optional",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Optional",
                         "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Optional",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
