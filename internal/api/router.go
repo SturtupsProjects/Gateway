@@ -60,6 +60,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	products := router.Group("/products")
 	{
 		products.POST("", h.CreateProduct)
+		products.POST("/bulk/:category_id", h.CreateBulkProducts)
 		products.GET("", h.GetProductList)
 		products.GET("/:id", h.GetProduct)
 		products.PUT("/:id", h.UpdateProduct)

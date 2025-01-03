@@ -6,6 +6,7 @@ import (
 	"gateway/internal/entity"
 	"gateway/internal/generated/products"
 	"gateway/internal/minio"
+
 	"github.com/gin-gonic/gin"
 	"github.com/xuri/excelize/v2"
 	"strconv"
@@ -330,6 +331,43 @@ func (h *Handler) UploadAndProcessExcel(c *gin.Context) {
 		"errored_rows":  erroredRows,
 		"error_message": "Some rows could not be processed. Please review errored_rows.",
 	})
+}
+
+// CreateBulkProducts godoc
+// @Summary Create multiple products
+// @Description Create multiple products in bulk with the provided details
+// @Security ApiKeyAuth
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Param body body entity.CreateBulkProductsRequest true "Bulk product creation request"
+// @Param category_id path string true "Category ID"
+// @Success 201 {object} products.BulkCreateResponse "Bulk products successfully created"
+// @Failure 400 {object} map[string]string "Invalid input or bad request"
+// @Failure 500 {object} map[string]string "Internal server error"
+// @Router /products/bulk/{category_id} [post]
+func (h *Handler) CreateBulkProducts(c *gin.Context) {
+
+	var req products.CreateBulkProductsRequest
+
+	// Bind the request body to the struct
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body: " + err.Error()})
+		return
+	}
+	req.CreatedBy = c.MustGet("id").(string)
+	req.CompanyId = c.MustGet("company_id").(string)
+	req.CategoryId = c.Param("category_id")
+	
+	// Call the gRPC service
+	resp, err := h.ProductClient.CreateBulkProducts(c, &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create products: " + err.Error()})
+		return
+	}
+
+	// Return the response
+	c.JSON(http.StatusCreated, resp)
 }
 
 // Helper function to parse string to float64

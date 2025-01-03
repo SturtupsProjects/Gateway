@@ -140,3 +140,14 @@ type GetTopEntitiesRequest struct {
 	EndDate   string `json:"end_date,omitempty"`
 	Limit     int32  `json:"limit,omitempty"`
 }
+
+type CreateBulkProductsRequest struct {
+	Products []CreateProductRequestBulk
+}
+type CreateProductRequestBulk struct {
+	Name          string  `json:"name,omitempty"`
+	BillFormat    string  `json:"bill_format,omitempty"`
+	IncomingPrice float64 `json:"incoming_price,omitempty"`
+	StandardPrice float64 `json:"standard_price,omitempty"`
+	TotalCount    int64   `json:"total_count,omitempty"`
+}
