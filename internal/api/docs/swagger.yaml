@@ -1795,7 +1795,7 @@ paths:
       summary: Update Product Category
       tags:
       - Category
-  /products/excel-upload:
+  /products/excel-upload/{category_id}:
     post:
       consumes:
       - multipart/form-data
@@ -1810,6 +1810,11 @@ paths:
       - description: Sheet name of file
         in: formData
         name: sheet_name
+        required: true
+        type: string
+      - description: Category ID
+        in: path
+        name: category_id
         required: true
         type: string
       produces:

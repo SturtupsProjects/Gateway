@@ -1709,7 +1709,7 @@
                 }
             }
         },
-        "/products/excel-upload": {
+        "/products/excel-upload/{category_id}": {
             "post": {
                 "security": [
                     {
@@ -1740,6 +1740,13 @@
                         "description": "Sheet name of file",
                         "name": "sheet_name",
                         "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "category_id",
+                        "in": "path",
                         "required": true
                     }
                 ],

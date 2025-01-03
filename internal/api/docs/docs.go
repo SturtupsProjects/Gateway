@@ -1717,7 +1717,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/products/excel-upload": {
+        "/products/excel-upload/{category_id}": {
             "post": {
                 "security": [
                     {
@@ -1748,6 +1748,13 @@ const docTemplate = `{
                         "description": "Sheet name of file",
                         "name": "sheet_name",
                         "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "category_id",
+                        "in": "path",
                         "required": true
                     }
                 ],
