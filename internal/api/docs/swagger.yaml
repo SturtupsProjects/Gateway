@@ -114,6 +114,13 @@ definitions:
       type:
         type: string
     type: object
+  entity.CreateBulkProductsRequest:
+    properties:
+      products:
+        items:
+          $ref: '#/definitions/entity.CreateProductRequestBulk'
+        type: array
+    type: object
   entity.CreateCompanyRequest:
     properties:
       logo:
@@ -122,6 +129,19 @@ definitions:
         type: string
       website:
         type: string
+    type: object
+  entity.CreateProductRequestBulk:
+    properties:
+      bill_format:
+        type: string
+      incoming_price:
+        type: number
+      name:
+        type: string
+      standard_price:
+        type: number
+      total_count:
+        type: integer
     type: object
   entity.CreateUserToCompanyRequest:
     properties:
@@ -237,6 +257,17 @@ definitions:
         type: string
       role:
         type: string
+    type: object
+  products.BulkCreateResponse:
+    properties:
+      message:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/products.Product'
+        type: array
+      success:
+        type: boolean
     type: object
   products.CashFlow:
     properties:
@@ -1430,15 +1461,30 @@ paths:
       - application/json
       description: Retrieve a list of products with optional filters
       parameters:
-      - in: query
+      - description: Optional
+        in: query
         name: category_id
         type: string
-      - in: query
+      - description: Optional
+        in: query
         name: created_at
         type: string
-      - in: query
+      - description: Optional
+        in: query
+        name: created_by
+        type: string
+      - description: Optional
+        in: query
+        name: limit
+        type: integer
+      - description: Optional
+        in: query
         name: name
         type: string
+      - description: Optional
+        in: query
+        name: page
+        type: integer
       produces:
       - application/json
       responses:
@@ -1634,6 +1680,47 @@ paths:
       summary: Update an existing product
       tags:
       - Products
+  /products/bulk/{category_id}:
+    post:
+      consumes:
+      - application/json
+      description: Create multiple products in bulk with the provided details
+      parameters:
+      - description: Bulk product creation request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CreateBulkProductsRequest'
+      - description: Category ID
+        in: path
+        name: category_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Bulk products successfully created
+          schema:
+            $ref: '#/definitions/products.BulkCreateResponse'
+        "400":
+          description: Invalid input or bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create multiple products
+      tags:
+      - Products
   /products/category:
     get:
       consumes:
@@ -1795,7 +1882,7 @@ paths:
       summary: Update Product Category
       tags:
       - Category
-  /products/excel-upload:
+  /products/excel-upload/{category_id}:
     post:
       consumes:
       - multipart/form-data
@@ -1810,6 +1897,11 @@ paths:
       - description: Sheet name of file
         in: formData
         name: sheet_name
+        required: true
+        type: string
+      - description: Category ID
+        in: path
+        name: category_id
         required: true
         type: string
       produces:

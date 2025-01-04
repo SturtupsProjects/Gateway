@@ -89,9 +89,12 @@ type UpdateProductRequest struct {
 	StandardPrice int64  `json:"standard_price,omitempty"`
 }
 type ProductFilter struct {
-	CategoryId string `json:"category_id,omitempty"`
-	Name       string `json:"name,omitempty"`
-	CreatedAt  string `json:"created_at,omitempty"`
+	CategoryId string `form:"category_id" json:"category_id,omitempty"` // Optional
+	Name       string `form:"name" json:"name,omitempty"`               // Optional
+	CreatedAt  string `form:"created_at" json:"created_at,omitempty"`   // Optional
+	CreatedBy  string `form:"created_by" json:"created_by,omitempty"`   // Optional
+	Limit      int64  `form:"limit" json:"limit,omitempty"`             // Optional
+	Page       int64  `form:"page" json:"page,omitempty"`               // Optional
 }
 
 type FilterPurchase struct {
@@ -139,4 +142,15 @@ type GetTopEntitiesRequest struct {
 	StartDate string `json:"start_date,omitempty"`
 	EndDate   string `json:"end_date,omitempty"`
 	Limit     int32  `json:"limit,omitempty"`
+}
+
+type CreateBulkProductsRequest struct {
+	Products []CreateProductRequestBulk
+}
+type CreateProductRequestBulk struct {
+	Name          string  `json:"name,omitempty"`
+	BillFormat    string  `json:"bill_format,omitempty"`
+	IncomingPrice float64 `json:"incoming_price,omitempty"`
+	StandardPrice float64 `json:"standard_price,omitempty"`
+	TotalCount    int64   `json:"total_count,omitempty"`
 }

@@ -1341,17 +1341,38 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Optional",
                         "name": "category_id",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "description": "Optional",
                         "name": "created_at",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "description": "Optional",
+                        "name": "created_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Optional",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Optional",
                         "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Optional",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -1453,6 +1474,70 @@
                         "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/bulk/{category_id}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create multiple products in bulk with the provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create multiple products",
+                "parameters": [
+                    {
+                        "description": "Bulk product creation request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.CreateBulkProductsRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "category_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Bulk products successfully created",
+                        "schema": {
+                            "$ref": "#/definitions/products.BulkCreateResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input or bad request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -1709,7 +1794,7 @@
                 }
             }
         },
-        "/products/excel-upload": {
+        "/products/excel-upload/{category_id}": {
             "post": {
                 "security": [
                     {
@@ -1740,6 +1825,13 @@
                         "description": "Sheet name of file",
                         "name": "sheet_name",
                         "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "category_id",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -3364,6 +3456,17 @@
                 }
             }
         },
+        "entity.CreateBulkProductsRequest": {
+            "type": "object",
+            "properties": {
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.CreateProductRequestBulk"
+                    }
+                }
+            }
+        },
         "entity.CreateCompanyRequest": {
             "type": "object",
             "properties": {
@@ -3375,6 +3478,26 @@
                 },
                 "website": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.CreateProductRequestBulk": {
+            "type": "object",
+            "properties": {
+                "bill_format": {
+                    "type": "string"
+                },
+                "incoming_price": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "standard_price": {
+                    "type": "number"
+                },
+                "total_count": {
+                    "type": "integer"
                 }
             }
         },
@@ -3552,6 +3675,23 @@
                 },
                 "role": {
                     "type": "string"
+                }
+            }
+        },
+        "products.BulkCreateResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/products.Product"
+                    }
+                },
+                "success": {
+                    "type": "boolean"
                 }
             }
         },
