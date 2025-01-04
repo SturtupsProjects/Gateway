@@ -220,14 +220,6 @@ func (h *Handler) GetProductList(c *gin.Context) {
 		return
 	}
 
-	// Apply default pagination values if not provided
-	if filter.Limit <= 0 {
-		filter.Limit = 10 // Default limit
-	}
-	if filter.Page <= 0 {
-		filter.Page = 1 // Default page
-	}
-
 	// Call the ProductClient to retrieve the product list
 	res, err := h.ProductClient.GetProductList(c, &products.ProductFilter{CategoryId: filter.CategoryId, Name: filter.Name, CompanyId: c.MustGet("company_id").(string), CreatedBy: filter.CreatedBy, Limit: filter.Limit, Page: filter.Page, CreatedAt: filter.CreatedAt})
 	if err != nil {
