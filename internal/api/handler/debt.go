@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"context"
 	"gateway/internal/generated/debts"
+	pbu "gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -89,6 +91,17 @@ func (h *Handler) GetListDebts(c *gin.Context) {
 		h.log.Error("Error fetching debt list", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	for i, debts := range res.Installments {
+
+		client, err := h.UserClient.GetClient(context.Background(), &pbu.UserIDRequest{Id: debts.ClientId, CompanyId: debts.CompanyId})
+		if err == nil {
+			res.Installments[i].ClientName = client.FullName
+			res.Installments[i].ClientPhone = client.Phone
+		} else {
+			h.log.Error("Error fetching client info", "error", err.Error())
+		}
 	}
 
 	c.JSON(http.StatusOK, res)
