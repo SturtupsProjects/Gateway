@@ -1857,342 +1857,6 @@
                 }
             }
         },
-        "/products/most-sold": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get a list of the most sold products between a given date range",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Statistics"
-                ],
-                "summary": "Get the most sold products by day",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Start Date (YYYY-MM-DD)",
-                        "name": "start_date",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "End Date (YYYY-MM-DD)",
-                        "name": "end_date",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/products.MostSoldProductsResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/products/top-clients": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get the top clients for a company based on their purchase value in a given date range",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Statistics"
-                ],
-                "summary": "Get top clients by value of purchases",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Start Date (YYYY-MM-DD)",
-                        "name": "start_date",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "End Date (YYYY-MM-DD)",
-                        "name": "end_date",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/products.GetTopEntitiesResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/products/top-suppliers": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get the top suppliers for a company based on the value of products supplied in a given date range",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Statistics"
-                ],
-                "summary": "Get top suppliers by value of products supplied",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Start Date (YYYY-MM-DD)",
-                        "name": "start_date",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "End Date (YYYY-MM-DD)",
-                        "name": "end_date",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/products.GetTopEntitiesResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/products/total-price": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Calculate the total price of all products for a specific company",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Statistics"
-                ],
-                "summary": "Calculate the total price of products",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Start Date (YYYY-MM-DD)",
-                        "name": "start_date",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "End Date (YYYY-MM-DD)",
-                        "name": "end_date",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/products.PriceProducts"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/products/total-purchased": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Calculate the total purchase amount of products for a specific company",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Statistics"
-                ],
-                "summary": "Calculate the total purchase amount of products",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Start Date (YYYY-MM-DD)",
-                        "name": "start_date",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "End Date (YYYY-MM-DD)",
-                        "name": "end_date",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/products.PriceProducts"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/products/total-sold": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Calculate the total quantity of sold products for a specific company",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Statistics"
-                ],
-                "summary": "Calculate the total quantity of sold products",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Start Date (YYYY-MM-DD)",
-                        "name": "start_date",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "End Date (YYYY-MM-DD)",
-                        "name": "end_date",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/products.PriceProducts"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/products/{id}": {
             "get": {
                 "security": [
@@ -2953,6 +2617,510 @@
                 }
             }
         },
+        "/statistics/cash/net-profit": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Calculate the net profit for a specific company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Calculate the net profit",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.PriceProducts"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/cash/total-expense": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Calculate the total expense for a specific company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Calculate the total expense",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.PriceProducts"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/cash/total-income": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Calculate the total income for a specific company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Calculate the total income",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.PriceProducts"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/products/most-sold": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get a list of the most sold products between a given date range",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get the most sold products by day",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.MostSoldProductsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/products/total-price": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Calculate the total price of all products for a specific company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Calculate the total price of products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.PriceProducts"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/products/total-purchased": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Calculate the total purchase amount of products for a specific company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Calculate the total purchase amount of products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.PriceProducts"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/products/total-sold": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Calculate the total quantity of sold products for a specific company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Calculate the total quantity of sold products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.PriceProducts"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/top-clients": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get the top clients for a company based on their purchase value in a given date range",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get top clients by value of purchases",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.GetTopEntitiesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/top-suppliers": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get the top suppliers for a company based on the value of products supplied in a given date range",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get top suppliers by value of products supplied",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.GetTopEntitiesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/user/admin/register": {
             "post": {
                 "description": "Register a new admin account",
@@ -3341,6 +3509,12 @@
                     "type": "number"
                 },
                 "client_id": {
+                    "type": "string"
+                },
+                "client_name": {
+                    "type": "string"
+                },
+                "client_phone": {
                     "type": "string"
                 },
                 "company_id": {

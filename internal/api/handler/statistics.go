@@ -1,7 +1,10 @@
 package handler
 
 import (
+	"context"
+	"gateway/internal/entity"
 	"gateway/internal/generated/products"
+	pbu "gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -20,7 +23,7 @@ import (
 // @Success 200 {object} products.PriceProducts
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
-// @Router /products/total-price [get]
+// @Router /statistics/products/total-price [get]
 func (h *Handler) TotalPriceOfProducts(c *gin.Context) {
 	companyId := c.MustGet("company_id").(string)
 
@@ -77,7 +80,7 @@ func (h *Handler) TotalPriceOfProducts(c *gin.Context) {
 // @Success 200 {object} products.PriceProducts
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
-// @Router /products/total-sold [get]
+// @Router /statistics/products/total-sold [get]
 func (h *Handler) TotalSoldProducts(c *gin.Context) {
 	companyId := c.MustGet("company_id").(string)
 
@@ -134,7 +137,7 @@ func (h *Handler) TotalSoldProducts(c *gin.Context) {
 // @Success 200 {object} products.PriceProducts
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
-// @Router /products/total-purchased [get]
+// @Router /statistics/products/total-purchased [get]
 func (h *Handler) TotalPurchaseProducts(c *gin.Context) {
 	companyId := c.MustGet("company_id").(string)
 
@@ -191,7 +194,7 @@ func (h *Handler) TotalPurchaseProducts(c *gin.Context) {
 // @Success 200 {object} products.MostSoldProductsResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
-// @Router /products/most-sold [get]
+// @Router /statistics/products/most-sold [get]
 func (h *Handler) GetMostSoldProductsByDay(c *gin.Context) {
 
 	log.Println("Mana keldi")
@@ -252,7 +255,7 @@ func (h *Handler) GetMostSoldProductsByDay(c *gin.Context) {
 // @Success 200 {object} products.GetTopEntitiesResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
-// @Router /products/top-clients [get]
+// @Router /statistics/top-clients [get]
 func (h *Handler) GetTopClients(c *gin.Context) {
 
 	companyId := c.MustGet("company_id").(string)
@@ -294,7 +297,29 @@ func (h *Handler) GetTopClients(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	var listCients entity.TopClientList
+
+	for _, clientID := range res.Entities {
+
+		var topClient entity.TopClient
+
+		cl, err := h.UserClient.GetClient(context.Background(), &pbu.UserIDRequest{Id: clientID.SupplierId, CompanyId: companyId})
+		if err == nil {
+			topClient.ID = cl.Id
+			topClient.Name = cl.FullName
+			topClient.Phone = cl.Phone
+			topClient.TotalSum = clientID.TotalValue
+		} else {
+			h.log.Error("Error getting client id", "error", err.Error())
+
+			topClient.ID = clientID.SupplierId
+			topClient.TotalSum = clientID.TotalValue
+		}
+
+		listCients.Clients = append(listCients.Clients, topClient)
+	}
+
+	c.JSON(http.StatusOK, listCients)
 }
 
 // GetTopSuppliers godoc
@@ -309,7 +334,7 @@ func (h *Handler) GetTopClients(c *gin.Context) {
 // @Success 200 {object} products.GetTopEntitiesResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
-// @Router /products/top-suppliers [get]
+// @Router /statistics/top-suppliers [get]
 func (h *Handler) GetTopSuppliers(c *gin.Context) {
 
 	companyId := c.MustGet("company_id").(string)
@@ -347,6 +372,199 @@ func (h *Handler) GetTopSuppliers(c *gin.Context) {
 	res, err := h.ProductClient.GetTopSuppliers(c, req)
 	if err != nil {
 		h.log.Error("Error getting top suppliers", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var listCients entity.TopClientList
+
+	for _, clientID := range res.Entities {
+
+		var topClient entity.TopClient
+
+		cl, err := h.UserClient.GetClient(context.Background(), &pbu.UserIDRequest{Id: clientID.SupplierId, CompanyId: companyId})
+		if err == nil {
+			topClient.ID = cl.Id
+			topClient.Name = cl.FullName
+			topClient.Phone = cl.Phone
+			topClient.TotalSum = clientID.TotalValue
+		} else {
+			h.log.Error("Error getting client id", "error", err.Error())
+
+			topClient.ID = clientID.SupplierId
+			topClient.TotalSum = clientID.TotalValue
+		}
+
+		listCients.Clients = append(listCients.Clients, topClient)
+	}
+
+	c.JSON(http.StatusOK, listCients)
+}
+
+// GetTotalIncome godoc
+// @Summary Calculate the total income
+// @Description Calculate the total income for a specific company
+// @Tags Statistics
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param start_date query string true "Start Date (YYYY-MM-DD)"
+// @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Success 200 {object} products.PriceProducts
+// @Failure 400 {object} products.Error
+// @Failure 500 {object} products.Error
+// @Router /statistics/cash/total-income [get]
+func (h *Handler) GetTotalIncome(c *gin.Context) {
+	companyId := c.MustGet("company_id").(string)
+
+	startDate := c.DefaultQuery("start_date", "")
+	endDate := c.DefaultQuery("end_date", "")
+
+	if startDate == "" || endDate == "" {
+		h.log.Error("Missing required query parameters: start_date or end_date")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "start_date and end_date are required"})
+		return
+	}
+
+	layout := "2006-01-02"
+	parsedStartDate, err := time.Parse(layout, startDate)
+	if err != nil {
+		h.log.Error("Invalid start_date format", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid start_date format, expected YYYY-MM-DD"})
+		return
+	}
+
+	parsedEndDate, err := time.Parse(layout, endDate)
+	if err != nil {
+		h.log.Error("Invalid end_date format", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid end_date format, expected YYYY-MM-DD"})
+		return
+	}
+
+	req := &products.StatisticReq{
+		CompanyId: companyId,
+		StartDate: parsedStartDate.Format(time.RFC3339),
+		EndDate:   parsedEndDate.Format(time.RFC3339),
+	}
+
+	// Call the repository method
+	res, err := h.ProductClient.GetTotalIncome(context.Background(), req)
+	if err != nil {
+		h.log.Error("Error calculating total income", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// GetTotalExpense godoc
+// @Summary Calculate the total expense
+// @Description Calculate the total expense for a specific company
+// @Tags Statistics
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param start_date query string true "Start Date (YYYY-MM-DD)"
+// @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Success 200 {object} products.PriceProducts
+// @Failure 400 {object} products.Error
+// @Failure 500 {object} products.Error
+// @Router /statistics/cash/total-expense [get]
+func (h *Handler) GetTotalExpense(c *gin.Context) {
+	companyId := c.MustGet("company_id").(string)
+
+	startDate := c.DefaultQuery("start_date", "")
+	endDate := c.DefaultQuery("end_date", "")
+
+	if startDate == "" || endDate == "" {
+		h.log.Error("Missing required query parameters: start_date or end_date")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "start_date and end_date are required"})
+		return
+	}
+
+	layout := "2006-01-02"
+	parsedStartDate, err := time.Parse(layout, startDate)
+	if err != nil {
+		h.log.Error("Invalid start_date format", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid start_date format, expected YYYY-MM-DD"})
+		return
+	}
+
+	parsedEndDate, err := time.Parse(layout, endDate)
+	if err != nil {
+		h.log.Error("Invalid end_date format", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid end_date format, expected YYYY-MM-DD"})
+		return
+	}
+
+	req := &products.StatisticReq{
+		CompanyId: companyId,
+		StartDate: parsedStartDate.Format(time.RFC3339),
+		EndDate:   parsedEndDate.Format(time.RFC3339),
+	}
+
+	// Call the repository method
+	res, err := h.ProductClient.GetTotalExpense(context.Background(), req)
+	if err != nil {
+		h.log.Error("Error calculating total expense", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// GetNetProfit godoc
+// @Summary Calculate the net profit
+// @Description Calculate the net profit for a specific company
+// @Tags Statistics
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param start_date query string true "Start Date (YYYY-MM-DD)"
+// @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Success 200 {object} products.PriceProducts
+// @Failure 400 {object} products.Error
+// @Failure 500 {object} products.Error
+// @Router /statistics/cash/net-profit [get]
+func (h *Handler) GetNetProfit(c *gin.Context) {
+	companyId := c.MustGet("company_id").(string)
+
+	startDate := c.DefaultQuery("start_date", "")
+	endDate := c.DefaultQuery("end_date", "")
+
+	if startDate == "" || endDate == "" {
+		h.log.Error("Missing required query parameters: start_date or end_date")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "start_date and end_date are required"})
+		return
+	}
+
+	layout := "2006-01-02"
+	parsedStartDate, err := time.Parse(layout, startDate)
+	if err != nil {
+		h.log.Error("Invalid start_date format", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid start_date format, expected YYYY-MM-DD"})
+		return
+	}
+
+	parsedEndDate, err := time.Parse(layout, endDate)
+	if err != nil {
+		h.log.Error("Invalid end_date format", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid end_date format, expected YYYY-MM-DD"})
+		return
+	}
+
+	req := &products.StatisticReq{
+		CompanyId: companyId,
+		StartDate: parsedStartDate.Format(time.RFC3339),
+		EndDate:   parsedEndDate.Format(time.RFC3339),
+	}
+
+	// Call the repository method
+	res, err := h.ProductClient.GetNetProfit(context.Background(), req)
+	if err != nil {
+		h.log.Error("Error calculating net profit", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

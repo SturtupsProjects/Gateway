@@ -116,15 +116,28 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		company.POST("/users", h.CreateCompanyUser)
 
 	}
-	statics := router.Group("")
+	statics := router.Group("/statistics")
 	{
 		statics.GET("/products/total-price", h.TotalPriceOfProducts)
 		statics.GET("/products/total-sold", h.TotalSoldProducts)
 		statics.GET("/products/total-purchased", h.TotalPurchaseProducts)
 		statics.GET("/products/get-most-sold", h.GetMostSoldProductsByDay)
-		statics.GET("/products/top-clients", h.GetTopClients)
-		statics.GET("/products/top-suppliers", h.GetTopSuppliers)
+
+		statics.GET("/top-clients", h.GetTopClients)
+		statics.GET("/top-suppliers", h.GetTopSuppliers)
+
+		statics.GET("/cash/total-income", h.GetTotalIncome)
+		statics.GET("/cash/total-expense", h.GetTotalExpense)
+		statics.GET("/cash/net-profit", h.GetNetProfit)
 	}
+
+	cash := router.Group("/cash-flow")
+	{
+		cash.GET("", h.GetCashFlow)
+		cash.POST("/income", h.CreateIncome)
+		cash.POST("/expense", h.CreateExpense)
+	}
+
 	debt := router.Group("/debts")
 	{
 		debt.POST("", h.CreateDebt)
@@ -136,13 +149,6 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		debt.GET("/payments/:debt_id", h.GetPaymentsByDebtId)
 		debt.GET("/payment/:id", h.GetPayment)
 		//debt.GET("/payment", h.GetPayments)
-	}
-
-	cash := router.Group("/cash-flow")
-	{
-		cash.GET("", h.GetCashFlow)
-		cash.POST("/income", h.CreateIncome)
-		cash.POST("/expense", h.CreateExpense)
 	}
 
 	// Return the configured router

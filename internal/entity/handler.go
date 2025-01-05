@@ -154,3 +154,14 @@ type CreateProductRequestBulk struct {
 	StandardPrice float64 `json:"standard_price,omitempty"`
 	TotalCount    int64   `json:"total_count,omitempty"`
 }
+
+type TopClient struct {
+	ID       string  `json:"id,omitempty"`
+	Name     string  `json:"name"`
+	Phone    string  `json:"phone"`
+	TotalSum float64 `json:"total_sum"`
+}
+
+type TopClientList struct {
+	Clients []TopClient `json:"clients"`
+}
