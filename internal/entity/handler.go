@@ -28,6 +28,8 @@ type CreateProductRequest struct {
 type Sale struct {
 	ClientId      string       `json:"client_id,omitempty"`
 	PaymentMethod string       `json:"payment_method,omitempty"`
+	ClientName    string       `json:"client_name,omitempty"`
+	ClientPhone   string       `json:"client_phone,omitempty"`
 	SoldProducts  []*SalesItem `json:"sold_products,omitempty"`
 }
 
@@ -164,4 +166,20 @@ type TopClient struct {
 
 type TopClientList struct {
 	Clients []TopClient `json:"clients"`
+}
+
+type StreetClientFilter struct {
+	Limit int32  `json:"limit,omitempty"`
+	Page  int32  `protobuf:"varint,4,opt,name=page,proto3" json:"page,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Phone string `json:"phone,omitempty"`
+}
+
+type ClientFilter struct {
+	FullName string `protobuf:"bytes,1,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
+	Address  string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Phone    string `protobuf:"bytes,3,opt,name=phone,proto3" json:"phone,omitempty"`
+	Page     int32  `protobuf:"varint,4,opt,name=page,proto3" json:"page,omitempty"`
+	Limit    int32  `protobuf:"varint,5,opt,name=limit,proto3" json:"limit,omitempty"`
+	Type     string `protobuf:"bytes,6,opt,name=type,proto3" json:"type,omitempty"`
 }

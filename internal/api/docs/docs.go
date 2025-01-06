@@ -199,6 +199,11 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "name": "client_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "company_id",
                         "in": "query"
                     },
@@ -282,6 +287,88 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/user.ClientResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/street": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve a list of street clients with optional filters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "List all street clients",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "address",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "client_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "company_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "full_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "phone",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "type",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.ClientListResponse"
                         }
                     },
                     "400": {
@@ -3775,6 +3862,12 @@ const docTemplate = `{
                 "client_id": {
                     "type": "string"
                 },
+                "client_name": {
+                    "type": "string"
+                },
+                "client_phone": {
+                    "type": "string"
+                },
                 "payment_method": {
                     "type": "string"
                 },
@@ -4298,6 +4391,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "address": {
+                    "type": "string"
+                },
+                "client_type": {
                     "type": "string"
                 },
                 "company_id": {

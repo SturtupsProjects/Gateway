@@ -97,6 +97,8 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		client.GET("/:id", h.GetClient)
 		client.PUT("/:id", h.UpdateClient)
 		client.DELETE("/:id", h.DeleteClient)
+
+		client.GET("/street", h.GetStreetClientList)
 	}
 	company := router.Group("/companies")
 	{

@@ -61,9 +61,40 @@ func (h *Handler) CreateSales(c *gin.Context) {
 		return
 	}
 
-	id := c.MustGet("id").(string)
-	req.SoldBy = id
-	req.CompanyId = c.MustGet("company_id").(string)
+	companyID := c.MustGet("company_id").(string)
+
+	if len(req.ClientId) < 16 {
+		if req.ClientName == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "missing client id or client_name"})
+			return
+		}
+		if req.ClientPhone == "" {
+			req.ClientPhone = "no phone"
+		}
+
+		clientReq := user.ClientRequest{
+			FullName:   req.ClientName,
+			Address:    "no address",
+			Phone:      req.ClientPhone,
+			Type:       "client",
+			ClientType: "street",
+			CompanyId:  companyID,
+		}
+
+		client, err := h.UserClient.CreateClient(c, &clientReq)
+		if err != nil {
+			h.log.Error("Error creating sales", "error", err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		log.Println(client.Id)
+
+		req.ClientId = client.Id
+	}
+
+	req.SoldBy = c.MustGet("id").(string)
+	req.CompanyId = companyID
 
 	res, err := h.ProductClient.CreateSales(c, &req)
 	if err != nil {

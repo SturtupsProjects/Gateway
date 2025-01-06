@@ -207,6 +207,10 @@ definitions:
     properties:
       client_id:
         type: string
+      client_name:
+        type: string
+      client_phone:
+        type: string
       payment_method:
         type: string
       sold_products:
@@ -552,6 +556,8 @@ definitions:
     properties:
       address:
         type: string
+      client_type:
+        type: string
       company_id:
         type: string
       full_name:
@@ -742,6 +748,9 @@ paths:
         name: address
         type: string
       - in: query
+        name: client_type
+        type: string
+      - in: query
         name: company_id
         type: string
       - in: query
@@ -905,6 +914,56 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update an existing client
+      tags:
+      - Clients
+  /clients/street:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of street clients with optional filters
+      parameters:
+      - in: query
+        name: address
+        type: string
+      - in: query
+        name: client_type
+        type: string
+      - in: query
+        name: company_id
+        type: string
+      - in: query
+        name: full_name
+        type: string
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: phone
+        type: string
+      - in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ClientListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: List all street clients
       tags:
       - Clients
   /companies:

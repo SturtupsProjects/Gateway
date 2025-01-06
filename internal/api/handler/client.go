@@ -29,6 +29,8 @@ func (h *Handler) CreateClient(c *gin.Context) {
 
 	req.CompanyId = c.MustGet("company_id").(string)
 
+	req.ClientType = "client"
+
 	res, err := h.UserClient.CreateClient(c, &req)
 	if err != nil {
 		h.log.Error("Error creating client", "error", err.Error())
@@ -74,7 +76,7 @@ func (h *Handler) GetClient(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param filter query user.FilterClientRequest false "Filter parameters"
+// @Param filter query entity.ClientFilter false "Filter parameters"
 // @Success 200 {object} user.ClientListResponse
 // @Failure 400 {object} entity.Error
 // @Failure 500 {object} entity.Error
@@ -89,6 +91,8 @@ func (h *Handler) GetClientList(c *gin.Context) {
 	}
 
 	filter.CompanyId = c.MustGet("company_id").(string)
+
+	filter.ClientType = "client"
 
 	res, err := h.UserClient.GetListClient(c, &filter)
 	if err != nil {
@@ -156,6 +160,41 @@ func (h *Handler) DeleteClient(c *gin.Context) {
 	res, err := h.UserClient.DeleteClient(c, req)
 	if err != nil {
 		h.log.Error("Error deleting client", "client_id", id, "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// GetStreetClientList godoc
+// @Summary List all street clients
+// @Description Retrieve a list of street clients with optional filters
+// @Tags Clients
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param filter query entity.StreetClientFilter false "Filter parameters"
+// @Success 200 {object} user.ClientListResponse
+// @Failure 400 {object} entity.Error
+// @Failure 500 {object} entity.Error
+// @Router /clients/street [get]
+func (h *Handler) GetStreetClientList(c *gin.Context) {
+	var filter user.FilterClientRequest
+
+	if err := c.ShouldBindQuery(&filter); err != nil {
+		h.log.Error("Error parsing FilterClientRequest", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	filter.CompanyId = c.MustGet("company_id").(string)
+
+	filter.ClientType = "street"
+
+	res, err := h.UserClient.GetListClient(c, &filter)
+	if err != nil {
+		h.log.Error("Error retrieving client list", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

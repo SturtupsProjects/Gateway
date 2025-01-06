@@ -223,3 +223,7 @@ time=2025-01-05T16:01:01.038+05:00 level=ERROR msg="Error getting client id" err
 time=2025-01-05T16:01:01.134+05:00 level=ERROR msg="Error getting client id" error="rpc error: code = Unknown desc = could not retrieve client: failed to retrieve client: sql: no rows in result set"
 time=2025-01-05T16:01:44.300+05:00 level=ERROR msg="Error getting client id" error="rpc error: code = Unknown desc = could not retrieve client: failed to retrieve client: sql: no rows in result set"
 time=2025-01-05T16:01:44.397+05:00 level=ERROR msg="Error getting client id" error="rpc error: code = Unknown desc = could not retrieve client: failed to retrieve client: sql: no rows in result set"
+time=2025-01-06T18:53:01.874+05:00 level=ERROR msg="Error creating sale" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2025-01-06T18:53:29.612+05:00 level=ERROR msg="Error creating sale" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2025-01-06T18:54:50.732+05:00 level=ERROR msg="Error creating sale" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2025-01-06T18:55:13.765+05:00 level=ERROR msg="Error creating sale" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
