@@ -1,4 +1,14 @@
-p, user,/*, GET
-p, user,/*, PUT
-p, user,/*, DELETE
-p, user,/*, POST
+p, admin,/*, GET
+p, admin,/*, PUT
+p, admin,/*, DELETE
+p, admin,/*, POST
+
+p, owner,/*, GET
+p, owner,/*, PUT
+p, owner,/*, DELETE
+p, owner,/*, POST
+
+p, worker,/*, GET
+p, worker,/*, PUT
+p, worker,/*, DELETE
+p, worker,/*, POST
