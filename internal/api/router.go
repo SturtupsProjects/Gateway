@@ -118,6 +118,15 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		company.POST("/users", h.CreateCompanyUser)
 
 	}
+	branch := router.Group("/branches")
+	{
+		branch.POST("/admin", h.CreateBranch)
+		branch.GET("/:branch_id", h.GetBranch)
+		branch.PUT("/:branch_id", h.UpdateBranch)
+		branch.DELETE("/:branch_id", h.DeleteBranch)
+		branch.GET("/company/:company_id", h.ListBranches)
+	}
+
 	statics := router.Group("/statistics")
 	{
 		statics.GET("/products/total-price", h.TotalPriceOfProducts)
