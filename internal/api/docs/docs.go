@@ -15,6 +15,248 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/branches/create": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new branch",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Branches"
+                ],
+                "summary": "Create Branch",
+                "parameters": [
+                    {
+                        "description": "Branch details",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/company.CreateBranchRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/company.BranchResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/branches/list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "List all branches for a company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Branches"
+                ],
+                "summary": "List Branches",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/company.ListBranchesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/branches/{branch_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get branch details by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Branches"
+                ],
+                "summary": "Get Branch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/company.BranchResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update branch details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Branches"
+                ],
+                "summary": "Update Branch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated branch details",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/company.UpdateBranchRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/company.BranchResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete a branch by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Branches"
+                ],
+                "summary": "Delete Branch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/company.Message"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/cash-flow": {
             "get": {
                 "security": [
@@ -46,6 +288,13 @@ const docTemplate = `{
                         "description": "End Date (YYYY-MM-DD)",
                         "name": "end_date",
                         "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -98,6 +347,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/products.CashFlowRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -149,6 +405,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/products.CashFlowRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -195,16 +458,6 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "address",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "client_type",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "company_id",
                         "in": "query"
                     },
                     {
@@ -324,28 +577,13 @@ const docTemplate = `{
                 "summary": "List all street clients",
                 "parameters": [
                     {
-                        "type": "string",
-                        "name": "address",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "client_type",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "company_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "full_name",
-                        "in": "query"
-                    },
-                    {
                         "type": "integer",
                         "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "name",
                         "in": "query"
                     },
                     {
@@ -356,11 +594,6 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "phone",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "type",
                         "in": "query"
                     }
                 ],
@@ -1422,7 +1655,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Retrieve a list of products with optional filters",
+                "description": "Retrieve a list of products filtered by branch, category, and other optional parameters",
                 "consumes": [
                     "application/json"
                 ],
@@ -1432,42 +1665,37 @@ const docTemplate = `{
                 "tags": [
                     "Products"
                 ],
-                "summary": "List all products",
+                "summary": "Get a list of products",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Optional",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category ID to filter products",
                         "name": "category_id",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Optional",
-                        "name": "created_at",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Optional",
-                        "name": "created_by",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Optional",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Optional",
+                        "description": "Product name to filter by",
                         "name": "name",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Optional",
-                        "name": "page",
+                        "description": "Number of products to return (default 10)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset for pagination (default 0)",
+                        "name": "offset",
                         "in": "query"
                     }
                 ],
@@ -1475,7 +1703,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/products.ProductList"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/products.Product"
+                            }
                         }
                     },
                     "400": {
@@ -1550,6 +1781,13 @@ const docTemplate = `{
                         "name": "standard_price",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1608,6 +1846,13 @@ const docTemplate = `{
                         "name": "category_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1659,6 +1904,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Filter by category name",
                         "name": "name",
                         "in": "query"
@@ -1703,6 +1955,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create Product Category",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "file",
                         "description": "Upload category image (optional)",
@@ -1760,6 +2019,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Category ID",
                         "name": "id",
                         "in": "path",
@@ -1768,19 +2034,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Category details",
                         "schema": {
                             "$ref": "#/definitions/products.Category"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid input or bad request",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -1795,7 +2061,7 @@ const docTemplate = `{
                 ],
                 "description": "Update a product category by ID",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -1805,6 +2071,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update Product Category",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Category ID",
@@ -1827,14 +2100,20 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
+                    "200": {
+                        "description": "Category successfully updated",
+                        "schema": {
+                            "$ref": "#/definitions/products.Category"
+                        }
+                    },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid input or bad request",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -1861,6 +2140,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Category ID",
                         "name": "id",
                         "in": "path",
@@ -1869,19 +2155,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Category successfully deleted",
                         "schema": {
                             "$ref": "#/definitions/products.Message"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid input or bad request",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -1927,6 +2213,13 @@ const docTemplate = `{
                         "description": "Category ID",
                         "name": "category_id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -1976,6 +2269,13 @@ const docTemplate = `{
                         "description": "Product ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -2052,17 +2352,24 @@ const docTemplate = `{
                         "in": "formData"
                     },
                     {
-                        "type": "integer",
+                        "type": "number",
                         "description": "Incoming price",
                         "name": "incoming_price",
                         "in": "formData",
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "number",
                         "description": "Standard price",
                         "name": "standard_price",
                         "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -2110,6 +2417,13 @@ const docTemplate = `{
                         "description": "Product ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -2173,6 +2487,13 @@ const docTemplate = `{
                         "type": "string",
                         "name": "supplier_id",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2222,6 +2543,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/entity.Purchase"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2270,6 +2598,13 @@ const docTemplate = `{
                         "description": "Purchase ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -2327,6 +2662,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/entity.PurchaseUpdate"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2373,6 +2715,13 @@ const docTemplate = `{
                         "description": "Purchase ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -2436,6 +2785,13 @@ const docTemplate = `{
                         "type": "string",
                         "name": "start_date",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2485,6 +2841,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/entity.Sale"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2585,6 +2948,13 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2641,6 +3011,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/entity.SaleUpdate"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2687,6 +3064,13 @@ const docTemplate = `{
                         "description": "Sale ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -2744,6 +3128,13 @@ const docTemplate = `{
                         "name": "end_date",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2799,6 +3190,13 @@ const docTemplate = `{
                         "description": "End Date (YYYY-MM-DD)",
                         "name": "end_date",
                         "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -2856,6 +3254,13 @@ const docTemplate = `{
                         "name": "end_date",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2911,6 +3316,13 @@ const docTemplate = `{
                         "description": "End Date (YYYY-MM-DD)",
                         "name": "end_date",
                         "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -2968,6 +3380,13 @@ const docTemplate = `{
                         "name": "end_date",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -3023,6 +3442,13 @@ const docTemplate = `{
                         "description": "End Date (YYYY-MM-DD)",
                         "name": "end_date",
                         "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -3080,6 +3506,13 @@ const docTemplate = `{
                         "name": "end_date",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -3136,6 +3569,13 @@ const docTemplate = `{
                         "name": "end_date",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -3191,6 +3631,13 @@ const docTemplate = `{
                         "description": "End Date (YYYY-MM-DD)",
                         "name": "end_date",
                         "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -3541,6 +3988,32 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "company.BranchResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "branch_id": {
+                    "type": "string"
+                },
+                "company_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "company.CompanyResponse": {
             "type": "object",
             "properties": {
@@ -3564,6 +4037,34 @@ const docTemplate = `{
                 }
             }
         },
+        "company.CreateBranchRequest": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "company_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                }
+            }
+        },
+        "company.ListBranchesResponse": {
+            "type": "object",
+            "properties": {
+                "branches": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/company.BranchResponse"
+                    }
+                }
+            }
+        },
         "company.ListCompanyUsersResponse": {
             "type": "object",
             "properties": {
@@ -3579,6 +4080,26 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "company.UpdateBranchRequest": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "branch_id": {
+                    "type": "string"
+                },
+                "company_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone_number": {
                     "type": "string"
                 }
             }
@@ -3976,6 +4497,10 @@ const docTemplate = `{
                 "amount": {
                     "type": "number"
                 },
+                "branch_id": {
+                    "description": "Added branch_id",
+                    "type": "string"
+                },
                 "company_id": {
                     "type": "string"
                 },
@@ -4005,6 +4530,10 @@ const docTemplate = `{
                 "amount": {
                     "type": "number"
                 },
+                "branch_id": {
+                    "description": "Added branch_id",
+                    "type": "string"
+                },
                 "company_id": {
                     "type": "string"
                 },
@@ -4022,6 +4551,10 @@ const docTemplate = `{
         "products.Category": {
             "type": "object",
             "properties": {
+                "branch_id": {
+                    "description": "Added branch_id",
+                    "type": "string"
+                },
                 "company_id": {
                     "description": "Company ID added",
                     "type": "string"
@@ -4131,6 +4664,10 @@ const docTemplate = `{
         "products.PriceProducts": {
             "type": "object",
             "properties": {
+                "branch_id": {
+                    "description": "Added branch_id",
+                    "type": "string"
+                },
                 "company_id": {
                     "type": "string"
                 },
@@ -4146,6 +4683,10 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "bill_format": {
+                    "type": "string"
+                },
+                "branch_id": {
+                    "description": "Added branch_id",
                     "type": "string"
                 },
                 "category_id": {
@@ -4180,17 +4721,6 @@ const docTemplate = `{
                 },
                 "total_count": {
                     "type": "integer"
-                }
-            }
-        },
-        "products.ProductList": {
-            "type": "object",
-            "properties": {
-                "products": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/products.Product"
-                    }
                 }
             }
         },
@@ -4239,6 +4769,10 @@ const docTemplate = `{
         "products.PurchaseResponse": {
             "type": "object",
             "properties": {
+                "branch_id": {
+                    "description": "Added branch_id",
+                    "type": "string"
+                },
                 "company_id": {
                     "description": "Company ID added",
                     "type": "string"
@@ -4293,6 +4827,10 @@ const docTemplate = `{
         "products.SaleResponse": {
             "type": "object",
             "properties": {
+                "branch_id": {
+                    "description": "Added branch_id",
+                    "type": "string"
+                },
                 "client_id": {
                     "type": "string"
                 },

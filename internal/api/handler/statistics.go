@@ -20,6 +20,7 @@ import (
 // @Security ApiKeyAuth
 // @Param start_date query string true "Start Date (YYYY-MM-DD)"
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.PriceProducts
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -51,10 +52,17 @@ func (h *Handler) TotalPriceOfProducts(c *gin.Context) {
 		return
 	}
 
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	req := &products.StatisticReq{
 		CompanyId: companyId,
 		StartDate: parsedStartDate.Format(time.RFC3339),
 		EndDate:   parsedEndDate.Format(time.RFC3339),
+		BranchId:  branchId,
 	}
 
 	// Call the gRPC method
@@ -77,6 +85,7 @@ func (h *Handler) TotalPriceOfProducts(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param start_date query string true "Start Date (YYYY-MM-DD)"
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.PriceProducts
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -108,10 +117,17 @@ func (h *Handler) TotalSoldProducts(c *gin.Context) {
 		return
 	}
 
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	req := &products.StatisticReq{
 		CompanyId: companyId,
 		StartDate: parsedStartDate.Format(time.RFC3339),
 		EndDate:   parsedEndDate.Format(time.RFC3339),
+		BranchId:  branchId,
 	}
 
 	// Call the gRPC method
@@ -134,6 +150,7 @@ func (h *Handler) TotalSoldProducts(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param start_date query string true "Start Date (YYYY-MM-DD)"
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.PriceProducts
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -165,10 +182,17 @@ func (h *Handler) TotalPurchaseProducts(c *gin.Context) {
 		return
 	}
 
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	req := &products.StatisticReq{
 		CompanyId: companyId,
 		StartDate: parsedStartDate.Format(time.RFC3339),
 		EndDate:   parsedEndDate.Format(time.RFC3339),
+		BranchId:  branchId,
 	}
 
 	// Call the gRPC method
@@ -191,6 +215,7 @@ func (h *Handler) TotalPurchaseProducts(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param start_date query string true "Start Date (YYYY-MM-DD)"
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.MostSoldProductsResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -200,6 +225,7 @@ func (h *Handler) GetMostSoldProductsByDay(c *gin.Context) {
 	log.Println("Mana keldi")
 
 	companyId := c.MustGet("company_id").(string)
+	branchId := c.GetHeader("branch_id") // Extract branch_id from header
 
 	startDate := c.DefaultQuery("start_date", "")
 	endDate := c.DefaultQuery("end_date", "")
@@ -210,7 +236,7 @@ func (h *Handler) GetMostSoldProductsByDay(c *gin.Context) {
 		return
 	}
 
-	layout := "2006-01-02" // Человечный формат
+	layout := "2006-01-02"
 	parsedStartDate, err := time.Parse(layout, startDate)
 	if err != nil {
 		h.log.Error("Invalid start_date format", "error", err.Error())
@@ -227,6 +253,7 @@ func (h *Handler) GetMostSoldProductsByDay(c *gin.Context) {
 
 	req := &products.MostSoldProductsRequest{
 		CompanyId: companyId,
+		BranchId:  branchId, // Pass branch_id from header
 		StartDate: parsedStartDate.Format(time.RFC3339),
 		EndDate:   parsedEndDate.Format(time.RFC3339),
 	}
@@ -252,12 +279,12 @@ func (h *Handler) GetMostSoldProductsByDay(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param start_date query string true "Start Date (YYYY-MM-DD)"
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.GetTopEntitiesResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
 // @Router /statistics/top-clients [get]
 func (h *Handler) GetTopClients(c *gin.Context) {
-
 	companyId := c.MustGet("company_id").(string)
 
 	startDate := c.DefaultQuery("start_date", "")
@@ -284,10 +311,17 @@ func (h *Handler) GetTopClients(c *gin.Context) {
 		return
 	}
 
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	req := &products.GetTopEntitiesRequest{
 		CompanyId: companyId,
 		StartDate: parsedStartDate.Format(time.RFC3339), // Переводим в RFC3339 для передачи
 		EndDate:   parsedEndDate.Format(time.RFC3339),
+		BranchId:  branchId,
 	}
 
 	res, err := h.ProductClient.GetTopClients(c, req)
@@ -300,7 +334,6 @@ func (h *Handler) GetTopClients(c *gin.Context) {
 	var listCients entity.TopClientList
 
 	for _, clientID := range res.Entities {
-
 		var topClient entity.TopClient
 
 		cl, err := h.UserClient.GetClient(context.Background(), &pbu.UserIDRequest{Id: clientID.SupplierId, CompanyId: companyId})
@@ -311,7 +344,6 @@ func (h *Handler) GetTopClients(c *gin.Context) {
 			topClient.TotalSum = clientID.TotalValue
 		} else {
 			h.log.Error("Error getting client id", "error", err.Error())
-
 			topClient.ID = clientID.SupplierId
 			topClient.TotalSum = clientID.TotalValue
 		}
@@ -331,12 +363,12 @@ func (h *Handler) GetTopClients(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param start_date query string true "Start Date (YYYY-MM-DD)"
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.GetTopEntitiesResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
 // @Router /statistics/top-suppliers [get]
 func (h *Handler) GetTopSuppliers(c *gin.Context) {
-
 	companyId := c.MustGet("company_id").(string)
 
 	startDate := c.DefaultQuery("start_date", "")
@@ -363,10 +395,17 @@ func (h *Handler) GetTopSuppliers(c *gin.Context) {
 		return
 	}
 
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	req := &products.GetTopEntitiesRequest{
 		CompanyId: companyId,
 		StartDate: parsedStartDate.Format(time.RFC3339),
 		EndDate:   parsedEndDate.Format(time.RFC3339),
+		BranchId:  branchId,
 	}
 
 	res, err := h.ProductClient.GetTopSuppliers(c, req)
@@ -376,29 +415,27 @@ func (h *Handler) GetTopSuppliers(c *gin.Context) {
 		return
 	}
 
-	var listCients entity.TopClientList
+	var listSuppliers entity.TopClientList
 
-	for _, clientID := range res.Entities {
+	for _, supplier := range res.Entities {
+		var topSupplier entity.TopClient
 
-		var topClient entity.TopClient
-
-		cl, err := h.UserClient.GetClient(context.Background(), &pbu.UserIDRequest{Id: clientID.SupplierId, CompanyId: companyId})
+		cl, err := h.UserClient.GetClient(context.Background(), &pbu.UserIDRequest{Id: supplier.SupplierId, CompanyId: companyId})
 		if err == nil {
-			topClient.ID = cl.Id
-			topClient.Name = cl.FullName
-			topClient.Phone = cl.Phone
-			topClient.TotalSum = clientID.TotalValue
+			topSupplier.ID = cl.Id
+			topSupplier.Name = cl.FullName
+			topSupplier.Phone = cl.Phone
+			topSupplier.TotalSum = supplier.TotalValue
 		} else {
-			h.log.Error("Error getting client id", "error", err.Error())
-
-			topClient.ID = clientID.SupplierId
-			topClient.TotalSum = clientID.TotalValue
+			h.log.Error("Error getting supplier id", "error", err.Error())
+			topSupplier.ID = supplier.SupplierId
+			topSupplier.TotalSum = supplier.TotalValue
 		}
 
-		listCients.Clients = append(listCients.Clients, topClient)
+		listSuppliers.Clients = append(listSuppliers.Clients, topSupplier)
 	}
 
-	c.JSON(http.StatusOK, listCients)
+	c.JSON(http.StatusOK, listSuppliers)
 }
 
 // GetTotalIncome godoc
@@ -410,6 +447,7 @@ func (h *Handler) GetTopSuppliers(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param start_date query string true "Start Date (YYYY-MM-DD)"
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.PriceProducts
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -441,10 +479,17 @@ func (h *Handler) GetTotalIncome(c *gin.Context) {
 		return
 	}
 
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	req := &products.StatisticReq{
 		CompanyId: companyId,
 		StartDate: parsedStartDate.Format(time.RFC3339),
 		EndDate:   parsedEndDate.Format(time.RFC3339),
+		BranchId:  branchId,
 	}
 
 	// Call the repository method
@@ -467,6 +512,7 @@ func (h *Handler) GetTotalIncome(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param start_date query string true "Start Date (YYYY-MM-DD)"
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.PriceProducts
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -498,10 +544,17 @@ func (h *Handler) GetTotalExpense(c *gin.Context) {
 		return
 	}
 
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	req := &products.StatisticReq{
 		CompanyId: companyId,
 		StartDate: parsedStartDate.Format(time.RFC3339),
 		EndDate:   parsedEndDate.Format(time.RFC3339),
+		BranchId:  branchId,
 	}
 
 	// Call the repository method
@@ -524,6 +577,7 @@ func (h *Handler) GetTotalExpense(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param start_date query string true "Start Date (YYYY-MM-DD)"
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.PriceProducts
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -555,10 +609,17 @@ func (h *Handler) GetNetProfit(c *gin.Context) {
 		return
 	}
 
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	req := &products.StatisticReq{
 		CompanyId: companyId,
 		StartDate: parsedStartDate.Format(time.RFC3339),
 		EndDate:   parsedEndDate.Format(time.RFC3339),
+		BranchId:  branchId,
 	}
 
 	// Call the repository method
@@ -581,6 +642,7 @@ func (h *Handler) GetNetProfit(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param start_date query string true "Start Date (YYYY-MM-DD)"
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.ListCashFlow
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -613,10 +675,17 @@ func (h *Handler) GetCashFlow(c *gin.Context) {
 		return
 	}
 
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	req := &products.StatisticReq{
 		CompanyId: companyId,
 		StartDate: parsedStartDate.Format(time.RFC3339),
 		EndDate:   parsedEndDate.Format(time.RFC3339),
+		BranchId:  branchId,
 	}
 
 	res, err := h.ProductClient.GetCashFlow(c, req)
@@ -637,6 +706,7 @@ func (h *Handler) GetCashFlow(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param request body products.CashFlowRequest true "Income Cash Flow Data"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.CashFlow
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -650,9 +720,21 @@ func (h *Handler) CreateIncome(c *gin.Context) {
 		return
 	}
 
+	// Получаем branch_id из заголовка
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
+	// Устанавливаем branch_id в запрос
+	request.BranchId = branchId
+
+	// Получаем компанию и пользователя
 	request.CompanyId = c.MustGet("company_id").(string)
 	request.UserId = c.MustGet("id").(string)
 
+	// Создание дохода
 	res, err := h.ProductClient.CreateIncome(c, &request)
 	if err != nil {
 		h.log.Error("Error creating income", "error", err.Error())
@@ -671,6 +753,7 @@ func (h *Handler) CreateIncome(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param request body products.CashFlowRequest true "Expense Cash Flow Data"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.CashFlow
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -684,9 +767,21 @@ func (h *Handler) CreateExpense(c *gin.Context) {
 		return
 	}
 
+	// Получаем branch_id из заголовка
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
+	// Устанавливаем branch_id в запрос
+	request.BranchId = branchId
+
+	// Получаем компанию и пользователя
 	request.UserId = c.MustGet("id").(string)
 	request.CompanyId = c.MustGet("company_id").(string)
 
+	// Создание расхода
 	res, err := h.ProductClient.CreateExpense(c, &request)
 	if err != nil {
 		h.log.Error("Error creating expense", "error", err.Error())

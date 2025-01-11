@@ -6,14 +6,14 @@ import (
 	"gateway/internal/entity"
 	"gateway/internal/generated/products"
 	"gateway/internal/minio"
+	"log"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/xuri/excelize/v2"
 	"strconv"
-	"strings"
 
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -30,14 +30,20 @@ import (
 // @Param bill_format formData string true "Billing format of the product"
 // @Param incoming_price formData float64 true "Incoming price of the product"
 // @Param standard_price formData float64 true "Standard price of the product"
+// @Param branch_id header string true "Branch ID"
 // @Success 201 {object} products.Product "Product successfully created"
 // @Failure 400 {object} products.Error "Invalid input or bad request"
 // @Failure 500 {object} products.Error "Internal server error"
 // @Router /products [post]
 func (h *Handler) CreateProduct(c *gin.Context) {
+	branchID := c.GetHeader("branch_id")
+	if branchID == "" {
+		h.log.Error("Branch ID is missing in the header")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
 
 	var req entity.CreateProductRequest
-
 	if err := c.ShouldBind(&req); err != nil {
 		h.log.Error("bind json err", "error", err)
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request", "error": err.Error()})
@@ -59,11 +65,17 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 		log.Println("No file uploaded, continuing without an image")
 	}
 
-	res, err := h.ProductClient.CreateProduct(c, &products.CreateProductRequest{CreatedBy: c.MustGet("id").(string),
+	res, err := h.ProductClient.CreateProduct(c, &products.CreateProductRequest{
+		CreatedBy:     c.MustGet("id").(string),
 		CategoryId:    req.CategoryID,
 		Name:          req.Name,
 		BillFormat:    req.BillFormat,
-		IncomingPrice: req.IncomingPrice, StandardPrice: req.StandardPrice, ImageUrl: url, CompanyId: c.MustGet("company_id").(string)})
+		IncomingPrice: req.IncomingPrice,
+		StandardPrice: req.StandardPrice,
+		ImageUrl:      url,
+		CompanyId:     c.MustGet("company_id").(string),
+		BranchId:      branchID, // Pass branch ID
+	})
 	if err != nil {
 		h.log.Error("Error creating product", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -85,14 +97,22 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 // @Param name formData string true "Name of the product"
 // @Param category_id formData string true "Category ID"
 // @Param bill_format formData string false "Billing format"
-// @Param incoming_price formData int64 true "Incoming price"
-// @Param standard_price formData int64 true "Standard price"
+// @Param incoming_price formData float64 true "Incoming price"
+// @Param standard_price formData float64 true "Standard price"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.Product
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
 // @Router /products/{id} [put]
 func (h *Handler) UpdateProduct(c *gin.Context) {
 	id := c.Param("id")
+
+	branchID := c.GetHeader("branch_id")
+	if branchID == "" {
+		h.log.Error("Branch ID is missing in the header")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
 
 	var form UpdateProductForm
 	if err := c.ShouldBind(&form); err != nil {
@@ -104,7 +124,6 @@ func (h *Handler) UpdateProduct(c *gin.Context) {
 	var url string
 	file, err := c.FormFile("file")
 	if err == nil {
-		// Upload the media file if provided
 		url, err = minio.UploadMedia(file)
 		if err != nil {
 			h.log.Error("Error occurred while uploading file", "error", err)
@@ -115,10 +134,10 @@ func (h *Handler) UpdateProduct(c *gin.Context) {
 		h.log.Info("No file uploaded, continuing without an image")
 	}
 
-	// Build the update request
 	req := products.UpdateProductRequest{
 		Id:            id,
 		CompanyId:     c.MustGet("company_id").(string),
+		BranchId:      branchID, // Add branch ID
 		Name:          form.Name,
 		CategoryId:    form.CategoryId,
 		BillFormat:    form.BillFormat,
@@ -127,7 +146,6 @@ func (h *Handler) UpdateProduct(c *gin.Context) {
 		ImageUrl:      url,
 	}
 
-	// Call the product service to update the product
 	res, err := h.ProductClient.UpdateProduct(c, &req)
 	if err != nil {
 		h.log.Error("Error updating product", "error", err.Error())
@@ -138,7 +156,6 @@ func (h *Handler) UpdateProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-// UpdateProductForm defines the structure for form data binding
 type UpdateProductForm struct {
 	Name          string  `form:"name" binding:"required"`                   // Name of the product
 	CategoryId    string  `form:"category_id" binding:"required"`            // ID of the product category
@@ -155,13 +172,22 @@ type UpdateProductForm struct {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param id path string true "Product ID"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.Message
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
 // @Router /products/{id} [delete]
 func (h *Handler) DeleteProduct(c *gin.Context) {
 	id := c.Param("id")
-	req := &products.GetProductRequest{Id: id, CompanyId: c.MustGet("company_id").(string)}
+
+	branchID := c.GetHeader("branch_id")
+	if branchID == "" {
+		h.log.Error("Branch ID is missing in the header")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
+	req := &products.GetProductRequest{Id: id, CompanyId: c.MustGet("company_id").(string), BranchId: branchID} // Add branch ID
 
 	res, err := h.ProductClient.DeleteProduct(c, req)
 	if err != nil {
@@ -181,13 +207,22 @@ func (h *Handler) DeleteProduct(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param id path string true "Product ID"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.Product
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
 // @Router /products/{id} [get]
 func (h *Handler) GetProduct(c *gin.Context) {
 	id := c.Param("id")
-	req := &products.GetProductRequest{Id: id, CompanyId: c.MustGet("company_id").(string)}
+
+	branchID := c.GetHeader("branch_id")
+	if branchID == "" {
+		h.log.Error("Branch ID is missing in the header")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
+	req := &products.GetProductRequest{Id: id, CompanyId: c.MustGet("company_id").(string), BranchId: branchID}
 
 	res, err := h.ProductClient.GetProduct(c, req)
 	if err != nil {
@@ -200,19 +235,30 @@ func (h *Handler) GetProduct(c *gin.Context) {
 }
 
 // GetProductList godoc
-// @Summary List all products
-// @Description Retrieve a list of products with optional filters
+// @Summary Get a list of products
+// @Description Retrieve a list of products filtered by branch, category, and other optional parameters
 // @Tags Products
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param filter query entity.ProductFilter false "Filter parameters"
-// @Success 200 {object} products.ProductList
+// @Param branch_id header string true "Branch ID"
+// @Param category_id query string false "Category ID to filter products"
+// @Param name query string false "Product name to filter by"
+// @Param limit query int false "Number of products to return (default 10)"
+// @Param offset query int false "Offset for pagination (default 0)"
+// @Success 200 {array} products.Product
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
 // @Router /products [get]
 func (h *Handler) GetProductList(c *gin.Context) {
 	var filter entity.ProductFilter
+
+	branchID := c.GetHeader("branch_id")
+	if branchID == "" {
+		h.log.Error("Branch ID is missing in the header")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
 
 	if err := c.ShouldBindQuery(&filter); err != nil {
 		h.log.Error("Error parsing ProductFilter", "error", err.Error())
@@ -221,7 +267,8 @@ func (h *Handler) GetProductList(c *gin.Context) {
 	}
 
 	// Call the ProductClient to retrieve the product list
-	res, err := h.ProductClient.GetProductList(c, &products.ProductFilter{CategoryId: filter.CategoryId, Name: filter.Name, CompanyId: c.MustGet("company_id").(string), CreatedBy: filter.CreatedBy, Limit: filter.Limit, Page: filter.Page, CreatedAt: filter.CreatedAt})
+	res, err := h.ProductClient.GetProductList(c, &products.ProductFilter{CategoryId: filter.CategoryId, Name: filter.Name, CompanyId: c.MustGet("company_id").(string),
+		CreatedBy: filter.CreatedBy, Limit: filter.Limit, Page: filter.Page, CreatedAt: filter.CreatedAt, BranchId: branchID})
 	if err != nil {
 		h.log.Error("Error retrieving product list", "filter", filter, "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve product list: " + err.Error()})
@@ -242,6 +289,7 @@ func (h *Handler) GetProductList(c *gin.Context) {
 // @Param file formData file true "Excel file containing products data"
 // @Param sheet_name formData string true "Sheet name of file"
 // @Param category_id path string true "Category ID"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} entity.Error
 // @Failure 400 {object} entity.Error
 // @Failure 500 {object} entity.Error
@@ -294,6 +342,12 @@ func (h *Handler) UploadAndProcessExcel(c *gin.Context) {
 	}
 
 	categoryId := c.Param("category_id")
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	erroredRows := make([]string, 0)
 	var createdProducts []products.Product
 
@@ -304,6 +358,7 @@ func (h *Handler) UploadAndProcessExcel(c *gin.Context) {
 
 		req := &products.CreateProductRequest{
 			CategoryId:    categoryId,
+			BranchId:      branchId,
 			Name:          row[0],
 			BillFormat:    row[1],
 			IncomingPrice: parseToFloat64(row[3]),
@@ -340,12 +395,12 @@ func (h *Handler) UploadAndProcessExcel(c *gin.Context) {
 // @Produce json
 // @Param body body entity.CreateBulkProductsRequest true "Bulk product creation request"
 // @Param category_id path string true "Category ID"
+// @Param branch_id header string true "Branch ID"
 // @Success 201 {object} products.BulkCreateResponse "Bulk products successfully created"
 // @Failure 400 {object} map[string]string "Invalid input or bad request"
 // @Failure 500 {object} map[string]string "Internal server error"
 // @Router /products/bulk/{category_id} [post]
 func (h *Handler) CreateBulkProducts(c *gin.Context) {
-
 	var req products.CreateBulkProductsRequest
 
 	// Bind the request body to the struct
@@ -353,9 +408,19 @@ func (h *Handler) CreateBulkProducts(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body: " + err.Error()})
 		return
 	}
+
+	// Extract necessary values from the context
 	req.CreatedBy = c.MustGet("id").(string)
 	req.CompanyId = c.MustGet("company_id").(string)
 	req.CategoryId = c.Param("category_id")
+
+	// Get branch_id from the header
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+	req.BranchId = branchId
 
 	// Call the gRPC service
 	resp, err := h.ProductClient.CreateBulkProducts(c, &req)

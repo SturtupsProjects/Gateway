@@ -14,18 +14,21 @@ func main() {
 	cfg := config.Load()
 	path, err := os.Getwd()
 	if err != nil {
+		log.Println("mana 3")
 		log.Fatal(err)
 	}
 	casbinEnforcer, err := casbin.NewEnforcer(path+"/internal/casbin/model.conf", path+"/internal/casbin/policy.csv")
 	if err != nil {
+		log.Println("mana 2")
 		log.Fatal(err)
 	}
 
 	err = minio.InitMiniOClient()
 	if err != nil {
+		log.Println("mana 1 ")
 		log.Fatal(err)
 	}
 
 	r := api.NewRouter(casbinEnforcer, cfg)
-	r.Run(cfg.API_GATEWAY)
+	log.Fatal(r.Run(cfg.API_GATEWAY))
 }

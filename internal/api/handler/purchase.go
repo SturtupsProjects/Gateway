@@ -4,7 +4,6 @@ import (
 	"gateway/internal/generated/products"
 	"gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 )
 
@@ -16,6 +15,7 @@ import (
 // @Produce json
 // @Security ApiKeyAuth
 // @Param Purchase body entity.Purchase true "Purchase data"
+// @Param branch_id header string true "Branch ID"
 // @Success 201 {object} products.PurchaseResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -28,10 +28,17 @@ func (h *Handler) CreatePurchase(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	req.PurchasedBy = c.MustGet("id").(string)
 	req.CompanyId = c.MustGet("company_id").(string)
 
-	log.Println(req.CompanyId)
+	// Получение branch_id из заголовка
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+	req.BranchId = branchId
 
 	res, err := h.ProductClient.CreatePurchase(c, &req)
 	if err != nil {
@@ -51,13 +58,24 @@ func (h *Handler) CreatePurchase(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param id path string true "Purchase ID"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.PurchaseResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
 // @Router /purchases/{id} [get]
 func (h *Handler) GetPurchase(c *gin.Context) {
 	id := c.Param("id")
-	req := &products.PurchaseID{Id: id, CompanyId: c.MustGet("company_id").(string)}
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
+	req := &products.PurchaseID{
+		Id:        id,
+		CompanyId: c.MustGet("company_id").(string),
+		BranchId:  branchId,
+	}
 
 	res, err := h.ProductClient.GetPurchase(c, req)
 	if err != nil {
@@ -77,6 +95,7 @@ func (h *Handler) GetPurchase(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param filter query entity.FilterPurchase false "Filter parameters"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.PurchaseList
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -90,7 +109,15 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	filter.CompanyId = c.MustGet("company_id").(string)
+
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+	filter.BranchId = branchId
 
 	// Fetch the list of purchases
 	res, err := h.ProductClient.GetListPurchase(c, &filter)
@@ -103,7 +130,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 	// Enhance the response with additional details
 	for i, purchase := range res.Purchases {
 		// Fetch client (supplier) details
-		clientRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.SupplierId, CompanyId: c.MustGet("company_id").(string)})
+		clientRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.SupplierId, CompanyId: filter.CompanyId})
 		if err == nil {
 			res.Purchases[i].SupplierName = clientRes.FullName
 		} else {
@@ -111,7 +138,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 		}
 
 		// Fetch purchaser details for phone number
-		purchaserRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.PurchasedBy, CompanyId: c.MustGet("company_id").(string)})
+		purchaserRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.PurchasedBy, CompanyId: filter.CompanyId})
 		if err == nil {
 			res.Purchases[i].PurchaserPhoneNumber = purchaserRes.Phone
 		} else {
@@ -123,6 +150,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 			productRes, err := h.ProductClient.GetProduct(c, &products.GetProductRequest{
 				Id:        item.ProductId,
 				CompanyId: filter.CompanyId,
+				BranchId:  filter.BranchId,
 			})
 			if err == nil {
 				res.Purchases[i].Items[j].ProductName = productRes.Name
@@ -146,6 +174,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param id path string true "Purchase ID"
 // @Param Purchase body entity.PurchaseUpdate true "Updated purchase data"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.PurchaseResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -160,7 +189,15 @@ func (h *Handler) UpdatePurchase(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	req.CompanyId = c.MustGet("company_id").(string)
+
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+	req.BranchId = branchId
 
 	res, err := h.ProductClient.UpdatePurchase(c, &req)
 	if err != nil {
@@ -180,13 +217,25 @@ func (h *Handler) UpdatePurchase(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param id path string true "Purchase ID"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.Message
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
 // @Router /purchases/{id} [delete]
 func (h *Handler) DeletePurchase(c *gin.Context) {
 	id := c.Param("id")
-	req := &products.PurchaseID{Id: id, CompanyId: c.MustGet("company_id").(string)}
+
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
+	req := &products.PurchaseID{
+		Id:        id,
+		CompanyId: c.MustGet("company_id").(string),
+		BranchId:  branchId,
+	}
 
 	res, err := h.ProductClient.DeletePurchase(c, req)
 	if err != nil {

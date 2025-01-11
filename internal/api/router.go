@@ -120,11 +120,11 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	}
 	branch := router.Group("/branches")
 	{
-		branch.POST("/admin", h.CreateBranch)
+		branch.POST("/create", h.CreateBranch)
 		branch.GET("/:branch_id", h.GetBranch)
 		branch.PUT("/:branch_id", h.UpdateBranch)
 		branch.DELETE("/:branch_id", h.DeleteBranch)
-		branch.GET("/company/:company_id", h.ListBranches)
+		branch.GET("/list", h.ListBranches)
 	}
 
 	statics := router.Group("/statistics")

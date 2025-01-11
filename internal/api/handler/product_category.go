@@ -16,6 +16,7 @@ import (
 // @Accept multipart/form-data
 // @Produce json
 // @Security ApiKeyAuth
+// @Param branch_id header string true "Branch ID"
 // @Param file formData file false "Upload category image (optional)"
 // @Param name formData string true "Name of the category"
 // @Success 201 {object} products.Category "Category successfully created"
@@ -23,6 +24,13 @@ import (
 // @Failure 500 {object} entity.Error "Internal server error"
 // @Router /products/category [post]
 func (h *Handler) CreateCategory(c *gin.Context) {
+
+	branchID := c.GetHeader("branch_id")
+	if branchID == "" {
+		h.log.Error("Branch ID is missing in the header")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
 
 	req := entity.Names{}
 
@@ -47,7 +55,13 @@ func (h *Handler) CreateCategory(c *gin.Context) {
 		log.Println("No file uploaded, continuing without an image")
 	}
 
-	res, err := h.ProductClient.CreateCategory(c, &products.CreateCategoryRequest{Name: req.Name, CreatedBy: c.MustGet("id").(string), ImageUrl: url, CompanyId: c.MustGet("company_id").(string)})
+	res, err := h.ProductClient.CreateCategory(c, &products.CreateCategoryRequest{
+		Name:      req.Name,
+		CreatedBy: c.MustGet("id").(string),
+		ImageUrl:  url,
+		CompanyId: c.MustGet("company_id").(string),
+		BranchId:  branchID,
+	})
 	if err != nil {
 		h.log.Error("Error creating category", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -61,18 +75,31 @@ func (h *Handler) CreateCategory(c *gin.Context) {
 // @Summary Update Product Category
 // @Description Update a product category by ID
 // @Tags Category
-// @Accept json
+// @Accept multipart/form-data
 // @Produce json
 // @Security ApiKeyAuth
+// @Param branch_id header string true "Branch ID"
 // @Param id path string true "Category ID"
 // @Param file formData file false "Upload category image (optional)"
-// @Param name formData string true "Name of the category"// @Success 200 {object} products.Category
-// @Failure 400 {object} products.Error
-// @Failure 500 {object} products.Error
+// @Param name formData string true "Name of the category"
+// @Success 200 {object} products.Category "Category successfully updated"
+// @Failure 400 {object} products.Error "Invalid input or bad request"
+// @Failure 500 {object} products.Error "Internal server error"
 // @Router /products/category/{id} [put]
 func (h *Handler) UpdateCategory(c *gin.Context) {
+	branchID := c.GetHeader("branch_id")
+	if branchID == "" {
+		h.log.Error("Branch ID is missing in the header")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	id := c.Param("id")
-	req := &products.UpdateCategoryRequest{Id: id, CompanyId: c.MustGet("company_id").(string)}
+	req := &products.UpdateCategoryRequest{
+		Id:        id,
+		CompanyId: c.MustGet("company_id").(string),
+		BranchId:  branchID,
+	}
 
 	name := entity.Names{}
 
@@ -118,14 +145,26 @@ func (h *Handler) UpdateCategory(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param branch_id header string true "Branch ID"
 // @Param id path string true "Category ID"
-// @Success 200 {object} products.Category
-// @Failure 400 {object} products.Error
-// @Failure 500 {object} products.Error
+// @Success 200 {object} products.Category "Category details"
+// @Failure 400 {object} products.Error "Invalid input or bad request"
+// @Failure 500 {object} products.Error "Internal server error"
 // @Router /products/category/{id} [get]
 func (h *Handler) GetCategory(c *gin.Context) {
+	branchID := c.GetHeader("branch_id")
+	if branchID == "" {
+		h.log.Error("Branch ID is missing in the header")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	id := c.Param("id")
-	req := &products.GetCategoryRequest{Id: id, CompanyId: c.MustGet("company_id").(string)}
+	req := &products.GetCategoryRequest{
+		Id:        id,
+		CompanyId: c.MustGet("company_id").(string),
+		BranchId:  branchID,
+	}
 
 	res, err := h.ProductClient.GetCategory(c, req)
 	if err != nil {
@@ -144,18 +183,25 @@ func (h *Handler) GetCategory(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param branch_id header string true "Branch ID"
 // @Param name query string false "Filter by category name"
 // @Success 200 {object} products.CategoryList "List of categories"
 // @Failure 400 {object} products.Error "Bad request due to invalid query parameters"
 // @Failure 500 {object} products.Error "Internal server error"
 // @Router /products/category [get]
 func (h *Handler) GetListCategory(c *gin.Context) {
+	branchID := c.GetHeader("branch_id")
+	if branchID == "" {
+		h.log.Error("Branch ID is missing in the header")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	var req products.CategoryName
 	req.Name = c.Query("name")
 	req.CompanyId = c.MustGet("company_id").(string)
-	//req.CreatedBy = c.MustGet("id").(string)
-	//req.CreatedBy = uuid.New().String()
-	// Call the ProductClient to get the list of categories
+	req.BranchId = branchID
+
 	res, err := h.ProductClient.GetListCategory(c.Request.Context(), &req)
 	if err != nil {
 		h.log.Error("Failed to retrieve category list", "error", err.Error())
@@ -163,7 +209,6 @@ func (h *Handler) GetListCategory(c *gin.Context) {
 		return
 	}
 
-	// Return the successful response
 	c.JSON(http.StatusOK, res)
 }
 
@@ -174,14 +219,26 @@ func (h *Handler) GetListCategory(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param branch_id header string true "Branch ID"
 // @Param id path string true "Category ID"
-// @Success 200 {object} products.Message
-// @Failure 400 {object} products.Error
-// @Failure 500 {object} products.Error
+// @Success 200 {object} products.Message "Category successfully deleted"
+// @Failure 400 {object} products.Error "Invalid input or bad request"
+// @Failure 500 {object} products.Error "Internal server error"
 // @Router /products/category/{id} [delete]
 func (h *Handler) DeleteCategory(c *gin.Context) {
+	branchID := c.GetHeader("branch_id")
+	if branchID == "" {
+		h.log.Error("Branch ID is missing in the header")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
 	id := c.Param("id")
-	req := &products.GetCategoryRequest{Id: id, CompanyId: c.MustGet("company_id").(string)}
+	req := &products.GetCategoryRequest{
+		Id:        id,
+		CompanyId: c.MustGet("company_id").(string),
+		BranchId:  branchID,
+	}
 
 	res, err := h.ProductClient.DeleteCategory(c, req)
 	if err != nil {
