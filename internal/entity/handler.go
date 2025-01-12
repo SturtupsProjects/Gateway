@@ -1,5 +1,7 @@
 package entity
 
+import "gateway/internal/generated/products"
+
 type UserUpdateRequest struct {
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`
@@ -31,6 +33,17 @@ type Sale struct {
 	ClientName    string       `json:"client_name,omitempty"`
 	ClientPhone   string       `json:"client_phone,omitempty"`
 	SoldProducts  []*SalesItem `json:"sold_products,omitempty"`
+}
+type PaymentSale struct {
+	ClientId      string                `json:"client_id,omitempty"`
+	PaymentMethod string                `json:"payment_method,omitempty"`
+	IsFullyDebt   bool                  `json:"is_fully_debt,omitempty"`
+	CurrencyCode  string                `json:"currency_code,omitempty"`
+	PaidAmount    float64               `json:"paid_amount,omitempty"`
+	BranchId      string                `json:"branch_id,omitempty"`
+	ClientName    string                `json:"client_name,omitempty"`
+	ClientPhone   string                `json:"client_phone,omitempty"`
+	SoldProducts  []*products.SalesItem `json:"sold_products,omitempty"`
 }
 
 type SalesItem struct {
