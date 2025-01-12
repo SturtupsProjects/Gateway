@@ -50,6 +50,8 @@ func (h *Handler) CalculateTotalSales(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param Sale body entity.Sale true "Sale data"
+// @Param client_name path string true "Client name"
+// @Param client_phone path string true "Client phone"
 // @Param branch_id header string true "Branch ID"
 // @Success 201 {object} products.SaleResponse
 // @Failure 400 {object} products.Error
@@ -66,19 +68,21 @@ func (h *Handler) CreateSales(c *gin.Context) {
 
 	companyID := c.MustGet("company_id").(string)
 
+	ClientName := c.Param("client_name")
+	ClientPhone := c.Param("client_phone")
 	if len(req.ClientId) < 16 {
-		if req.ClientName == "" {
+		if ClientName == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "missing client id or client_name"})
 			return
 		}
-		if req.ClientPhone == "" {
-			req.ClientPhone = "no phone"
+		if ClientPhone == "" {
+			ClientPhone = c.Param("client_phone")
 		}
 
 		clientReq := user.ClientRequest{
-			FullName:   req.ClientName,
+			FullName:   ClientName,
 			Address:    "no address",
-			Phone:      req.ClientPhone,
+			Phone:      ClientPhone,
 			Type:       "client",
 			ClientType: "street",
 			CompanyId:  companyID,
@@ -340,8 +344,6 @@ func (h *Handler) Payments(c *gin.Context) {
 			CompanyId:     c.MustGet("company_id").(string),
 			PaymentMethod: req.PaymentMethod,
 			BranchId:      req.BranchId,
-			ClientName:    req.ClientName,
-			ClientPhone:   req.ClientPhone,
 			SoldProducts:  req.SoldProducts,
 		})
 		if err != nil {
@@ -360,8 +362,6 @@ func (h *Handler) Payments(c *gin.Context) {
 			CompanyId:     c.MustGet("company_id").(string),
 			PaymentMethod: req.PaymentMethod,
 			BranchId:      req.BranchId,
-			ClientName:    req.ClientName,
-			ClientPhone:   req.ClientPhone,
 			SoldProducts:  req.SoldProducts,
 		})
 		if err != nil {

@@ -93,9 +93,9 @@ func (h *Handler) GetListDebts(c *gin.Context) {
 		return
 	}
 
-	for i, debts := range res.Installments {
+	for i, debt := range res.Installments {
 
-		client, err := h.UserClient.GetClient(context.Background(), &pbu.UserIDRequest{Id: debts.ClientId, CompanyId: debts.CompanyId})
+		client, err := h.UserClient.GetClient(context.Background(), &pbu.UserIDRequest{Id: debt.ClientId, CompanyId: debt.CompanyId})
 		if err == nil {
 			res.Installments[i].ClientName = client.FullName
 			res.Installments[i].ClientPhone = client.Phone
