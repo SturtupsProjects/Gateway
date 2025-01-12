@@ -224,10 +224,6 @@ definitions:
         type: string
       client_id:
         type: string
-      client_name:
-        type: string
-      client_phone:
-        type: string
       currency_code:
         type: string
       is_fully_debt:
@@ -1541,6 +1537,12 @@ paths:
         name: currency_code
         type: string
       - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: page
+        type: integer
+      - in: query
         name: total_amount_max
         type: number
       - in: query
@@ -1751,7 +1753,7 @@ paths:
             $ref: '#/definitions/products.Error'
       security:
       - ApiKeyAuth: []
-      summary: List all payments
+      summary: Bought products for cash or debt
       tags:
       - Payments
   /debts/payments/{debt_id}:
@@ -2320,8 +2322,17 @@ paths:
       description: Retrieve a list of purchases with optional filters
       parameters:
       - in: query
+        name: branch_id
+        type: string
+      - in: query
         name: created_at
         type: string
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: page
+        type: integer
       - in: query
         name: product_id
         type: string
@@ -2511,11 +2522,23 @@ paths:
       description: Retrieve a list of sales with optional filters
       parameters:
       - in: query
+        name: branch_id
+        type: string
+      - in: query
         name: client_id
+        type: string
+      - in: query
+        name: company_id
         type: string
       - in: query
         name: end_date
         type: string
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: page
+        type: integer
       - in: query
         name: sold_by
         type: string
@@ -2558,6 +2581,16 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/entity.Sale'
+      - description: Client name
+        in: path
+        name: client_name
+        required: true
+        type: string
+      - description: Client phone
+        in: path
+        name: client_phone
+        required: true
+        type: string
       - description: Branch ID
         in: header
         name: branch_id

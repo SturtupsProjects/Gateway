@@ -1320,6 +1320,16 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
                         "type": "number",
                         "name": "total_amount_max",
                         "in": "query"
@@ -1567,7 +1577,7 @@ const docTemplate = `{
                 "tags": [
                     "Payments"
                 ],
-                "summary": "List all payments",
+                "summary": "Bought products for cash or debt",
                 "parameters": [
                     {
                         "description": "Sale data",
@@ -2521,7 +2531,22 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "name": "branch_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "created_at",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
                         "in": "query"
                     },
                     {
@@ -2819,12 +2844,32 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "name": "branch_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "client_id",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "name": "company_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
                         "in": "query"
                     },
                     {
@@ -2892,6 +2937,20 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/entity.Sale"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Client name",
+                        "name": "client_name",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Client phone",
+                        "name": "client_phone",
+                        "in": "path",
+                        "required": true
                     },
                     {
                         "type": "string",
@@ -4384,12 +4443,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "client_id": {
-                    "type": "string"
-                },
-                "client_name": {
-                    "type": "string"
-                },
-                "client_phone": {
                     "type": "string"
                 },
                 "currency_code": {
