@@ -1,5 +1,7 @@
 package entity
 
+import "gateway/internal/generated/products"
+
 type UserUpdateRequest struct {
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`
@@ -31,6 +33,15 @@ type Sale struct {
 	ClientName    string       `json:"client_name,omitempty"`
 	ClientPhone   string       `json:"client_phone,omitempty"`
 	SoldProducts  []*SalesItem `json:"sold_products,omitempty"`
+}
+type PaymentSale struct {
+	ClientId      string                `json:"client_id,omitempty"`
+	PaymentMethod string                `json:"payment_method,omitempty"`
+	IsFullyDebt   bool                  `json:"is_fully_debt,omitempty"`
+	CurrencyCode  string                `json:"currency_code,omitempty"`
+	PaidAmount    float64               `json:"paid_amount,omitempty"`
+	BranchId      string                `json:"branch_id,omitempty"`
+	SoldProducts  []*products.SalesItem `json:"sold_products,omitempty"`
 }
 
 type SalesItem struct {
@@ -100,10 +111,13 @@ type ProductFilter struct {
 }
 
 type FilterPurchase struct {
-	ProductId   string `json:"product_id,omitempty"`
-	SupplierId  string `json:"supplier_id,omitempty"`
-	PurchasedBy string `json:"purchased_by,omitempty"`
-	CreatedAt   string `json:"created_at,omitempty"`
+	ProductId   string `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	SupplierId  string `protobuf:"bytes,2,opt,name=supplier_id,json=supplierId,proto3" json:"supplier_id,omitempty"`
+	PurchasedBy string `protobuf:"bytes,3,opt,name=purchased_by,json=purchasedBy,proto3" json:"purchased_by,omitempty"`
+	CreatedAt   string `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	BranchId    string `protobuf:"bytes,6,opt,name=branch_id,json=branchId,proto3" json:"branch_id,omitempty"`
+	Limit       int64  `protobuf:"varint,7,opt,name=limit,proto3" json:"limit,omitempty"`
+	Page        int64  `protobuf:"varint,8,opt,name=page,proto3" json:"page,omitempty"`
 }
 
 type PurchaseUpdate struct {
@@ -122,8 +136,11 @@ type SaleFilter struct {
 	EndDate   string `protobuf:"bytes,2,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
 	ClientId  string `protobuf:"bytes,3,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
 	SoldBy    string `protobuf:"bytes,4,opt,name=sold_by,json=soldBy,proto3" json:"sold_by,omitempty"`
+	CompanyId string `protobuf:"bytes,5,opt,name=company_id,json=companyId,proto3" json:"company_id,omitempty"`
+	Limit     int64  `protobuf:"varint,6,opt,name=limit,proto3" json:"limit,omitempty"`
+	Page      int64  `protobuf:"varint,7,opt,name=page,proto3" json:"page,omitempty"`
+	BranchId  string `protobuf:"bytes,8,opt,name=branch_id,json=branchId,proto3" json:"branch_id,omitempty"`
 }
-
 type UpdateCategoryRequest struct {
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 }

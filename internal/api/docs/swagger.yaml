@@ -218,6 +218,25 @@ definitions:
       message:
         type: string
     type: object
+  entity.PaymentSale:
+    properties:
+      branch_id:
+        type: string
+      client_id:
+        type: string
+      currency_code:
+        type: string
+      is_fully_debt:
+        type: boolean
+      paid_amount:
+        type: number
+      payment_method:
+        type: string
+      sold_products:
+        items:
+          $ref: '#/definitions/products.SalesItem'
+        type: array
+    type: object
   entity.Purchase:
     properties:
       description:
@@ -1518,6 +1537,12 @@ paths:
         name: currency_code
         type: string
       - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: page
+        type: integer
+      - in: query
         name: total_amount_max
         type: number
       - in: query
@@ -1699,6 +1724,38 @@ paths:
       summary: Get a payment by ID
       tags:
       - Debts
+  /debts/payments:
+    post:
+      consumes:
+      - application/json
+      description: Retrieve a list of payments
+      parameters:
+      - description: Sale data
+        in: body
+        name: Sale
+        required: true
+        schema:
+          $ref: '#/definitions/entity.PaymentSale'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.SaleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Bought products for cash or debt
+      tags:
+      - Payments
   /debts/payments/{debt_id}:
     get:
       consumes:
@@ -2265,8 +2322,17 @@ paths:
       description: Retrieve a list of purchases with optional filters
       parameters:
       - in: query
+        name: branch_id
+        type: string
+      - in: query
         name: created_at
         type: string
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: page
+        type: integer
       - in: query
         name: product_id
         type: string
@@ -2456,11 +2522,23 @@ paths:
       description: Retrieve a list of sales with optional filters
       parameters:
       - in: query
+        name: branch_id
+        type: string
+      - in: query
         name: client_id
+        type: string
+      - in: query
+        name: company_id
         type: string
       - in: query
         name: end_date
         type: string
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: page
+        type: integer
       - in: query
         name: sold_by
         type: string
@@ -2503,6 +2581,16 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/entity.Sale'
+      - description: Client name
+        in: path
+        name: client_name
+        required: true
+        type: string
+      - description: Client phone
+        in: path
+        name: client_phone
+        required: true
+        type: string
       - description: Branch ID
         in: header
         name: branch_id

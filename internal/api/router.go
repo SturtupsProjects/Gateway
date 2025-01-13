@@ -159,7 +159,8 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		debt.POST("/pay", h.PayDebt)
 		debt.GET("/payments/:debt_id", h.GetPaymentsByDebtId)
 		debt.GET("/payment/:id", h.GetPayment)
-		//debt.GET("/payment", h.GetPayments)
+		debt.POST("/payments", h.Payments)
+
 	}
 
 	// Return the configured router

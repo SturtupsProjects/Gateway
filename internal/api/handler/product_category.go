@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 // CreateCategory godoc
@@ -199,6 +200,16 @@ func (h *Handler) GetListCategory(c *gin.Context) {
 
 	var req products.CategoryName
 	req.Name = c.Query("name")
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 64)
+	if err != nil {
+		limit = 10
+	}
+	page, err := strconv.ParseInt(c.Query("page"), 10, 64)
+	if err != nil {
+		page = 1
+	}
+	req.Limit = limit
+	req.Page = page
 	req.CompanyId = c.MustGet("company_id").(string)
 	req.BranchId = branchID
 
