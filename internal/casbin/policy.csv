@@ -114,3 +114,20 @@ p, worker, /debts/client/:client_id, GET
 p, worker, /debts/pay, POST
 p, worker, /debts/payments/:debt_id, GET
 p, worker, /debts/payment/:id, GET
+
+
+
+
+# Разрешения для роли worker
+p, worker, /branches/create, POST
+p, worker, /branches/:branch_id, GET
+p, worker, /branches/:branch_id, PUT
+p, worker, /branches/:branch_id, DELETE
+p, worker, /branches/list, GET
+
+# Разрешения для роли owner
+p, owner, /branches/create, POST
+p, owner, /branches/:branch_id, GET
+p, owner, /branches/:branch_id, PUT
+p, owner, /branches/:branch_id, DELETE
+p, owner, /branches/list, GET
