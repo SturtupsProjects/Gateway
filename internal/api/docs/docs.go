@@ -1755,8 +1755,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "Offset for pagination (default 0)",
-                        "name": "offset",
+                        "description": "Offset for pagination (default 1)",
+                        "name": "page",
                         "in": "query"
                     }
                 ],

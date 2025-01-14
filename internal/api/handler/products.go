@@ -245,7 +245,7 @@ func (h *Handler) GetProduct(c *gin.Context) {
 // @Param category_id query string false "Category ID to filter products"
 // @Param name query string false "Product name to filter by"
 // @Param limit query int false "Number of products to return (default 10)"
-// @Param offset query int false "Offset for pagination (default 0)"
+// @Param page query int false "Offset for pagination (default 1)"
 // @Success 200 {array} products.Product
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
