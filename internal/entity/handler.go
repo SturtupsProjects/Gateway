@@ -132,14 +132,14 @@ type SaleUpdate struct {
 	PaymentMethod string `json:"payment_method,omitempty"`
 }
 type SaleFilter struct {
-	StartDate string `protobuf:"bytes,1,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
-	EndDate   string `protobuf:"bytes,2,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
-	ClientId  string `protobuf:"bytes,3,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
-	SoldBy    string `protobuf:"bytes,4,opt,name=sold_by,json=soldBy,proto3" json:"sold_by,omitempty"`
-	CompanyId string `protobuf:"bytes,5,opt,name=company_id,json=companyId,proto3" json:"company_id,omitempty"`
-	Limit     int64  `protobuf:"varint,6,opt,name=limit,proto3" json:"limit,omitempty"`
-	Page      int64  `protobuf:"varint,7,opt,name=page,proto3" json:"page,omitempty"`
-	BranchId  string `protobuf:"bytes,8,opt,name=branch_id,json=branchId,proto3" json:"branch_id,omitempty"`
+	StartDate string `json:"start_date,omitempty"` // Дата начала для фильтрации
+	EndDate   string `json:"end_date,omitempty"`   // Дата окончания для фильтрации
+	ClientId  string `json:"client_id,omitempty"`  // ID клиента для фильтрации
+	SoldBy    string `json:"sold_by,omitempty"`    // ID продавца для фильтрации
+	CompanyId string `json:"company_id,omitempty"` // ID компании для фильтрации
+	Limit     int64  `json:"limit,omitempty"`      // Количество записей для возврата (по умолчанию 10)
+	Page      int64  `json:"page,omitempty"`       // Номер страницы для пагинации (по умолчанию 1)
+	BranchId  string `json:"branch_id,omitempty"`
 }
 type UpdateCategoryRequest struct {
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`

@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 // CalculateTotalSales godoc
@@ -203,38 +204,54 @@ func (h *Handler) GetSales(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-// GetListSales godoc
-// @Summary List all sales
-// @Description Retrieve a list of sales with optional filters
-// @Tags Sales
-// @Accept json
-// @Produce json
-// @Security ApiKeyAuth
-// @Param filter query entity.SaleFilter false "Filter parameters"
-// @Param branch_id header string true "Branch ID"
-// @Success 200 {object} products.SaleList
-// @Failure 400 {object} products.Error
-// @Failure 500 {object} products.Error
-// @Router /sales [get]
 func (h *Handler) GetListSales(c *gin.Context) {
-	var filter products.SaleFilter
+	// Извлекаем параметры фильтра индивидуально
+	limitStr := c.Query("limit") // Значение по умолчанию - 10
+	pageStr := c.Query("page")   // Значение по умолчанию - 1
+	startDate := c.Query("start_date")
+	endDate := c.Query("end_date")
+	clientId := c.Query("client_id")
+	soldBy := c.Query("sold_by")
+	branchId := c.GetHeader("branch_id") // Получаем из заголовков
 
-	// Преобразуем параметры фильтра из запроса
-	if err := c.ShouldBindQuery(&filter); err != nil {
-		h.log.Error("Error parsing SaleFilter", "error", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// Преобразуем limit и page в int64
+	limit, err := strconv.ParseInt(limitStr, 10, 64)
+	if err != nil {
+		h.log.Error("Error parsing limit", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit parameter"})
 		return
 	}
 
-	// Получаем branch_id из заголовков
-	branchId := c.GetHeader("branch_id")
+	page, err := strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		h.log.Error("Error parsing page", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page parameter"})
+		return
+	}
+
+	// Логируем переданные параметры для отладки
+	log.Println("Limit:", limit, "Page:", page, "StartDate:", startDate, "EndDate:", endDate)
+
+	// Проверяем, если branchId пустой, то возвращаем ошибку
 	if branchId == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
 		return
 	}
 
-	filter.CompanyId = c.MustGet("company_id").(string)
-	filter.BranchId = branchId
+	// Получаем company_id из контекста
+	companyId := c.MustGet("company_id").(string)
+
+	// Создаем фильтр для передачи в запрос
+	filter := products.SaleFilter{
+		BranchId:  branchId,
+		Limit:     limit,
+		Page:      page,
+		CompanyId: companyId,
+		SoldBy:    soldBy,
+		ClientId:  clientId,
+		StartDate: startDate,
+		EndDate:   endDate,
+	}
 
 	// Получаем список продаж с учетом фильтрации
 	res, err := h.ProductClient.GetListSales(c, &filter)
@@ -246,7 +263,7 @@ func (h *Handler) GetListSales(c *gin.Context) {
 
 	// Дополнительная информация о клиентах, продавцах и товарах
 	for i, sale := range res.Sales {
-		clientRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: sale.ClientId, CompanyId: c.MustGet("company_id").(string)})
+		clientRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: sale.ClientId, CompanyId: companyId})
 		if err == nil {
 			res.Sales[i].ClientName = clientRes.FullName
 			res.Sales[i].ClientPhoneNumber = clientRes.Phone
@@ -254,7 +271,7 @@ func (h *Handler) GetListSales(c *gin.Context) {
 			h.log.Error("Error fetching customer details", "customer_id", sale.ClientId, "error", err.Error())
 		}
 
-		supplier, err := h.UserClient.GetUser(c, &user.UserIDRequest{Id: sale.SoldBy, CompanyId: c.MustGet("company_id").(string)})
+		supplier, err := h.UserClient.GetUser(c, &user.UserIDRequest{Id: sale.SoldBy, CompanyId: companyId})
 		if err == nil {
 			res.Sales[i].SoldByName = supplier.FirstName
 		} else {
@@ -265,13 +282,13 @@ func (h *Handler) GetListSales(c *gin.Context) {
 		for j, item := range sale.SoldProducts {
 			productRes, err := h.ProductClient.GetProduct(c, &products.GetProductRequest{
 				Id:        item.ProductId,
-				CompanyId: filter.CompanyId,
+				CompanyId: companyId,
 			})
 			if err == nil {
 				res.Sales[i].SoldProducts[j].ProductName = productRes.Name
 				res.Sales[i].SoldProducts[j].ProductImage = productRes.ImageUrl
 			} else {
-				h.log.Error("Error fetching customer details", "customer_id", filter.CompanyId, "error", err.Error())
+				h.log.Error("Error fetching product details", "product_id", item.ProductId, "error", err.Error())
 			}
 		}
 	}

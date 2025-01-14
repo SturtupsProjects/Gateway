@@ -260,15 +260,27 @@ func (h *Handler) GetProductList(c *gin.Context) {
 		return
 	}
 
+	// Преобразуем параметры Limit и Page в int64
 	if err := c.ShouldBindQuery(&filter); err != nil {
 		h.log.Error("Error parsing ProductFilter", "error", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	// Выводим параметры фильтра в лог
+	log.Println("Limit:", filter.Limit, "Page:", filter.Page)
+
 	// Call the ProductClient to retrieve the product list
-	res, err := h.ProductClient.GetProductList(c, &products.ProductFilter{CategoryId: filter.CategoryId, Name: filter.Name, CompanyId: c.MustGet("company_id").(string),
-		CreatedBy: filter.CreatedBy, Limit: filter.Limit, Page: filter.Page, CreatedAt: filter.CreatedAt, BranchId: branchID})
+	res, err := h.ProductClient.GetProductList(c, &products.ProductFilter{
+		CategoryId: filter.CategoryId,
+		Name:       filter.Name,
+		CompanyId:  c.MustGet("company_id").(string),
+		CreatedBy:  filter.CreatedBy,
+		Limit:      filter.Limit,
+		Page:       filter.Page,
+		CreatedAt:  filter.CreatedAt,
+		BranchId:   branchID,
+	})
 	if err != nil {
 		h.log.Error("Error retrieving product list", "filter", filter, "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve product list: " + err.Error()})

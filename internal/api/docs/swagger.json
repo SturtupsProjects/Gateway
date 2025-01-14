@@ -2828,93 +2828,6 @@
             }
         },
         "/sales": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Retrieve a list of sales with optional filters",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Sales"
-                ],
-                "summary": "List all sales",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "name": "branch_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "client_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "company_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "end_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "sold_by",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "start_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Branch ID",
-                        "name": "branch_id",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/products.SaleList"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            },
             "post": {
                 "security": [
                     {
@@ -4727,6 +4640,9 @@
                     "items": {
                         "$ref": "#/definitions/products.Category"
                     }
+                },
+                "total_count": {
+                    "type": "integer"
                 }
             }
         },
@@ -4956,20 +4872,6 @@
                 "total_cost": {
                     "description": "Changed to double",
                     "type": "number"
-                }
-            }
-        },
-        "products.SaleList": {
-            "type": "object",
-            "properties": {
-                "sales": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/products.SaleResponse"
-                    }
-                },
-                "total_count": {
-                    "type": "integer"
                 }
             }
         },

@@ -407,6 +407,8 @@ definitions:
         items:
           $ref: '#/definitions/products.Category'
         type: array
+      total_count:
+        type: integer
     type: object
   products.DailySales:
     properties:
@@ -559,15 +561,6 @@ definitions:
       total_cost:
         description: Changed to double
         type: number
-    type: object
-  products.SaleList:
-    properties:
-      sales:
-        items:
-          $ref: '#/definitions/products.SaleResponse'
-        type: array
-      total_count:
-        type: integer
     type: object
   products.SaleResponse:
     properties:
@@ -2528,60 +2521,6 @@ paths:
       tags:
       - Purchases
   /sales:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve a list of sales with optional filters
-      parameters:
-      - in: query
-        name: branch_id
-        type: string
-      - in: query
-        name: client_id
-        type: string
-      - in: query
-        name: company_id
-        type: string
-      - in: query
-        name: end_date
-        type: string
-      - in: query
-        name: limit
-        type: integer
-      - in: query
-        name: page
-        type: integer
-      - in: query
-        name: sold_by
-        type: string
-      - in: query
-        name: start_date
-        type: string
-      - description: Branch ID
-        in: header
-        name: branch_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/products.SaleList'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/products.Error'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/products.Error'
-      security:
-      - ApiKeyAuth: []
-      summary: List all sales
-      tags:
-      - Sales
     post:
       consumes:
       - application/json

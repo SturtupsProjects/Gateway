@@ -4,7 +4,9 @@ import (
 	"gateway/internal/generated/products"
 	"gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
+	"strconv"
 )
 
 // CreatePurchase godoc
@@ -103,23 +105,64 @@ func (h *Handler) GetPurchase(c *gin.Context) {
 func (h *Handler) GetListPurchase(c *gin.Context) {
 	var filter products.FilterPurchase
 
-	// Parse query parameters into filter
-	if err := c.ShouldBindQuery(&filter); err != nil {
-		h.log.Error("Error parsing FilterPurchase", "error", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	// Извлекаем параметры запроса индивидуально
+	productId := c.Query("product_id")
+	supplierId := c.Query("supplier_id")
+	purchasedBy := c.Query("purchased_by")
+	companyId := c.MustGet("company_id").(string)
+	createdAt := c.Query("created_at")
+	branchId := c.GetHeader("branch_id") // Получаем из заголовков
+
+	// Пагинация
+	limitStr := c.Query("limit")
+	pageStr := c.Query("page")
+
+	// Преобразуем limit и page в int64
+	var limit int64 = 10 // Значение по умолчанию
+	var page int64 = 1   // Значение по умолчанию
+
+	if limitStr != "" {
+		var err error
+		limit, err = strconv.ParseInt(limitStr, 10, 64)
+		if err != nil {
+			h.log.Error("Error parsing limit", "error", err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit parameter"})
+			return
+		}
 	}
 
-	filter.CompanyId = c.MustGet("company_id").(string)
+	if pageStr != "" {
+		var err error
+		page, err = strconv.ParseInt(pageStr, 10, 64)
+		if err != nil {
+			h.log.Error("Error parsing page", "error", err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page parameter"})
+			return
+		}
+	}
 
-	branchId := c.GetHeader("branch_id")
+	// Логируем параметры запроса для отладки
+	log.Println("ProductId:", productId, "SupplierId:", supplierId, "PurchasedBy:", purchasedBy, "CreatedAt:", createdAt, "BranchId:", branchId, "Limit:", limit, "Page:", page)
+
+	// Проверяем наличие branchId
 	if branchId == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
 		return
 	}
-	filter.BranchId = branchId
 
-	// Fetch the list of purchases
+	// Создаем фильтр
+	filter = products.FilterPurchase{
+		ProductId:   productId,
+		SupplierId:  supplierId,
+		PurchasedBy: purchasedBy,
+		CompanyId:   companyId,
+		CreatedAt:   createdAt,
+		BranchId:    branchId,
+		Limit:       limit,
+		Page:        page,
+	}
+
+	// Получаем список покупок с учетом фильтрации
 	res, err := h.ProductClient.GetListPurchase(c, &filter)
 	if err != nil {
 		h.log.Error("Error retrieving purchase list", "error", err.Error())
@@ -127,9 +170,9 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 		return
 	}
 
-	// Enhance the response with additional details
+	// Дополнительная информация (например, поставщик и покупатель)
 	for i, purchase := range res.Purchases {
-		// Fetch client (supplier) details
+		// Получаем информацию о поставщике
 		clientRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.SupplierId, CompanyId: filter.CompanyId})
 		if err == nil {
 			res.Purchases[i].SupplierName = clientRes.FullName
@@ -137,7 +180,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 			h.log.Error("Error fetching supplier details", "supplier_id", purchase.SupplierId, "error", err.Error())
 		}
 
-		// Fetch purchaser details for phone number
+		// Получаем информацию о покупателе
 		purchaserRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.PurchasedBy, CompanyId: filter.CompanyId})
 		if err == nil {
 			res.Purchases[i].PurchaserPhoneNumber = purchaserRes.Phone
@@ -145,7 +188,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 			h.log.Error("Error fetching purchaser details", "purchased_by", purchase.PurchasedBy, "error", err.Error())
 		}
 
-		// Fetch product names for each item in the purchase
+		// Получаем информацию о товарах для каждого элемента покупки
 		for j, item := range purchase.Items {
 			productRes, err := h.ProductClient.GetProduct(c, &products.GetProductRequest{
 				Id:        item.ProductId,
@@ -161,7 +204,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 		}
 	}
 
-	// Return the enhanced purchase list response
+	// Возвращаем ответ
 	c.JSON(http.StatusOK, res)
 }
 
