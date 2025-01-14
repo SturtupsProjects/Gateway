@@ -186,6 +186,8 @@ func (h *Handler) GetCategory(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param branch_id header string true "Branch ID"
 // @Param name query string false "Filter by category name"
+// @Param limit query string false "Limit"
+// @Param offset query string false "Page"
 // @Success 200 {object} products.CategoryList "List of categories"
 // @Failure 400 {object} products.Error "Bad request due to invalid query parameters"
 // @Failure 500 {object} products.Error "Internal server error"

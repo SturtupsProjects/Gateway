@@ -5,41 +5,41 @@ p, admin,/*, POST
 
 
 p, owner, /user/login, POST
-p, owner, /user/get/:id, GET
-p, owner, /user/update/:id, PUT
+p, owner, /user/get/*, GET
+p, owner, /user/update/*, PUT
 
 p, owner, /products/category, POST
 p, owner, /products/category, GET
-p, owner, /products/category/:id, GET
-p, owner, /products/category/:id, PUT
-p, owner, /products/category/:id, DELETE
+p, owner, /products/category/*, GET
+p, owner, /products/category/*, PUT
+p, owner, /products/category/*, DELETE
 
 p, owner, /products, POST
-p, owner, /products/bulk/:category_id, POST
+p, owner, /products/bulk/*, POST
 p, owner, /products, GET
-p, owner, /products/:id, GET
-p, owner, /products/:id, PUT
-p, owner, /products/:id, DELETE
-p, owner, /products/excel-upload/:category_id, POST
+p, owner, /products/*, GET
+p, owner, /products/*, PUT
+p, owner, /products/*, DELETE
+p, owner, /products/excel-upload/*, POST
 
 p, owner, /purchases, POST
 p, owner, /purchases, GET
-p, owner, /purchases/:id, GET
-p, owner, /purchases/:id, PUT
-p, owner, /purchases/:id, DELETE
+p, owner, /purchases/*, GET
+p, owner, /purchases/*, PUT
+p, owner, /purchases/*, DELETE
 
 p, owner, /sales, POST
 p, owner, /sales, GET
-p, owner, /sales/:id, GET
-p, owner, /sales/:id, PUT
-p, owner, /sales/:id, DELETE
+p, owner, /sales/*, GET
+p, owner, /sales/*, PUT
+p, owner, /sales/*, DELETE
 p, owner, /sales/calculate, POST
 
 p, owner, /clients, POST
 p, owner, /clients, GET
-p, owner, /clients/:id, GET
-p, owner, /clients/:id, PUT
-p, owner, /clients/:id, DELETE
+p, owner, /clients/*, GET
+p, owner, /clients/*, PUT
+p, owner, /clients/*, DELETE
 p, owner, /clients/street, GET
 
 p, owner, /companies, GET
@@ -62,38 +62,38 @@ p, owner, /cash-flow/income, POST
 p, owner, /cash-flow/expense, POST
 
 p, owner, /debts, POST
-p, owner, /debts/:id, GET
+p, owner, /debts/*, GET
 p, owner, /debts, GET
-p, owner, /debts/client/:client_id, GET
+p, owner, /debts/client/*, GET
 p, owner, /debts/pay, POST
-p, owner, /debts/payments/:debt_id, GET
-p, owner, /debts/payment/:id, GET
+p, owner, /debts/payments/*, GET
+p, owner, /debts/payment/*, GET
 
 p, worker, /user/login, POST
-p, worker, /user/get/:id, GET
+p, worker, /user/get/*, GET
 
 p, worker, /products/category, POST
 p, worker, /products/category, GET
-p, worker, /products/category/:id, GET
+p, worker, /products/category/*, GET
 
 p, worker, /products, POST
-p, worker, /products/bulk/:category_id, POST
+p, worker, /products/bulk/*, POST
 p, worker, /products, GET
-p, worker, /products/:id, GET
+p, worker, /products/*, GET
 
 p, worker, /purchases, POST
 p, worker, /purchases, GET
-p, worker, /purchases/:id, GET
+p, worker, /purchases/*, GET
 
 p, worker, /sales, POST
 p, worker, /sales, GET
-p, worker, /sales/:id, GET
-p, worker, /sales/:id, PUT
+p, worker, /sales/*, GET
+p, worker, /sales/*, PUT
 
 p, worker, /clients, POST
 p, worker, /clients, GET
-p, worker, /clients/:id, GET
-p, worker, /clients/:id, PUT
+p, worker, /clients/*, GET
+p, worker, /clients/*, PUT
 p, worker, /clients/street, GET
 
 p, worker, /companies, GET
@@ -108,26 +108,24 @@ p, worker, /cash-flow/income, POST
 p, worker, /cash-flow/expense, POST
 
 p, worker, /debts, POST
-p, worker, /debts/:id, GET
+p, worker, /debts/*, GET
 p, worker, /debts, GET
-p, worker, /debts/client/:client_id, GET
+p, worker, /debts/client/*, GET
 p, worker, /debts/pay, POST
-p, worker, /debts/payments/:debt_id, GET
-p, worker, /debts/payment/:id, GET
+p, worker, /debts/payments/*, GET
+p, worker, /debts/payment/*, GET
 
 
 
 
 # Разрешения для роли worker
 p, worker, /branches/create, POST
-p, worker, /branches/:branch_id, GET
-p, worker, /branches/:branch_id, PUT
-p, worker, /branches/:branch_id, DELETE
+p, worker, /branches/*, PUT
+p, worker, /branches/*, DELETE
 p, worker, /branches/list, GET
 
 # Разрешения для роли owner
 p, owner, /branches/create, POST
-p, owner, /branches/:branch_id, GET
-p, owner, /branches/:branch_id, PUT
-p, owner, /branches/:branch_id, DELETE
-p, owner, /branches/list, GET
+p, owner, /branches/*, PUT
+p, owner, /branches/*, DELETE
+p, owner, /branches/*, GET

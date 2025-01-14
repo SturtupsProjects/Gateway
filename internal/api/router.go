@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"time"
 )
 
 // @title API Gateway
@@ -23,10 +24,14 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	// Initialize the Gin router
 	router := gin.Default()
 
-	router.Use(middleware.CORSMiddleware())
-
-	// Apply middleware for CORS and permission checks
-	router.Use(cors.Default())
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // Разрешение всех доменов
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Authorization", "Content-Type", "branch_id"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	// Swagger Documentation Route
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

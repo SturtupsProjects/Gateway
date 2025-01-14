@@ -525,6 +525,8 @@ definitions:
         items:
           $ref: '#/definitions/products.PurchaseResponse'
         type: array
+      total_count:
+        type: integer
     type: object
   products.PurchaseResponse:
     properties:
@@ -564,6 +566,8 @@ definitions:
         items:
           $ref: '#/definitions/products.SaleResponse'
         type: array
+      total_count:
+        type: integer
     type: object
   products.SaleResponse:
     properties:
@@ -2092,6 +2096,14 @@ paths:
       - description: Filter by category name
         in: query
         name: name
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: string
+      - description: Page
+        in: query
+        name: offset
         type: string
       produces:
       - application/json

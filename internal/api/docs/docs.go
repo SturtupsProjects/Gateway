@@ -1975,6 +1975,18 @@ const docTemplate = `{
                         "description": "Filter by category name",
                         "name": "name",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page",
+                        "name": "offset",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -4902,6 +4914,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/products.PurchaseResponse"
                     }
+                },
+                "total_count": {
+                    "type": "integer"
                 }
             }
         },
@@ -4960,6 +4975,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/products.SaleResponse"
                     }
+                },
+                "total_count": {
+                    "type": "integer"
                 }
             }
         },
