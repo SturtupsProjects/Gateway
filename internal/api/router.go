@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"log"
 	"time"
 )
 
@@ -25,13 +26,20 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // Разрешение всех доменов
+		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Authorization", "Content-Type", "branch_id"},
-		ExposeHeaders:    []string{"Content-Length"},
+		ExposeHeaders:    []string{"Content-Length", "branch_id"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+
+	router.Use(func(c *gin.Context) {
+		for k, v := range c.Request.Header {
+			log.Printf("Header: %s = %s", k, v)
+		}
+		c.Next()
+	})
 
 	// Swagger Documentation Route
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
