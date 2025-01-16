@@ -204,10 +204,28 @@ func (h *Handler) GetSales(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// GetListSales godoc
+// @Summary Get list of sales
+// @Description Retrieve a paginated list of sales with optional filters
+// @Tags Sales
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param limit query int false "Number of items per page (default: 10)"
+// @Param page query int false "Page number (default: 1)"
+// @Param start_date query string false "Start date for filtering (format: YYYY-MM-DD)"
+// @Param end_date query string false "End date for filtering (format: YYYY-MM-DD)"
+// @Param client_id query string false "Client ID to filter sales"
+// @Param sold_by query string false "Sold by user ID to filter sales"
+// @Param branch_id header string true "Branch ID"
+// @Success 200 {object} products.SaleList
+// @Failure 400 {object} products.Error
+// @Failure 500 {object} products.Error
+// @Router /sales [get]
 func (h *Handler) GetListSales(c *gin.Context) {
 	// Извлекаем параметры фильтра индивидуально
-	limitStr := c.Query("limit") // Значение по умолчанию - 10
-	pageStr := c.Query("page")   // Значение по умолчанию - 1
+	limitStr := c.Query("limit")           // Значение по умолчанию - 10
+	pageStr := c.DefaultQuery("page", "1") // Значение по умолчанию - 1
 	startDate := c.Query("start_date")
 	endDate := c.Query("end_date")
 	clientId := c.Query("client_id")

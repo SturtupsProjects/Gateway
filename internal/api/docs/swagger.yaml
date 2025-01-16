@@ -562,6 +562,15 @@ definitions:
         description: Changed to double
         type: number
     type: object
+  products.SaleList:
+    properties:
+      sales:
+        items:
+          $ref: '#/definitions/products.SaleResponse'
+        type: array
+      total_count:
+        type: integer
+    type: object
   products.SaleResponse:
     properties:
       branch_id:
@@ -2521,6 +2530,60 @@ paths:
       tags:
       - Purchases
   /sales:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of sales with optional filters
+      parameters:
+      - description: 'Number of items per page (default: 10)'
+        in: query
+        name: limit
+        type: integer
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Start date for filtering (format: YYYY-MM-DD)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'End date for filtering (format: YYYY-MM-DD)'
+        in: query
+        name: end_date
+        type: string
+      - description: Client ID to filter sales
+        in: query
+        name: client_id
+        type: string
+      - description: Sold by user ID to filter sales
+        in: query
+        name: sold_by
+        type: string
+      - description: Branch ID
+        in: header
+        name: branch_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.SaleList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get list of sales
+      tags:
+      - Sales
     post:
       consumes:
       - application/json
