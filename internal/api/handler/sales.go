@@ -224,8 +224,8 @@ func (h *Handler) GetSales(c *gin.Context) {
 // @Router /sales [get]
 func (h *Handler) GetListSales(c *gin.Context) {
 	// Извлекаем параметры фильтра индивидуально
-	limitStr := c.Query("limit")           // Значение по умолчанию - 10
-	pageStr := c.DefaultQuery("page", "1") // Значение по умолчанию - 1
+	limitStr := c.Query("limit") // Значение по умолчанию - 10
+	pageStr := c.Query("page")   // Значение по умолчанию - 1
 	startDate := c.Query("start_date")
 	endDate := c.Query("end_date")
 	clientId := c.Query("client_id")
