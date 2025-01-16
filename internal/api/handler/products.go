@@ -251,7 +251,10 @@ func (h *Handler) GetProduct(c *gin.Context) {
 // @Failure 500 {object} products.Error
 // @Router /products [get]
 func (h *Handler) GetProductList(c *gin.Context) {
-	var filter entity.ProductFilter
+	// Логируем все заголовки для отладки
+	for k, v := range c.Request.Header {
+		log.Printf("Header: %s = %v", k, v)
+	}
 
 	branchID := c.GetHeader("branch_id")
 	if branchID == "" {
@@ -261,6 +264,7 @@ func (h *Handler) GetProductList(c *gin.Context) {
 	}
 
 	// Преобразуем параметры Limit и Page в int64
+	var filter entity.ProductFilter
 	if err := c.ShouldBindQuery(&filter); err != nil {
 		h.log.Error("Error parsing ProductFilter", "error", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
