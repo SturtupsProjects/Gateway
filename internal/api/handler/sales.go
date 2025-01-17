@@ -121,10 +121,10 @@ func (h *Handler) CreateSales(c *gin.Context) {
 	// 6. Создание долга, если это покупка в долг
 	if req.IsForDebt {
 		debReq := debts.DebtsRequest{
-			CompanyId:    res.CompanyId,
-			ClientId:     res.ClientId,
+			CompanyId:    req.CompanyId,
+			ClientId:     req.ClientId,
 			TotalAmount:  res.TotalSalePrice,
-			CurrencyCode: res.PaymentMethod,
+			CurrencyCode: req.PaymentMethod,
 		}
 
 		debtRes, err := h.DebtClient.CreateDebts(c, &debReq)
