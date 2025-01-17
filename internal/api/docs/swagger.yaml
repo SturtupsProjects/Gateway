@@ -116,6 +116,8 @@ definitions:
         items:
           $ref: '#/definitions/debts.Debts'
         type: array
+      total_count:
+        type: integer
     type: object
   debts.DebtsRequest:
     properties:

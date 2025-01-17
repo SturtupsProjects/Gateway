@@ -4290,6 +4290,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/debts.Debts"
                     }
+                },
+                "total_count": {
+                    "type": "integer"
                 }
             }
         },
