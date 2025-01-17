@@ -98,14 +98,14 @@ func (h *Handler) CreateSales(c *gin.Context) {
 		client, err := h.UserClient.CreateClient(c, &clientReq)
 		if err != nil {
 			h.log.Error("Error creating client for sale", "error", err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create client"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
 		req.ClientId = client.Id
 		if req.ClientId == "" {
 			h.log.Error("Created client has no ID")
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid client ID after creation"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 	}
@@ -114,7 +114,7 @@ func (h *Handler) CreateSales(c *gin.Context) {
 	res, err := h.ProductClient.CreateSales(c, &req)
 	if err != nil {
 		h.log.Error("Error creating sale", "error", err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create sale"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -130,13 +130,13 @@ func (h *Handler) CreateSales(c *gin.Context) {
 		debtRes, err := h.DebtClient.CreateDebts(c, &debReq)
 		if err != nil {
 			h.log.Error("Error creating debt", "error", err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create debt"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
 		if debtRes.Id == "" {
 			h.log.Error("Created debt has no ID")
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid Debt ID after creation"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
@@ -150,7 +150,7 @@ func (h *Handler) CreateSales(c *gin.Context) {
 
 			if _, err = h.DebtClient.PayDebts(c, &reqPay); err != nil {
 				h.log.Error("Error processing debt payment", "error", err.Error())
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to process debt payment"})
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
 			}
 		}
