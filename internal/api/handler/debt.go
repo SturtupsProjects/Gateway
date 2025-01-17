@@ -5,7 +5,9 @@ import (
 	"gateway/internal/generated/debts"
 	pbu "gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
+	"strconv"
 )
 
 // CreateDebt godoc
@@ -80,11 +82,41 @@ func (h *Handler) GetDebt(c *gin.Context) {
 // @Router /debts [get]
 func (h *Handler) GetListDebts(c *gin.Context) {
 	var filter debts.FilterDebts
-	if err := c.ShouldBindQuery(&filter); err != nil {
-		h.log.Error("Error parsing filter", "error", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+
+	filter.CreatedAfter = c.Query("createdAfter")
+	filter.CreatedBefore = c.Query("createdBefore")
+	filter.Description = c.Query("description")
+	limitStr := c.Query("limit")
+	pageStr := c.Query("page")
+
+	// Преобразуем limit и page в int64
+	var limit int64 = 0 // Значение по умолчанию
+	var page int64 = 0  // Значение по умолчанию
+
+	if limitStr != "" {
+		var err error
+		limit, err = strconv.ParseInt(limitStr, 10, 64)
+		if err != nil {
+			h.log.Error("Error parsing limit", "error", err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit parameter"})
+			return
+		}
 	}
+
+	if pageStr != "" {
+		var err error
+		page, err = strconv.ParseInt(pageStr, 10, 64)
+		if err != nil {
+			h.log.Error("Error parsing page", "error", err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page parameter"})
+			return
+		}
+	}
+
+	filter.Limit = int32(limit)
+	filter.Page = int32(page)
+
+	log.Println(filter.Description, filter.Limit, filter.Page)
 
 	filter.CompanyId = c.MustGet("company_id").(string)
 
