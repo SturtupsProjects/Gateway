@@ -86,6 +86,8 @@ func (h *Handler) GetListDebts(c *gin.Context) {
 		return
 	}
 
+	filter.CompanyId = c.MustGet("company_id").(string)
+
 	res, err := h.DebtClient.GetListDebts(c, &filter)
 	if err != nil {
 		h.log.Error("Error fetching debt list", "error", err.Error())
