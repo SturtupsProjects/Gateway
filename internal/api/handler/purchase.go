@@ -119,8 +119,8 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 	pageStr := c.Query("page")
 
 	// Преобразуем limit и page в int64
-	var limit int64 = 10 // Значение по умолчанию
-	var page int64 = 1   // Значение по умолчанию
+	var limit int64 = 0 // Значение по умолчанию
+	var page int64 = 0  // Значение по умолчанию
 
 	if limitStr != "" {
 		var err error

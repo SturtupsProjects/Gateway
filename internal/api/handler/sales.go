@@ -236,15 +236,13 @@ func (h *Handler) GetListSales(c *gin.Context) {
 	limit, err := strconv.ParseInt(limitStr, 10, 64)
 	if err != nil {
 		h.log.Error("Error parsing limit", "error", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit parameter"})
-		return
+		limit = 0
 	}
 
 	page, err := strconv.ParseInt(pageStr, 10, 64)
 	if err != nil {
 		h.log.Error("Error parsing page", "error", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page parameter"})
-		return
+		page = 0
 	}
 
 	// Логируем переданные параметры для отладки
