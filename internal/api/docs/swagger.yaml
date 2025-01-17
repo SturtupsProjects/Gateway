@@ -48,6 +48,8 @@ definitions:
         items:
           $ref: '#/definitions/company.BranchResponse'
         type: array
+      total_count:
+        type: integer
     type: object
   company.ListCompanyUsersResponse:
     properties:
@@ -1541,6 +1543,9 @@ paths:
         type: string
       - in: query
         name: currency_code
+        type: string
+      - in: query
+        name: description
         type: string
       - in: query
         name: limit

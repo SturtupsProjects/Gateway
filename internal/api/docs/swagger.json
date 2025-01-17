@@ -1312,6 +1312,11 @@
                         "in": "query"
                     },
                     {
+                        "type": "string",
+                        "name": "description",
+                        "in": "query"
+                    },
+                    {
                         "type": "integer",
                         "name": "limit",
                         "in": "query"
@@ -4172,6 +4177,9 @@
                     "items": {
                         "$ref": "#/definitions/company.BranchResponse"
                     }
+                },
+                "total_count": {
+                    "type": "integer"
                 }
             }
         },

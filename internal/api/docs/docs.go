@@ -1320,6 +1320,11 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "string",
+                        "name": "description",
+                        "in": "query"
+                    },
+                    {
                         "type": "integer",
                         "name": "limit",
                         "in": "query"
@@ -4180,6 +4185,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/company.BranchResponse"
                     }
+                },
+                "total_count": {
+                    "type": "integer"
                 }
             }
         },
