@@ -118,6 +118,7 @@ type FilterPurchase struct {
 	BranchId    string `protobuf:"bytes,6,opt,name=branch_id,json=branchId,proto3" json:"branch_id,omitempty"`
 	Limit       int64  `protobuf:"varint,7,opt,name=limit,proto3" json:"limit,omitempty"`
 	Page        int64  `protobuf:"varint,8,opt,name=page,proto3" json:"page,omitempty"`
+	Description string `protobuf:"bytes,9,opt,name=description,proto3" json:"description,omitempty"`
 }
 
 type PurchaseUpdate struct {

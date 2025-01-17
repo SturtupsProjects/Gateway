@@ -112,6 +112,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 	companyId := c.MustGet("company_id").(string)
 	createdAt := c.Query("created_at")
 	branchId := c.GetHeader("branch_id") // Получаем из заголовков
+	description := c.Query("description")
 
 	// Пагинация
 	limitStr := c.Query("limit")
@@ -160,6 +161,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 		BranchId:    branchId,
 		Limit:       limit,
 		Page:        page,
+		Description: description,
 	}
 
 	// Получаем список покупок с учетом фильтрации

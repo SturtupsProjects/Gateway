@@ -2349,6 +2349,9 @@ paths:
         name: created_at
         type: string
       - in: query
+        name: description
+        type: string
+      - in: query
         name: limit
         type: integer
       - in: query
