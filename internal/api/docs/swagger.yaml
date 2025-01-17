@@ -282,6 +282,11 @@ definitions:
         type: string
       client_phone:
         type: string
+      is_for_debt:
+        default: false
+        type: boolean
+      paid_amount:
+        type: number
       payment_method:
         type: string
       sold_products:
@@ -2604,27 +2609,17 @@ paths:
       - application/json
       description: Create a new sale with the provided details
       parameters:
+      - description: Branch ID
+        in: header
+        name: branch_id
+        required: true
+        type: string
       - description: Sale data
         in: body
         name: Sale
         required: true
         schema:
           $ref: '#/definitions/entity.Sale'
-      - description: Client name
-        in: path
-        name: client_name
-        required: true
-        type: string
-      - description: Client phone
-        in: path
-        name: client_phone
-        required: true
-        type: string
-      - description: Branch ID
-        in: header
-        name: branch_id
-        required: true
-        type: string
       produces:
       - application/json
       responses:

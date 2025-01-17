@@ -2951,6 +2951,13 @@ const docTemplate = `{
                 "summary": "Create a new sale",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Sale data",
                         "name": "Sale",
                         "in": "body",
@@ -2958,27 +2965,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/entity.Sale"
                         }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Client name",
-                        "name": "client_name",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Client phone",
-                        "name": "client_phone",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Branch ID",
-                        "name": "branch_id",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -4554,6 +4540,13 @@ const docTemplate = `{
                 },
                 "client_phone": {
                     "type": "string"
+                },
+                "is_for_debt": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "paid_amount": {
+                    "type": "number"
                 },
                 "payment_method": {
                     "type": "string"

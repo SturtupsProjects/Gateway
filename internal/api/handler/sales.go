@@ -50,10 +50,8 @@ func (h *Handler) CalculateTotalSales(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param Sale body entity.Sale true "Sale data"
-// @Param client_name path string true "Client name"
-// @Param client_phone path string true "Client phone"
 // @Param branch_id header string true "Branch ID"
+// @Param Sale body entity.Sale true "Sale data"
 // @Success 201 {object} products.SaleResponse
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -61,49 +59,18 @@ func (h *Handler) CalculateTotalSales(c *gin.Context) {
 func (h *Handler) CreateSales(c *gin.Context) {
 	var req products.SaleRequest
 
+	// 1. Парсинг JSON-запроса
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.log.Error("Error parsing CreateSales request body", "error", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
 
-	companyID := c.MustGet("company_id").(string)
+	// 2. Извлечение данных из контекста
+	req.SoldBy, _ = c.MustGet("id").(string)
+	req.CompanyId, _ = c.MustGet("company_id").(string)
 
-	ClientName := c.Param("client_name")
-	ClientPhone := c.Param("client_phone")
-	if len(req.ClientId) < 16 {
-		if ClientName == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "missing client id or client_name"})
-			return
-		}
-		if ClientPhone == "" {
-			ClientPhone = c.Param("client_phone")
-		}
-
-		clientReq := user.ClientRequest{
-			FullName:   ClientName,
-			Address:    "no address",
-			Phone:      ClientPhone,
-			Type:       "client",
-			ClientType: "street",
-			CompanyId:  companyID,
-		}
-
-		client, err := h.UserClient.CreateClient(c, &clientReq)
-		if err != nil {
-			h.log.Error("Error creating sales", "error", err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		log.Println(client.Id)
-
-		req.ClientId = client.Id
-	}
-
-	req.SoldBy = c.MustGet("id").(string)
-	req.CompanyId = companyID
-
+	// 3. Проверка обязательного заголовка branch_id
 	branchId := c.GetHeader("branch_id")
 	if branchId == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
@@ -111,6 +78,41 @@ func (h *Handler) CreateSales(c *gin.Context) {
 	}
 	req.BranchId = branchId
 
+	// 4. Проверка клиента (ClientId или ClientName)
+	if len(req.ClientId) < 16 {
+		if req.ClientName == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Client ID or Client Name is required"})
+			return
+		}
+
+		// Если номер телефона отсутствует, задаем дефолтное значение
+		if req.ClientPhone == "" {
+			req.ClientPhone = "No phone"
+		}
+
+		// Создаем нового клиента
+		clientReq := user.ClientRequest{
+			FullName:   req.ClientName,
+			Address:    "No address",
+			Phone:      req.ClientPhone,
+			Type:       "client",
+			ClientType: "street",
+			CompanyId:  req.CompanyId,
+		}
+
+		client, err := h.UserClient.CreateClient(c, &clientReq)
+		if err != nil {
+			h.log.Error("Error creating client for sale", "error", err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		req.ClientId = client.Id
+	}
+
+	log.Println(req.SoldProducts)
+
+	// 5. Создаем продажу
 	res, err := h.ProductClient.CreateSales(c, &req)
 	if err != nil {
 		h.log.Error("Error creating sale", "error", err.Error())
@@ -118,6 +120,39 @@ func (h *Handler) CreateSales(c *gin.Context) {
 		return
 	}
 
+	// 6. Создание долга, если это покупка в долг
+	if req.IsForDebt {
+		debReq := debts.DebtsRequest{
+			CompanyId:    res.CompanyId,
+			ClientId:     res.ClientId,
+			TotalAmount:  res.TotalSalePrice,
+			CurrencyCode: res.PaymentMethod,
+		}
+
+		debtRes, err := h.DebtClient.CreateDebts(c, &debReq)
+		if err != nil {
+			h.log.Error("Error creating debt", "error", err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		// 7. Оплата долга, если указана оплаченная сумма
+		if req.PaidAmount > 0 {
+			reqPay := debts.PayDebtsReq{
+				CompanyId:  res.CompanyId,
+				DebtId:     debtRes.Id,
+				PaidAmount: req.PaidAmount,
+			}
+
+			if _, err = h.DebtClient.PayDebts(c, &reqPay); err != nil {
+				h.log.Error("Error processing debt payment", "error", err.Error())
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+		}
+	}
+
+	// 8. Возвращаем успешный ответ
 	c.JSON(http.StatusCreated, res)
 }
 

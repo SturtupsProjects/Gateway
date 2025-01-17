@@ -32,6 +32,8 @@ type Sale struct {
 	PaymentMethod string       `json:"payment_method,omitempty"`
 	ClientName    string       `json:"client_name,omitempty"`
 	ClientPhone   string       `json:"client_phone,omitempty"`
+	IsForDebt     bool         `json:"is_for_debt,omitempty" default:"false"`
+	PaidAmount    float64      `json:"paid_amount,omitempty"`
 	SoldProducts  []*SalesItem `json:"sold_products,omitempty"`
 }
 type PaymentSale struct {
