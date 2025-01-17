@@ -1534,33 +1534,38 @@ paths:
       - application/json
       description: Retrieve a list of debts with optional filters
       parameters:
-      - in: query
-        name: company_id
+      - description: Filter by creation date after this timestamp
+        in: query
+        name: createdAfter
         type: string
-      - in: query
-        name: created_after
+      - description: Filter by creation date before this timestamp
+        in: query
+        name: createdBefore
         type: string
-      - in: query
-        name: created_before
-        type: string
-      - in: query
-        name: currency_code
-        type: string
-      - in: query
+      - description: Filter by description
+        in: query
         name: description
         type: string
-      - in: query
+      - description: Filter by currency code
+        in: query
+        name: currencyCode
+        type: string
+      - description: Filter by minimum total amount
+        in: query
+        name: totalAmountMin
+        type: number
+      - description: Filter by maximum total amount
+        in: query
+        name: totalAmountMax
+        type: number
+      - description: Number of results to return
+        in: query
         name: limit
         type: integer
-      - in: query
+      - description: Page number for pagination
+        in: query
         name: page
         type: integer
-      - in: query
-        name: total_amount_max
-        type: number
-      - in: query
-        name: total_amount_min
-        type: number
       produces:
       - application/json
       responses:

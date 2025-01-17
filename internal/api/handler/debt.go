@@ -5,7 +5,6 @@ import (
 	"gateway/internal/generated/debts"
 	pbu "gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -75,7 +74,14 @@ func (h *Handler) GetDebt(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param filter query debts.FilterDebts false "Filter parameters"
+// @Param createdAfter query string false "Filter by creation date after this timestamp"
+// @Param createdBefore query string false "Filter by creation date before this timestamp"
+// @Param description query string false "Filter by description"
+// @Param currencyCode query string false "Filter by currency code"
+// @Param totalAmountMin query number false "Filter by minimum total amount"
+// @Param totalAmountMax query number false "Filter by maximum total amount"
+// @Param limit query int false "Number of results to return"
+// @Param page query int false "Page number for pagination"
 // @Success 200 {object} debts.DebtsList
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -83,61 +89,89 @@ func (h *Handler) GetDebt(c *gin.Context) {
 func (h *Handler) GetListDebts(c *gin.Context) {
 	var filter debts.FilterDebts
 
+	// Extract query parameters
 	filter.CreatedAfter = c.Query("createdAfter")
 	filter.CreatedBefore = c.Query("createdBefore")
 	filter.Description = c.Query("description")
-	limitStr := c.Query("limit")
-	pageStr := c.Query("page")
+	filter.CurrencyCode = c.Query("currencyCode")
 
-	// Преобразуем limit и page в int64
-	var limit int64 = 0 // Значение по умолчанию
-	var page int64 = 0  // Значение по умолчанию
-
-	if limitStr != "" {
-		var err error
-		limit, err = strconv.ParseInt(limitStr, 10, 64)
-		if err != nil {
-			h.log.Error("Error parsing limit", "error", err.Error())
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit parameter"})
+	// Parse numeric filters
+	if totalAmountMin := c.Query("totalAmountMin"); totalAmountMin != "" {
+		if min, err := strconv.ParseFloat(totalAmountMin, 64); err == nil {
+			filter.TotalAmountMin = min
+		} else {
+			h.log.Error("Invalid totalAmountMin parameter", "error", err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid totalAmountMin parameter"})
 			return
 		}
 	}
 
+	if totalAmountMax := c.Query("totalAmountMax"); totalAmountMax != "" {
+		if max, err := strconv.ParseFloat(totalAmountMax, 64); err == nil {
+			filter.TotalAmountMax = max
+		} else {
+			h.log.Error("Invalid totalAmountMax parameter", "error", err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid totalAmountMax parameter"})
+			return
+		}
+	}
+
+	// Parse limit and page for pagination
+	limitStr := c.Query("limit")
+	pageStr := c.Query("page")
+	if limitStr != "" {
+		if limit, err := strconv.ParseInt(limitStr, 10, 64); err == nil {
+			filter.Limit = int32(limit)
+		} else {
+			h.log.Error("Invalid limit parameter", "error", err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit parameter"})
+			return
+		}
+	}
 	if pageStr != "" {
-		var err error
-		page, err = strconv.ParseInt(pageStr, 10, 64)
-		if err != nil {
-			h.log.Error("Error parsing page", "error", err.Error())
+		if page, err := strconv.ParseInt(pageStr, 10, 64); err == nil {
+			filter.Page = int32(page)
+		} else {
+			h.log.Error("Invalid page parameter", "error", err.Error())
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page parameter"})
 			return
 		}
 	}
 
-	filter.Limit = int32(limit)
-	filter.Page = int32(page)
+	// Extract company ID from context (must be set by middleware)
+	companyID, exists := c.Get("company_id")
+	if !exists {
+		h.log.Error("Missing company_id in context")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+	filter.CompanyId = companyID.(string)
 
-	log.Println(filter.Description, filter.Limit, filter.Page)
-
-	filter.CompanyId = c.MustGet("company_id").(string)
-
+	// Fetch debts from DebtClient
 	res, err := h.DebtClient.GetListDebts(c, &filter)
 	if err != nil {
 		h.log.Error("Error fetching debt list", "error", err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve debts"})
 		return
 	}
 
+	// Fetch client details for each debt
 	for i, debt := range res.Installments {
-
-		client, err := h.UserClient.GetClient(context.Background(), &pbu.UserIDRequest{Id: debt.ClientId, CompanyId: debt.CompanyId})
+		client, err := h.UserClient.GetClient(context.Background(), &pbu.UserIDRequest{
+			Id:        debt.ClientId,
+			CompanyId: debt.CompanyId,
+		})
 		if err == nil {
 			res.Installments[i].ClientName = client.FullName
 			res.Installments[i].ClientPhone = client.Phone
 		} else {
 			h.log.Error("Error fetching client info", "error", err.Error())
+			res.Installments[i].ClientName = "Unknown"
+			res.Installments[i].ClientPhone = "Unknown"
 		}
 	}
 
+	// Respond with the results
 	c.JSON(http.StatusOK, res)
 }
 
