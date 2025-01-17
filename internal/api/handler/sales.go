@@ -136,10 +136,14 @@ func (h *Handler) CreateSales(c *gin.Context) {
 			return
 		}
 
+		log.Println(debtRes.Id)
+		log.Println(debtRes.Id)
+		log.Println(debtRes.Id)
+
 		// 7. Оплата долга, если указана оплаченная сумма
 		if req.PaidAmount > 0 {
 			reqPay := debts.PayDebtsReq{
-				CompanyId:  res.CompanyId,
+				CompanyId:  req.CompanyId,
 				DebtId:     debtRes.Id,
 				PaidAmount: req.PaidAmount,
 			}
