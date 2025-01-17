@@ -21,7 +21,7 @@ func NewUserClient(cfg *config.Config) pbu.AuthServiceClient {
 }
 
 func NewProductClient(cfg *config.Config) pbp.ProductsClient {
-	conn, err := grpc.NewClient("38.242.212.205"+cfg.PRODUCT_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("product"+cfg.PRODUCT_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to Product Service: %v", err)
 	}
@@ -37,7 +37,7 @@ func NewCompanyClient(cfg *config.Config) pbc.CompanyServiceClient {
 }
 
 func NewDebtClient(cfg *config.Config) pbd.DebtsServiceClient {
-	conn, err := grpc.NewClient("30.242.212.205"+cfg.DEBT_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("debts-service"+cfg.DEBT_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to Debt Service: %v", err)
 	}
