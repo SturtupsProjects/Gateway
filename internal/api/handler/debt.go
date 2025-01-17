@@ -151,7 +151,7 @@ func (h *Handler) GetListDebts(c *gin.Context) {
 	res, err := h.DebtClient.GetListDebts(c, &filter)
 	if err != nil {
 		h.log.Error("Error fetching debt list", "error", err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve debts"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
