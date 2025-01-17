@@ -73,6 +73,7 @@ func (h *Handler) CreateSales(c *gin.Context) {
 	// 3. Проверка обязательного заголовка branch_id
 	branchId := c.GetHeader("branch_id")
 	if branchId == "" {
+		h.log.Error("Missing branch_id in header")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
 		return
 	}
@@ -85,12 +86,6 @@ func (h *Handler) CreateSales(c *gin.Context) {
 			return
 		}
 
-		// Если номер телефона отсутствует, задаем дефолтное значение
-		if req.ClientPhone == "" {
-			req.ClientPhone = "No phone"
-		}
-
-		// Создаем нового клиента
 		clientReq := user.ClientRequest{
 			FullName:   req.ClientName,
 			Address:    "No address",
@@ -103,20 +98,23 @@ func (h *Handler) CreateSales(c *gin.Context) {
 		client, err := h.UserClient.CreateClient(c, &clientReq)
 		if err != nil {
 			h.log.Error("Error creating client for sale", "error", err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create client"})
 			return
 		}
 
 		req.ClientId = client.Id
+		if req.ClientId == "" {
+			h.log.Error("Created client has no ID")
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid client ID after creation"})
+			return
+		}
 	}
-
-	log.Println(req.SoldProducts)
 
 	// 5. Создаем продажу
 	res, err := h.ProductClient.CreateSales(c, &req)
 	if err != nil {
 		h.log.Error("Error creating sale", "error", err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create sale"})
 		return
 	}
 
@@ -132,13 +130,15 @@ func (h *Handler) CreateSales(c *gin.Context) {
 		debtRes, err := h.DebtClient.CreateDebts(c, &debReq)
 		if err != nil {
 			h.log.Error("Error creating debt", "error", err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create debt"})
 			return
 		}
 
-		log.Println(debtRes.Id)
-		log.Println(debtRes.Id)
-		log.Println(debtRes.Id)
+		if debtRes.Id == "" {
+			h.log.Error("Created debt has no ID")
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid Debt ID after creation"})
+			return
+		}
 
 		// 7. Оплата долга, если указана оплаченная сумма
 		if req.PaidAmount > 0 {
@@ -150,7 +150,7 @@ func (h *Handler) CreateSales(c *gin.Context) {
 
 			if _, err = h.DebtClient.PayDebts(c, &reqPay); err != nil {
 				h.log.Error("Error processing debt payment", "error", err.Error())
-				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to process debt payment"})
 				return
 			}
 		}
