@@ -2122,7 +2122,7 @@ paths:
         type: string
       - description: Page
         in: query
-        name: offset
+        name: page
         type: string
       produces:
       - application/json

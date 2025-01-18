@@ -1993,7 +1993,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Page",
-                        "name": "offset",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
