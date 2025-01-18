@@ -338,6 +338,7 @@ func (h *Handler) GetListSales(c *gin.Context) {
 			productRes, err := h.ProductClient.GetProduct(c, &products.GetProductRequest{
 				Id:        item.ProductId,
 				CompanyId: companyId,
+				BranchId:  branchId,
 			})
 			if err == nil {
 				res.Sales[i].SoldProducts[j].ProductName = productRes.Name
