@@ -204,11 +204,11 @@ func (h *Handler) GetListCategory(c *gin.Context) {
 	req.Name = c.Query("name")
 	limit, err := strconv.ParseInt(c.Query("limit"), 10, 64)
 	if err != nil {
-		limit = 10
+		limit = 0
 	}
 	page, err := strconv.ParseInt(c.Query("page"), 10, 64)
 	if err != nil {
-		page = 1
+		page = 0
 	}
 	req.Limit = limit
 	req.Page = page
