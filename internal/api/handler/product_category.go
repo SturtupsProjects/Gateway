@@ -211,6 +211,9 @@ func (h *Handler) GetListCategory(c *gin.Context) {
 	if err != nil {
 		page = 0
 	}
+
+	log.Println(limit, page)
+
 	req.Limit = limit
 	req.Page = page
 	req.CompanyId = c.MustGet("company_id").(string)
