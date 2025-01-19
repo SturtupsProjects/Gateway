@@ -251,6 +251,7 @@ func (h *Handler) GetAllCompaniesA(c *gin.Context) {
 func (h *Handler) ListCompanyUsers(c *gin.Context) {
 	limit := c.Query("limit")
 	page := c.Query("page")
+	name := c.Query("name")
 	if limit == "" {
 		limit = "10"
 	}
@@ -268,7 +269,7 @@ func (h *Handler) ListCompanyUsers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page value"})
 		return
 	}
-	req := &company.ListCompanyUsersRequest{CompanyId: c.MustGet("company_id").(string), Limit: int32(limitInt), Page: int32(pageInt)}
+	req := &company.ListCompanyUsersRequest{CompanyId: c.MustGet("company_id").(string), Limit: int32(limitInt), Page: int32(pageInt), Name: name}
 	res, err := h.CompanyClient.ListCompanyUsers(c, req)
 	if err != nil {
 		h.log.Error(fmt.Sprintf("ListCompanyUsers request error: %v", err))
