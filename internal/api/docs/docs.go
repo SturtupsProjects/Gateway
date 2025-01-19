@@ -292,6 +292,20 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Branch ID",
                         "name": "branch_id",
                         "in": "header",
@@ -1215,6 +1229,12 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Page",
                         "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
                         "in": "query"
                     }
                 ],

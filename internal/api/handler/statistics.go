@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -642,6 +643,8 @@ func (h *Handler) GetNetProfit(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param start_date query string true "Start Date (YYYY-MM-DD)"
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
+// @Param limit query string true "Limit"
+// @Param page query string true "Page"
 // @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.ListCashFlow
 // @Failure 400 {object} products.Error
@@ -653,6 +656,20 @@ func (h *Handler) GetCashFlow(c *gin.Context) {
 
 	startDate := c.DefaultQuery("start_date", "")
 	endDate := c.DefaultQuery("end_date", "")
+	limit := c.DefaultQuery("limit", "10")
+	page := c.DefaultQuery("page", "1")
+
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil || limitInt <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit value"})
+		return
+	}
+
+	pageInt, err := strconv.Atoi(page)
+	if err != nil || pageInt <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page value"})
+		return
+	}
 
 	if startDate == "" || endDate == "" {
 		h.log.Error("Missing required query parameters: start_date or end_date")
@@ -686,6 +703,8 @@ func (h *Handler) GetCashFlow(c *gin.Context) {
 		StartDate: parsedStartDate.Format(time.RFC3339),
 		EndDate:   parsedEndDate.Format(time.RFC3339),
 		BranchId:  branchId,
+		Limit:     int64(limitInt),
+		Page:      int64(pageInt),
 	}
 
 	res, err := h.ProductClient.GetCashFlow(c, req)

@@ -903,6 +903,16 @@ paths:
         name: end_date
         required: true
         type: string
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: string
       - description: Branch ID
         in: header
         name: branch_id
@@ -1487,6 +1497,10 @@ paths:
       - description: Page
         in: query
         name: page
+        type: string
+      - description: Name
+        in: query
+        name: name
         type: string
       produces:
       - application/json

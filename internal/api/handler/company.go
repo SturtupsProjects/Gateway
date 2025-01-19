@@ -245,6 +245,7 @@ func (h *Handler) GetAllCompaniesA(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param limit query string false "Limit"
 // @Param page query string false "Page"
+// @Param name query string false "Name"
 // @Success 200 {array} company.ListCompanyUsersResponse
 // @Failure 400 {object} string
 // @Router /companies/users [get]
