@@ -1756,6 +1756,18 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "string",
+                        "description": "Product created_by to filter by",
+                        "name": "created_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Product name to filter by",
+                        "name": "total_count",
+                        "in": "query"
+                    },
+                    {
                         "type": "integer",
                         "description": "Number of products to return (default 10)",
                         "name": "limit",

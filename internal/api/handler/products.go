@@ -244,6 +244,8 @@ func (h *Handler) GetProduct(c *gin.Context) {
 // @Param branch_id header string true "Branch ID"
 // @Param category_id query string false "Category ID to filter products"
 // @Param name query string false "Product name to filter by"
+// @Param created_by query string false "Product created_by to filter by"
+// @Param total_count query int false "Product name to filter by"
 // @Param limit query int false "Number of products to return (default 10)"
 // @Param page query int false "Offset for pagination (default 1)"
 // @Success 200 {array} products.Product
@@ -272,7 +274,7 @@ func (h *Handler) GetProductList(c *gin.Context) {
 	}
 
 	// Выводим параметры фильтра в лог
-	log.Println("Limit:", filter.Limit, "Page:", filter.Page)
+	log.Println("Limit:", filter.Limit, "Page:", filter.Page, "TotalCount:", filter.TotalCount)
 
 	// Call the ProductClient to retrieve the product list
 	res, err := h.ProductClient.GetProductList(c, &products.ProductFilter{
@@ -280,6 +282,7 @@ func (h *Handler) GetProductList(c *gin.Context) {
 		Name:       filter.Name,
 		CompanyId:  c.MustGet("company_id").(string),
 		CreatedBy:  filter.CreatedBy,
+		TotalCount: filter.TotalCount,
 		Limit:      filter.Limit,
 		Page:       filter.Page,
 		CreatedAt:  filter.CreatedAt,

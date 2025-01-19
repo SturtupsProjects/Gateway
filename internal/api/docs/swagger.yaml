@@ -1830,6 +1830,14 @@ paths:
         in: query
         name: name
         type: string
+      - description: Product created_by to filter by
+        in: query
+        name: created_by
+        type: string
+      - description: Product name to filter by
+        in: query
+        name: total_count
+        type: integer
       - description: Number of products to return (default 10)
         in: query
         name: limit

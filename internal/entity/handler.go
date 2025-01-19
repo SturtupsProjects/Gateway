@@ -110,6 +110,7 @@ type ProductFilter struct {
 	CreatedBy  string `form:"created_by" json:"created_by,omitempty"`   // Optional
 	Limit      int64  `form:"limit" json:"limit,omitempty"`             // Optional
 	Page       int64  `form:"page" json:"page,omitempty"`               // Optional
+	TotalCount int64  `form:"total_count" json:"total_count,omitempty"`
 }
 
 type FilterPurchase struct {
