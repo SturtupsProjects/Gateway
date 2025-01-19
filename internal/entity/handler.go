@@ -114,7 +114,7 @@ type ProductFilter struct {
 }
 
 type FilterPurchase struct {
-	ProductId   string `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	ProductName string `protobuf:"bytes,1,opt,name=product_name,json=product_name,proto3" json:"product_name,omitempty"`
 	SupplierId  string `protobuf:"bytes,2,opt,name=supplier_id,json=supplierId,proto3" json:"supplier_id,omitempty"`
 	PurchasedBy string `protobuf:"bytes,3,opt,name=purchased_by,json=purchasedBy,proto3" json:"purchased_by,omitempty"`
 	CreatedAt   string `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`

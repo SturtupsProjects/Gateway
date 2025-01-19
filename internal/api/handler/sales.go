@@ -250,6 +250,7 @@ func (h *Handler) GetSales(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param product_name query string false "Filter by product_name"
 // @Param limit query int false "Number of items per page (default: 10)"
 // @Param page query int false "Page number (default: 1)"
 // @Param start_date query string false "Start date for filtering (format: YYYY-MM-DD)"
@@ -262,7 +263,8 @@ func (h *Handler) GetSales(c *gin.Context) {
 // @Failure 500 {object} products.Error
 // @Router /sales [get]
 func (h *Handler) GetListSales(c *gin.Context) {
-	// Извлекаем параметры фильтра индивидуально
+
+	productName := c.Query("product_name")
 	limitStr := c.Query("limit") // Значение по умолчанию - 10
 	pageStr := c.Query("page")   // Значение по умолчанию - 1
 	startDate := c.Query("start_date")
@@ -285,7 +287,7 @@ func (h *Handler) GetListSales(c *gin.Context) {
 	}
 
 	// Логируем переданные параметры для отладки
-	log.Println("Limit:", limit, "Page:", page, "StartDate:", startDate, "EndDate:", endDate)
+	log.Println("Limit:", limit, "Page:", page, "StartDate:", startDate, "EndDate:", endDate, "ProductName", productName)
 
 	// Проверяем, если branchId пустой, то возвращаем ошибку
 	if branchId == "" {
@@ -298,14 +300,15 @@ func (h *Handler) GetListSales(c *gin.Context) {
 
 	// Создаем фильтр для передачи в запрос
 	filter := products.SaleFilter{
-		BranchId:  branchId,
-		Limit:     limit,
-		Page:      page,
-		CompanyId: companyId,
-		SoldBy:    soldBy,
-		ClientId:  clientId,
-		StartDate: startDate,
-		EndDate:   endDate,
+		ProductName: productName,
+		BranchId:    branchId,
+		Limit:       limit,
+		Page:        page,
+		CompanyId:   companyId,
+		SoldBy:      soldBy,
+		ClientId:    clientId,
+		StartDate:   startDate,
+		EndDate:     endDate,
 	}
 
 	// Получаем список продаж с учетом фильтрации
@@ -331,21 +334,6 @@ func (h *Handler) GetListSales(c *gin.Context) {
 			res.Sales[i].SoldByName = supplier.FirstName
 		} else {
 			h.log.Error("Error fetching customer details", "customer_id", sale.SoldBy, "error", err.Error())
-		}
-
-		// Информация о проданных товарах
-		for j, item := range sale.SoldProducts {
-			productRes, err := h.ProductClient.GetProduct(c, &products.GetProductRequest{
-				Id:        item.ProductId,
-				CompanyId: companyId,
-				BranchId:  branchId,
-			})
-			if err == nil {
-				res.Sales[i].SoldProducts[j].ProductName = productRes.Name
-				res.Sales[i].SoldProducts[j].ProductImage = productRes.ImageUrl
-			} else {
-				h.log.Error("Error fetching product details", "product_id", item.ProductId, "error", err.Error())
-			}
 		}
 	}
 

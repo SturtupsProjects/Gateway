@@ -106,7 +106,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 	var filter products.FilterPurchase
 
 	// Извлекаем параметры запроса индивидуально
-	productId := c.Query("product_id")
+	productName := c.Query("product_name")
 	supplierId := c.Query("supplier_id")
 	purchasedBy := c.Query("purchased_by")
 	companyId := c.MustGet("company_id").(string)
@@ -143,7 +143,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 	}
 
 	// Логируем параметры запроса для отладки
-	log.Println("ProductId:", productId, "SupplierId:", supplierId, "PurchasedBy:", purchasedBy, "CreatedAt:", createdAt, "BranchId:", branchId, "Limit:", limit, "Page:", page)
+	log.Println("ProductId:", productName, "SupplierId:", supplierId, "PurchasedBy:", purchasedBy, "CreatedAt:", createdAt, "BranchId:", branchId, "Limit:", limit, "Page:", page, "ProductName", productName)
 
 	// Проверяем наличие branchId
 	if branchId == "" {
@@ -153,7 +153,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 
 	// Создаем фильтр
 	filter = products.FilterPurchase{
-		ProductId:   productId,
+		ProductName: productName,
 		SupplierId:  supplierId,
 		PurchasedBy: purchasedBy,
 		CompanyId:   companyId,
@@ -188,21 +188,6 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 			res.Purchases[i].PurchaserPhoneNumber = purchaserRes.Phone
 		} else {
 			h.log.Error("Error fetching purchaser details", "purchased_by", purchase.PurchasedBy, "error", err.Error())
-		}
-
-		// Получаем информацию о товарах для каждого элемента покупки
-		for j, item := range purchase.Items {
-			productRes, err := h.ProductClient.GetProduct(c, &products.GetProductRequest{
-				Id:        item.ProductId,
-				CompanyId: filter.CompanyId,
-				BranchId:  filter.BranchId,
-			})
-			if err == nil {
-				res.Purchases[i].Items[j].ProductName = productRes.Name
-				res.Purchases[i].Items[j].ProductImage = productRes.ImageUrl
-			} else {
-				h.log.Error("Error fetching product details", "product_id", item.ProductId, "error", err.Error())
-			}
 		}
 	}
 

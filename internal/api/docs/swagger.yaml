@@ -2376,7 +2376,7 @@ paths:
         name: page
         type: integer
       - in: query
-        name: product_id
+        name: product_name
         type: string
       - in: query
         name: purchased_by
@@ -2563,6 +2563,10 @@ paths:
       - application/json
       description: Retrieve a paginated list of sales with optional filters
       parameters:
+      - description: Filter by product_name
+        in: query
+        name: product_name
+        type: string
       - description: 'Number of items per page (default: 10)'
         in: query
         name: limit

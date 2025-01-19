@@ -2588,7 +2588,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "name": "product_id",
+                        "name": "product_name",
                         "in": "query"
                     },
                     {
@@ -2879,6 +2879,12 @@ const docTemplate = `{
                 ],
                 "summary": "Get list of sales",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by product_name",
+                        "name": "product_name",
+                        "in": "query"
+                    },
                     {
                         "type": "integer",
                         "description": "Number of items per page (default: 10)",
