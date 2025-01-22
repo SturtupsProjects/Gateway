@@ -3910,25 +3910,11 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Access Token",
-                "parameters": [
-                    {
-                        "description": "Refresh token",
-                        "name": "RefreshToken",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.Token"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/handler.Token"
                         }
                     },
                     "400": {

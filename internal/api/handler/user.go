@@ -61,6 +61,8 @@ func (a *Handler) Login(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie("access_token_smart_admin", res.RefreshToken, 604800, "/", "smartadmin.uz", true, false)
+
 	c.JSON(http.StatusOK, res)
 }
 
@@ -238,21 +240,20 @@ func (a *Handler) ListUser(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param RefreshToken body Token true "Refresh token"
-// @Success 200 {object} map[string]string
+// @Success 200 {object} Token
 // @Failure 400 {object} entity.Error
 // @Failure 500 {object} entity.Error
 // @Router /user/get/access-token [post]
 func (a *Handler) GetAccessToken(c *gin.Context) {
-	var tokenRequest Token
 
-	if err := c.ShouldBindJSON(&tokenRequest); err != nil {
-		a.log.Error("Error parsing request body", "error", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body: " + err.Error()})
+	toknC, err := c.Cookie("access_token_smart_admin")
+	if err != nil {
+		a.log.Error("Error retrieving token", "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	claims, err := token.ExtractToken(tokenRequest.Token, false)
+	claims, err := token.ExtractToken(toknC, false)
 	if err != nil {
 		a.log.Error("Error extracting token", "error", err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid or expired refresh token"})

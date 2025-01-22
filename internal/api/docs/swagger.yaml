@@ -3273,22 +3273,13 @@ paths:
       consumes:
       - application/json
       description: Get Access token with refresh token
-      parameters:
-      - description: Refresh token
-        in: body
-        name: RefreshToken
-        required: true
-        schema:
-          $ref: '#/definitions/handler.Token'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/handler.Token'
         "400":
           description: Bad Request
           schema:
