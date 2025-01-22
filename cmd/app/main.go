@@ -3,6 +3,7 @@ package main
 import (
 	"gateway/config"
 	api "gateway/internal/api"
+	"gateway/internal/api/token"
 	"gateway/internal/minio"
 	"log"
 	"os"
@@ -26,6 +27,12 @@ func main() {
 	err = minio.InitMiniOClient()
 	if err != nil {
 		log.Println("mana 1 ")
+		log.Fatal(err)
+	}
+
+	err = token.ConfigToken(cfg)
+	if err != nil {
+		log.Println("mana 0 ")
 		log.Fatal(err)
 	}
 

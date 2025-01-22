@@ -40,6 +40,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		user.GET("/list", h.ListUser)
 		user.PUT("/update/:id", h.UpdateUser)
 		user.DELETE("/delete/:id", h.DeleteUser)
+		user.GET("/get/access-token", h.GetAccessToken)
 	}
 	router.Use(middleware.PermissionMiddleware(enf))
 	// Product Category routes group

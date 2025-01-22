@@ -656,19 +656,17 @@ func (h *Handler) GetCashFlow(c *gin.Context) {
 
 	startDate := c.DefaultQuery("start_date", "")
 	endDate := c.DefaultQuery("end_date", "")
-	limit := c.DefaultQuery("limit", "10")
-	page := c.DefaultQuery("page", "1")
+	limit := c.Query("limit")
+	page := c.Query("page")
 
 	limitInt, err := strconv.Atoi(limit)
-	if err != nil || limitInt <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit value"})
-		return
+	if err != nil {
+		limitInt = 0
 	}
 
 	pageInt, err := strconv.Atoi(page)
-	if err != nil || pageInt <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page value"})
-		return
+	if err != nil {
+		pageInt = 0
 	}
 
 	if startDate == "" || endDate == "" {

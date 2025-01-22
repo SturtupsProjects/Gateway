@@ -4,105 +4,72 @@ import (
 	"errors"
 	"fmt"
 	"gateway/internal/api/token"
-	"net/http"
-
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
-type casbinPermission struct {
+type CasbinPermission struct {
 	enforcer *casbin.Enforcer
 }
 
-func (c *casbinPermission) GetRole(ctx *gin.Context) (string, int) {
-	Token := ctx.GetHeader("Authorization")
-	if Token == "" {
-		fmt.Println("Authorization token is missing")
-		return "1.unauthorized", http.StatusUnauthorized
+// GetRole extracts and validates the user role from the authorization token.
+func (c *CasbinPermission) GetRole(ctx *gin.Context) (string, error) {
+	tokenStr := ctx.GetHeader("Authorization")
+	if tokenStr == "" {
+		return "", errors.New("missing authorization token")
 	}
 
-	claims, err := token.ExtractClaims(Token)
+	claims, err := token.ExtractToken(tokenStr, true)
 	if err != nil {
-		return "", http.StatusUnauthorized // Token xatolik yuz berdi
-	}
-	role, ok := claims["role"].(string)
-	if !ok || role == "" {
-		fmt.Println("Role is missing or invalid")
-		return "3.unauthorized", http.StatusUnauthorized
+		return "", fmt.Errorf("invalid token: %w", err)
 	}
 
-	userID, ok := claims["id"].(string)
-	if !ok {
-		fmt.Println(err)
-		return "4.unauthorized", http.StatusUnauthorized
-	}
-	compId, ok := claims["company_id"].(string)
-	if !ok {
-		fmt.Println(err)
-		return "4.unauthorized", http.StatusUnauthorized
-	}
+	// Set claims in context for later use
+	ctx.Set("id", claims.Id)
+	ctx.Set("role", claims.Role)
+	ctx.Set("company_id", claims.CompanyId)
+	ctx.Set("claims", claims)
 
-	ctx.Set("id", userID)
-	ctx.Set("role", role)
-	ctx.Set("company_id", compId)
-
-	return role, 0
+	return claims.Role, nil
 }
 
-func (c *casbinPermission) CheckPermission(ctx *gin.Context) (bool, error) {
-	subject, status := c.GetRole(ctx)
-	if status != 0 {
-		return false, errors.New("error while getting a role: " + subject)
+// CheckPermission verifies if the user has permission for the requested action.
+func (c *CasbinPermission) CheckPermission(ctx *gin.Context) (bool, error) {
+	role, err := c.GetRole(ctx)
+	if err != nil {
+		return false, err
 	}
+
 	action := ctx.Request.Method
 	object := ctx.Request.URL.Path
-	fmt.Println("subject: ", subject, "action: ", action, "object: ", object)
 
-	allow, err := c.enforcer.Enforce(subject, object, action)
+	allowed, err := c.enforcer.Enforce(role, object, action)
 	if err != nil {
-		return false, fmt.Errorf("Casbin enforce error: %w", err)
+		return false, fmt.Errorf("error during permission check: %w", err)
 	}
-	return allow, nil
+
+	return allowed, nil
 }
 
-func PermissionMiddleware(enf *casbin.Enforcer) gin.HandlerFunc {
-	casbHandler := &casbinPermission{
-		enforcer: enf,
+// PermissionMiddleware creates a Gin middleware for Casbin permission checks.
+func PermissionMiddleware(enforcer *casbin.Enforcer) gin.HandlerFunc {
+	permissionHandler := &CasbinPermission{
+		enforcer: enforcer,
 	}
 
 	return func(ctx *gin.Context) {
-		res, err := casbHandler.CheckPermission(ctx)
-
+		allowed, err := permissionHandler.CheckPermission(ctx)
 		if err != nil {
-			ctx.AbortWithError(500, err)
-			return
-		}
-		if !res {
-			ctx.AbortWithStatusJSON(401, gin.H{"error": "You don't have permission"})
-			return
-		}
-		auth := ctx.GetHeader("Authorization")
-		if auth == "" {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest,
-				gin.H{"error": "authorization header is required"})
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		valid, err := token.ValidateToken(auth)
-		if err != nil || !valid {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest,
-				gin.H{"error": fmt.Sprintf("invalid token: %s", err)})
+		if !allowed {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "permission denied"})
 			return
 		}
 
-		claims, err := token.ExtractClaims(auth)
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest,
-				gin.H{"error": fmt.Sprintf("invalid token claims: %s", err)})
-			return
-		}
-
-		ctx.Set("claims", claims)
 		ctx.Next()
 	}
 }

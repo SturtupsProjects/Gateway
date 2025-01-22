@@ -3,7 +3,9 @@ package handler
 import (
 	"gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
+	"strconv"
 )
 
 // CreateClient godoc
@@ -84,14 +86,29 @@ func (h *Handler) GetClient(c *gin.Context) {
 func (h *Handler) GetClientList(c *gin.Context) {
 	var filter user.FilterClientRequest
 
-	if err := c.ShouldBindQuery(&filter); err != nil {
-		h.log.Error("Error parsing FilterClientRequest", "error", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	filter.Phone = c.Query("phone")
+	filter.Address = c.Query("address")
+	filter.FullName = c.Query("full_name")
+
+	limitSt := c.Query("limit")
+	pageSt := c.Query("page")
+
+	limit, err := strconv.Atoi(limitSt)
+	if err != nil {
+		limit = 0
 	}
 
-	filter.CompanyId = c.MustGet("company_id").(string)
+	page, err := strconv.Atoi(pageSt)
+	if err != nil {
+		page = 0
+	}
 
+	log.Println(limit, page)
+
+	filter.Limit = int32(limit)
+	filter.Page = int32(page)
+
+	filter.CompanyId = c.MustGet("company_id").(string)
 	filter.ClientType = "client"
 
 	res, err := h.UserClient.GetListClient(c, &filter)

@@ -1,47 +1,61 @@
 package token
 
 import (
-	"fmt"
-
+	"errors"
 	"github.com/golang-jwt/jwt"
+	"os"
+	"time"
 )
 
-// ExtractClaims validates and extracts claims from the token
-func ExtractClaims(tokenStr string) (jwt.MapClaims, error) {
-	// Determine which secret key to use
-	var secretKey string
+var (
+	AccessSecretKey  string
+	RefreshSecretKey string
+	ExpiredAccess    int
+)
 
-	// Parse the token with claims
-	token, err := jwt.ParseWithClaims(tokenStr, jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
-		// Ensure token uses HMAC signing
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
-		}
+func GenerateAccessToken(in *Claims) (string, error) {
+	claims := Claims{
+		Id:          in.Id,
+		FirstName:   in.FirstName,
+		PhoneNumber: in.PhoneNumber,
+		CompanyId:   in.CompanyId,
+		Role:        in.Role,
+		StandardClaims: jwt.StandardClaims{
+			IssuedAt:  time.Now().Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * time.Duration(ExpiredAccess)).Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(os.Getenv(AccessSecretKey)))
+}
+
+func ExtractToken(tokenStr string, isAccessToken bool) (*Claims, error) {
+	var secretKey string
+	if isAccessToken {
+		secretKey = AccessSecretKey
+	} else {
+		secretKey = RefreshSecretKey
+	}
+
+	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secretKey), nil
 	})
-
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse token: %w", err)
+		return nil, err
 	}
 
-	if !token.Valid {
-		return nil, fmt.Errorf("invalid token")
+	claims, ok := token.Claims.(*Claims)
+	if !ok || !token.Valid {
+		return nil, errors.New("invalid token")
 	}
 
-	// Extract and return claims
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		return nil, fmt.Errorf("failed to extract token claims")
+	if claims.ExpiresAt < time.Now().Unix() {
+		return nil, errors.New("token has expired")
 	}
 
 	return claims, nil
 }
 
-// ValidateToken checks the validity of the token
-func ValidateToken(tokenStr string) (bool, error) {
-	_, err := ExtractClaims(tokenStr)
-	if err != nil {
-		return false, err
-	}
-	return true, nil
+func GetExpires() int {
+	return ExpiredAccess
 }
