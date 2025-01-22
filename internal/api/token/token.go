@@ -41,6 +41,7 @@ func ExtractToken(tokenStr string, isAccessToken bool) (*Claims, error) {
 		return []byte(secretKey), nil
 	})
 	if err != nil {
+
 		return nil, err
 	}
 
