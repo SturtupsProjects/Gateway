@@ -47,6 +47,9 @@ const (
 	Products_GetTotalIncome_FullMethodName           = "/products.Products/GetTotalIncome"
 	Products_GetTotalExpense_FullMethodName          = "/products.Products/GetTotalExpense"
 	Products_GetNetProfit_FullMethodName             = "/products.Products/GetNetProfit"
+	Products_CreateTransfers_FullMethodName          = "/products.Products/CreateTransfers"
+	Products_GetTransfers_FullMethodName             = "/products.Products/GetTransfers"
+	Products_GetTransferList_FullMethodName          = "/products.Products/GetTransferList"
 	Products_TotalPriceOfProducts_FullMethodName     = "/products.Products/TotalPriceOfProducts"
 	Products_TotalSoldProducts_FullMethodName        = "/products.Products/TotalSoldProducts"
 	Products_TotalPurchaseProducts_FullMethodName    = "/products.Products/TotalPurchaseProducts"
@@ -94,6 +97,9 @@ type ProductsClient interface {
 	GetTotalIncome(ctx context.Context, in *StatisticReq, opts ...grpc.CallOption) (*PriceProducts, error)
 	GetTotalExpense(ctx context.Context, in *StatisticReq, opts ...grpc.CallOption) (*PriceProducts, error)
 	GetNetProfit(ctx context.Context, in *StatisticReq, opts ...grpc.CallOption) (*PriceProducts, error)
+	CreateTransfers(ctx context.Context, in *TransferReq, opts ...grpc.CallOption) (*Transfer, error)
+	GetTransfers(ctx context.Context, in *TransferID, opts ...grpc.CallOption) (*Transfer, error)
+	GetTransferList(ctx context.Context, in *TransferFilter, opts ...grpc.CallOption) (*TransferList, error)
 	// ------------------- statistics --------------------------
 	TotalPriceOfProducts(ctx context.Context, in *StatisticReq, opts ...grpc.CallOption) (*PriceProducts, error)
 	TotalSoldProducts(ctx context.Context, in *StatisticReq, opts ...grpc.CallOption) (*PriceProducts, error)
@@ -391,6 +397,36 @@ func (c *productsClient) GetNetProfit(ctx context.Context, in *StatisticReq, opt
 	return out, nil
 }
 
+func (c *productsClient) CreateTransfers(ctx context.Context, in *TransferReq, opts ...grpc.CallOption) (*Transfer, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Transfer)
+	err := c.cc.Invoke(ctx, Products_CreateTransfers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productsClient) GetTransfers(ctx context.Context, in *TransferID, opts ...grpc.CallOption) (*Transfer, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Transfer)
+	err := c.cc.Invoke(ctx, Products_GetTransfers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productsClient) GetTransferList(ctx context.Context, in *TransferFilter, opts ...grpc.CallOption) (*TransferList, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TransferList)
+	err := c.cc.Invoke(ctx, Products_GetTransferList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *productsClient) TotalPriceOfProducts(ctx context.Context, in *StatisticReq, opts ...grpc.CallOption) (*PriceProducts, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PriceProducts)
@@ -490,6 +526,9 @@ type ProductsServer interface {
 	GetTotalIncome(context.Context, *StatisticReq) (*PriceProducts, error)
 	GetTotalExpense(context.Context, *StatisticReq) (*PriceProducts, error)
 	GetNetProfit(context.Context, *StatisticReq) (*PriceProducts, error)
+	CreateTransfers(context.Context, *TransferReq) (*Transfer, error)
+	GetTransfers(context.Context, *TransferID) (*Transfer, error)
+	GetTransferList(context.Context, *TransferFilter) (*TransferList, error)
 	// ------------------- statistics --------------------------
 	TotalPriceOfProducts(context.Context, *StatisticReq) (*PriceProducts, error)
 	TotalSoldProducts(context.Context, *StatisticReq) (*PriceProducts, error)
@@ -587,6 +626,15 @@ func (UnimplementedProductsServer) GetTotalExpense(context.Context, *StatisticRe
 }
 func (UnimplementedProductsServer) GetNetProfit(context.Context, *StatisticReq) (*PriceProducts, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNetProfit not implemented")
+}
+func (UnimplementedProductsServer) CreateTransfers(context.Context, *TransferReq) (*Transfer, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTransfers not implemented")
+}
+func (UnimplementedProductsServer) GetTransfers(context.Context, *TransferID) (*Transfer, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTransfers not implemented")
+}
+func (UnimplementedProductsServer) GetTransferList(context.Context, *TransferFilter) (*TransferList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTransferList not implemented")
 }
 func (UnimplementedProductsServer) TotalPriceOfProducts(context.Context, *StatisticReq) (*PriceProducts, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TotalPriceOfProducts not implemented")
@@ -1123,6 +1171,60 @@ func _Products_GetNetProfit_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Products_CreateTransfers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TransferReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductsServer).CreateTransfers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Products_CreateTransfers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductsServer).CreateTransfers(ctx, req.(*TransferReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Products_GetTransfers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TransferID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductsServer).GetTransfers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Products_GetTransfers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductsServer).GetTransfers(ctx, req.(*TransferID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Products_GetTransferList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TransferFilter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductsServer).GetTransferList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Products_GetTransferList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductsServer).GetTransferList(ctx, req.(*TransferFilter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Products_TotalPriceOfProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(StatisticReq)
 	if err := dec(in); err != nil {
@@ -1349,6 +1451,18 @@ var Products_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetNetProfit",
 			Handler:    _Products_GetNetProfit_Handler,
+		},
+		{
+			MethodName: "CreateTransfers",
+			Handler:    _Products_CreateTransfers_Handler,
+		},
+		{
+			MethodName: "GetTransfers",
+			Handler:    _Products_GetTransfers_Handler,
+		},
+		{
+			MethodName: "GetTransferList",
+			Handler:    _Products_GetTransferList_Handler,
 		},
 		{
 			MethodName: "TotalPriceOfProducts",

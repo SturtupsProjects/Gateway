@@ -204,3 +204,15 @@ type ClientFilter struct {
 	Limit    int32  `protobuf:"varint,5,opt,name=limit,proto3" json:"limit,omitempty"`
 	Type     string `protobuf:"bytes,6,opt,name=type,proto3" json:"type,omitempty"`
 }
+
+type TransferReq struct {
+	ToBranchId  string                  `protobuf:"bytes,3,opt,name=to_branch_id,json=toBranchId,proto3" json:"to_branch_id,omitempty"`
+	Description string                  `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Products    []*TransfersProductsReq `protobuf:"bytes,5,rep,name=products,proto3" json:"products,omitempty"`
+	CompanyId   string                  `protobuf:"bytes,6,opt,name=company_id,json=companyId,proto3" json:"company_id,omitempty"`
+}
+
+type TransfersProductsReq struct {
+	ProductId       string `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	ProductQuantity int64  `protobuf:"varint,2,opt,name=product_quantity,json=productQuantity,proto3" json:"product_quantity,omitempty"`
+}

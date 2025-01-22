@@ -316,6 +316,26 @@ definitions:
       total_price:
         type: number
     type: object
+  entity.TransferReq:
+    properties:
+      company_id:
+        type: string
+      description:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/entity.TransfersProductsReq'
+        type: array
+      to_branch_id:
+        type: string
+    type: object
+  entity.TransfersProductsReq:
+    properties:
+      product_id:
+        type: string
+      product_quantity:
+        type: integer
+    type: object
   entity.UpdateCompanyRequest:
     properties:
       logo:
@@ -645,6 +665,49 @@ definitions:
       total_value:
         description: Total value of products purchased
         type: number
+    type: object
+  products.Transfer:
+    properties:
+      company_id:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      from_branch_id:
+        type: string
+      id:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/products.TransfersProducts'
+        type: array
+      to_branch_id:
+        type: string
+      transferred_by:
+        type: string
+    type: object
+  products.TransferList:
+    properties:
+      total_count:
+        type: integer
+      transfers:
+        items:
+          $ref: '#/definitions/products.Transfer'
+        type: array
+    type: object
+  products.TransfersProducts:
+    properties:
+      id:
+        type: string
+      product_id:
+        type: string
+      product_image:
+        type: string
+      product_name:
+        type: string
+      product_quantity:
+        type: integer
     type: object
   user.ClientListResponse:
     properties:
@@ -3189,6 +3252,116 @@ paths:
       summary: Get top suppliers by value of products supplied
       tags:
       - Statistics
+  /transfers:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of transfers with optional filters
+      parameters:
+      - description: Branch ID
+        in: header
+        name: branch_id
+        required: true
+        type: string
+      - description: 'Number of products '
+        in: query
+        name: limit
+        type: integer
+      - description: 'Offset for pagination '
+        in: query
+        name: page
+        type: integer
+      - description: filter by product_name
+        in: query
+        name: product_name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.TransferList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a list of transfers
+      tags:
+      - Transfers
+    post:
+      consumes:
+      - application/json
+      description: Create a new transfer between branches
+      parameters:
+      - description: Branch ID
+        in: header
+        name: branch_id
+        required: true
+        type: string
+      - description: Transfer data
+        in: body
+        name: Transfer
+        required: true
+        schema:
+          $ref: '#/definitions/entity.TransferReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/products.Transfer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new transfer
+      tags:
+      - Transfers
+  /transfers/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a transfer by its ID
+      parameters:
+      - description: Transfer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.Transfer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a transfer by ID
+      tags:
+      - Transfers
   /user/admin/register:
     post:
       consumes:

@@ -307,3 +307,8 @@ time=2025-01-22T11:56:59.515+05:00 level=ERROR msg="Error retrieving client list
 time=2025-01-22T11:57:30.780+05:00 level=ERROR msg="Error retrieving client list" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup crm-admin_auth on 127.0.0.53:53: server misbehaving"
 time=2025-01-22T12:00:06.638+05:00 level=ERROR msg="Error creating debt" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup debts-service on 127.0.0.53:53: server misbehaving"
 time=2025-01-22T12:00:33.349+05:00 level=ERROR msg="Error creating debt" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup debts-service on 127.0.0.53:53: server misbehaving"
+time=2025-01-23T00:31:57.550+05:00 level=ERROR msg="Error retrieving token" error="http: named cookie not present"
+time=2025-01-23T00:34:30.498+05:00 level=ERROR msg="Error retrieving transfer list" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2025-01-23T00:34:30.866+05:00 level=ERROR msg="Error retrieving transfer list" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2025-01-23T00:59:05.589+05:00 level=ERROR msg="Error retrieving token" error="http: named cookie not present"
+time=2025-01-23T00:59:45.337+05:00 level=ERROR msg="Error retrieving transfer list" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"

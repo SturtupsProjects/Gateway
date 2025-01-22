@@ -3818,6 +3818,178 @@ const docTemplate = `{
                 }
             }
         },
+        "/transfers": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve a paginated list of transfers with optional filters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transfers"
+                ],
+                "summary": "Get a list of transfers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of products ",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset for pagination ",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "filter by product_name",
+                        "name": "product_name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.TransferList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new transfer between branches",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transfers"
+                ],
+                "summary": "Create a new transfer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Transfer data",
+                        "name": "Transfer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.TransferReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/products.Transfer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/transfers/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve a transfer by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transfers"
+                ],
+                "summary": "Get a transfer by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Transfer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.Transfer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/user/admin/register": {
             "post": {
                 "description": "Register a new admin account",
@@ -4666,6 +4838,37 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.TransferReq": {
+            "type": "object",
+            "properties": {
+                "company_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.TransfersProductsReq"
+                    }
+                },
+                "to_branch_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.TransfersProductsReq": {
+            "type": "object",
+            "properties": {
+                "product_id": {
+                    "type": "string"
+                },
+                "product_quantity": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.UpdateCompanyRequest": {
             "type": "object",
             "properties": {
@@ -5160,6 +5363,72 @@ const docTemplate = `{
                 "total_value": {
                     "description": "Total value of products purchased",
                     "type": "number"
+                }
+            }
+        },
+        "products.Transfer": {
+            "type": "object",
+            "properties": {
+                "company_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "from_branch_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/products.TransfersProducts"
+                    }
+                },
+                "to_branch_id": {
+                    "type": "string"
+                },
+                "transferred_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "products.TransferList": {
+            "type": "object",
+            "properties": {
+                "total_count": {
+                    "type": "integer"
+                },
+                "transfers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/products.Transfer"
+                    }
+                }
+            }
+        },
+        "products.TransfersProducts": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "product_id": {
+                    "type": "string"
+                },
+                "product_image": {
+                    "type": "string"
+                },
+                "product_name": {
+                    "type": "string"
+                },
+                "product_quantity": {
+                    "type": "integer"
                 }
             }
         },

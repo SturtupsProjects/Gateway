@@ -129,3 +129,16 @@ p, owner, /branches/create, POST
 p, owner, /branches/*, PUT
 p, owner, /branches/*, DELETE
 p, owner, /branches/*, GET
+
+
+
+p, worker, /transfers/create, POST
+p, worker, /transfers/*, PUT
+p, worker, /transfers/*, DELETE
+p, worker, /transfers/, GET
+
+# Разрешения для роли owner
+p, owner, /transfers/create, POST
+p, owner, /transfers/*, PUT
+p, owner, /transfers/*, DELETE
+p, owner, /transfers, GET
