@@ -312,3 +312,4 @@ time=2025-01-23T00:34:30.498+05:00 level=ERROR msg="Error retrieving transfer li
 time=2025-01-23T00:34:30.866+05:00 level=ERROR msg="Error retrieving transfer list" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
 time=2025-01-23T00:59:05.589+05:00 level=ERROR msg="Error retrieving token" error="http: named cookie not present"
 time=2025-01-23T00:59:45.337+05:00 level=ERROR msg="Error retrieving transfer list" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2025-01-23T01:22:17.272+05:00 level=ERROR msg="Error creating transfer" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"

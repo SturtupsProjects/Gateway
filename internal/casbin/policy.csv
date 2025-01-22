@@ -138,7 +138,7 @@ p, worker, /transfers/*, DELETE
 p, worker, /transfers/, GET
 
 # Разрешения для роли owner
-p, owner, /transfers/create, POST
+p, owner, /transfers, POST
 p, owner, /transfers/*, PUT
 p, owner, /transfers/*, DELETE
 p, owner, /transfers, GET
