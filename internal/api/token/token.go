@@ -3,7 +3,6 @@ package token
 import (
 	"errors"
 	"github.com/golang-jwt/jwt"
-	"os"
 	"time"
 )
 
@@ -26,7 +25,7 @@ func GenerateAccessToken(in *Claims) (string, error) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(os.Getenv(AccessSecretKey)))
+	return token.SignedString([]byte(AccessSecretKey))
 }
 
 func ExtractToken(tokenStr string, isAccessToken bool) (*Claims, error) {
