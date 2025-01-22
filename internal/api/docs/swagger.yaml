@@ -652,6 +652,8 @@ definitions:
         items:
           $ref: '#/definitions/user.ClientResponse'
         type: array
+      total_count:
+        type: integer
     type: object
   user.ClientRequest:
     properties:

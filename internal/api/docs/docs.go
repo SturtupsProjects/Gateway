@@ -5171,6 +5171,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/user.ClientResponse"
                     }
+                },
+                "total_count": {
+                    "type": "integer"
                 }
             }
         },
