@@ -242,7 +242,7 @@ func (a *Handler) ListUser(c *gin.Context) {
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} entity.Error
 // @Failure 500 {object} entity.Error
-// @Router /user/access-token [post]
+// @Router /user/get/access-token [post]
 func (a *Handler) GetAccessToken(c *gin.Context) {
 	var tokenRequest Token
 
