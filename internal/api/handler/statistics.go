@@ -645,6 +645,7 @@ func (h *Handler) GetNetProfit(c *gin.Context) {
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
 // @Param limit query string true "Limit"
 // @Param page query string true "Page"
+// @Param description query string true "Description"
 // @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.ListCashFlow
 // @Failure 400 {object} products.Error
@@ -654,6 +655,7 @@ func (h *Handler) GetCashFlow(c *gin.Context) {
 
 	companyId := c.MustGet("company_id").(string)
 
+	description := c.Query("description")
 	startDate := c.DefaultQuery("start_date", "")
 	endDate := c.DefaultQuery("end_date", "")
 	limit := c.Query("limit")
@@ -697,12 +699,13 @@ func (h *Handler) GetCashFlow(c *gin.Context) {
 	}
 
 	req := &products.StatisticReq{
-		CompanyId: companyId,
-		StartDate: parsedStartDate.Format(time.RFC3339),
-		EndDate:   parsedEndDate.Format(time.RFC3339),
-		BranchId:  branchId,
-		Limit:     int64(limitInt),
-		Page:      int64(pageInt),
+		CompanyId:   companyId,
+		StartDate:   parsedStartDate.Format(time.RFC3339),
+		EndDate:     parsedEndDate.Format(time.RFC3339),
+		BranchId:    branchId,
+		Description: description,
+		Limit:       int64(limitInt),
+		Page:        int64(pageInt),
 	}
 
 	res, err := h.ProductClient.GetCashFlow(c, req)

@@ -306,6 +306,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "Description",
+                        "name": "description",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Branch ID",
                         "name": "branch_id",
                         "in": "header",
@@ -5077,6 +5084,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/products.CashFlow"
                     }
+                },
+                "total_count": {
+                    "type": "integer"
                 }
             }
         },

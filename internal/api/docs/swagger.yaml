@@ -473,6 +473,8 @@ definitions:
         items:
           $ref: '#/definitions/products.CashFlow'
         type: array
+      total_count:
+        type: integer
     type: object
   products.Message:
     properties:
@@ -983,6 +985,11 @@ paths:
       - description: Page
         in: query
         name: page
+        required: true
+        type: string
+      - description: Description
+        in: query
+        name: description
         required: true
         type: string
       - description: Branch ID
