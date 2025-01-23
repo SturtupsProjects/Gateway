@@ -4433,6 +4433,9 @@ const docTemplate = `{
         "company.ListCompanyUsersResponse": {
             "type": "object",
             "properties": {
+                "total_count": {
+                    "type": "integer"
+                },
                 "users": {
                     "type": "array",
                     "items": {
