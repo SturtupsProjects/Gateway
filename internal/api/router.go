@@ -162,7 +162,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	transfers := router.Group("/transfers")
 	{
 		transfers.POST("", h.CreateTransfers)
-		transfers.GET(":id", h.GetTransfers)
+		transfers.GET("/:id", h.GetTransfers)
 		transfers.GET("", h.GetTransferList)
 	}
 
