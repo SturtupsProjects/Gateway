@@ -61,7 +61,7 @@ func (a *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("access_token_smart_admin", res.RefreshToken, 604800, "/", "smartadmin.uz", true, false)
+	c.SetCookie("access_token_smart_admin", res.RefreshToken, 604800, "/", "/", true, false)
 
 	c.JSON(http.StatusOK, res)
 }
