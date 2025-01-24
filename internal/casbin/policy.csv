@@ -142,3 +142,4 @@ p, owner, /transfers, POST
 p, owner, /transfers/*, PUT
 p, owner, /transfers/*, DELETE
 p, owner, /transfers, GET
+p, owner, /transfers/*, GET
