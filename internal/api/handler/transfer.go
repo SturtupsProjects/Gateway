@@ -65,7 +65,7 @@ func (h *Handler) CreateTransfers(c *gin.Context) {
 func (h *Handler) GetTransfers(c *gin.Context) {
 
 	id := c.Param("id")
-	companyId := c.GetHeader("company_id")
+	companyId := c.MustGet("company_id").(string)
 
 	req := &products.TransferID{Id: id, CompanyId: companyId}
 
