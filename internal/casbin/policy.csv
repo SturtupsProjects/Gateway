@@ -119,10 +119,8 @@ p, worker, /debts/payment/*, GET
 
 
 # Разрешения для роли worker
-p, worker, /branches/create, POST
-p, worker, /branches/*, PUT
-p, worker, /branches/*, DELETE
 p, worker, /branches/list, GET
+p, owner, /branches/*, GET
 
 # Разрешения для роли owner
 p, owner, /branches/create, POST
