@@ -338,6 +338,11 @@ func (h *Handler) CreateCompanyUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	if req.Role == "admin" {
+		req.Role = "owner"
+	}
+
 	res, err := h.CompanyClient.CreateUserToCompany(c, &company.CreateUserToCompanyRequest{CompanyId: c.MustGet("company_id").(string), FirstName: req.FirstName, LastName: req.LastName, Email: req.Email, Role: req.Role, Username: req.Username, Password: req.Password, PhoneNumber: req.PhoneNumber})
 	if err != nil {
 		h.log.Error(fmt.Sprintf("CreateCompanyUser request error: %v", err))

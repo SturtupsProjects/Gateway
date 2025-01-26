@@ -86,22 +86,22 @@ func (a *Handler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	res, err := a.UserClient.AddUser(c.Request.Context(), &user.UserRequest{
-		FirstName:   req.FirstName,
-		LastName:    req.LastName,
-		Email:       req.Email,
-		PhoneNumber: req.PhoneNumber,
-		Role:        req.Role,
-		Password:    req.Password,
-	})
+	//res, err := a.UserClient.AddUser(c.Request.Context(), &user.UserRequest{
+	//	FirstName:   req.FirstName,
+	//	LastName:    req.LastName,
+	//	Email:       req.Email,
+	//	PhoneNumber: req.PhoneNumber,
+	//	Role:        req.Role,
+	//	Password:    req.Password,
+	//})
+	//
+	//if err != nil {
+	//	a.log.Error("Error creating user", "error", err)
+	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	//	return
+	//}
 
-	if err != nil {
-		a.log.Error("Error creating user", "error", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, gin.H{"Info": "Cannot create user"})
 }
 
 // UpdateUser godoc
