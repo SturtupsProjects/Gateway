@@ -166,6 +166,15 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		transfers.GET("", h.GetTransferList)
 	}
 
+	balance := router.Group("/company-balance")
+	{
+		balance.POST("", h.CreateCompanyBalance)
+		balance.GET("", h.GetCompanyBalance)
+		balance.PUT("/:company_id", h.UpdateCompanyBalance)
+		balance.DELETE("/:company_id", h.DeleteCompanyBalance)
+		balance.GET("/list", h.GetUsersBalanceList)
+	}
+
 	// Return the configured router
 	return router
 }

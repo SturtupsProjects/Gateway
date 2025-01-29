@@ -16,6 +16,27 @@ definitions:
       updated_at:
         type: string
     type: object
+  company.CompanyBalanceListResponse:
+    properties:
+      users:
+        items:
+          $ref: '#/definitions/company.CompanyBalanceResponse'
+        type: array
+    type: object
+  company.CompanyBalanceRequest:
+    properties:
+      balance:
+        type: string
+      company_id:
+        type: string
+    type: object
+  company.CompanyBalanceResponse:
+    properties:
+      balance:
+        type: string
+      company_id:
+        type: string
+    type: object
   company.CompanyResponse:
     properties:
       company_id:
@@ -41,6 +62,13 @@ definitions:
         type: string
       phone_number:
         type: string
+    type: object
+  company.FilterCompanyBalanceRequest:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
     type: object
   company.ListBranchesResponse:
     properties:
@@ -1626,6 +1654,142 @@ paths:
       summary: Create Company User
       tags:
       - companies
+  /company-balance:
+    post:
+      consumes:
+      - application/json
+      description: Create a new company balance
+      parameters:
+      - description: Company Balance details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/company.CompanyBalanceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.CompanyBalanceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Create Company Balance
+      tags:
+      - Company Balance
+    put:
+      consumes:
+      - application/json
+      description: Update a company balance
+      parameters:
+      - description: Updated balance details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/company.CompanyBalanceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.CompanyBalanceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Update Company Balance
+      tags:
+      - Company Balance
+  /company-balance/{company_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a company balance by ID
+      parameters:
+      - description: Company ID
+        in: path
+        name: company_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.Message'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Company Balance
+      tags:
+      - Company Balance
+    get:
+      consumes:
+      - application/json
+      description: Get company balance by ID
+      parameters:
+      - description: Company ID
+        in: path
+        name: company_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.CompanyBalanceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get Company Balance
+      tags:
+      - Company Balance
+  /company-balance/list:
+    post:
+      consumes:
+      - application/json
+      description: Get list of user balances filtered by company and user
+      parameters:
+      - description: Filter details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/company.FilterCompanyBalanceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.CompanyBalanceListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get Users Balance List
+      tags:
+      - Company Balance
   /debts:
     get:
       consumes:
