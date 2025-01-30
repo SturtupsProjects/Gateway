@@ -23,17 +23,10 @@ definitions:
           $ref: '#/definitions/company.CompanyBalanceResponse'
         type: array
     type: object
-  company.CompanyBalanceRequest:
-    properties:
-      balance:
-        type: string
-      company_id:
-        type: string
-    type: object
   company.CompanyBalanceResponse:
     properties:
       balance:
-        type: string
+        type: integer
       company_id:
         type: string
     type: object
@@ -62,13 +55,6 @@ definitions:
         type: string
       phone_number:
         type: string
-    type: object
-  company.FilterCompanyBalanceRequest:
-    properties:
-      limit:
-        type: integer
-      page:
-        type: integer
     type: object
   company.ListBranchesResponse:
     properties:
@@ -1660,12 +1646,12 @@ paths:
       - application/json
       description: Create a new company balance
       parameters:
-      - description: Company Balance details
+      - description: Balance
         in: body
-        name: input
+        name: balance
         required: true
         schema:
-          $ref: '#/definitions/company.CompanyBalanceRequest'
+          type: integer
       produces:
       - application/json
       responses:
@@ -1687,12 +1673,12 @@ paths:
       - application/json
       description: Update a company balance
       parameters:
-      - description: Updated balance details
+      - description: Balance
         in: body
-        name: input
+        name: balance
         required: true
         schema:
-          $ref: '#/definitions/company.CompanyBalanceRequest'
+          type: integer
       produces:
       - application/json
       responses:
@@ -1763,17 +1749,21 @@ paths:
       tags:
       - Company Balance
   /company-balance/list:
-    post:
+    get:
       consumes:
       - application/json
       description: Get list of user balances filtered by company and user
       parameters:
-      - description: Filter details
-        in: body
-        name: input
+      - description: Page
+        in: query
+        name: page
         required: true
-        schema:
-          $ref: '#/definitions/company.FilterCompanyBalanceRequest'
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
       produces:
       - application/json
       responses:

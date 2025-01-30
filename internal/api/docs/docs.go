@@ -1327,12 +1327,12 @@ const docTemplate = `{
                 "summary": "Update Company Balance",
                 "parameters": [
                     {
-                        "description": "Updated balance details",
-                        "name": "input",
+                        "description": "Balance",
+                        "name": "balance",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/company.CompanyBalanceRequest"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -1370,12 +1370,12 @@ const docTemplate = `{
                 "summary": "Create Company Balance",
                 "parameters": [
                     {
-                        "description": "Company Balance details",
-                        "name": "input",
+                        "description": "Balance",
+                        "name": "balance",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/company.CompanyBalanceRequest"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -1396,7 +1396,7 @@ const docTemplate = `{
             }
         },
         "/company-balance/list": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -1415,13 +1415,18 @@ const docTemplate = `{
                 "summary": "Get Users Balance List",
                 "parameters": [
                     {
-                        "description": "Filter details",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/company.FilterCompanyBalanceRequest"
-                        }
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -4611,22 +4616,11 @@ const docTemplate = `{
                 }
             }
         },
-        "company.CompanyBalanceRequest": {
-            "type": "object",
-            "properties": {
-                "balance": {
-                    "type": "string"
-                },
-                "company_id": {
-                    "type": "string"
-                }
-            }
-        },
         "company.CompanyBalanceResponse": {
             "type": "object",
             "properties": {
                 "balance": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "company_id": {
                     "type": "string"
@@ -4670,17 +4664,6 @@ const docTemplate = `{
                 },
                 "phone_number": {
                     "type": "string"
-                }
-            }
-        },
-        "company.FilterCompanyBalanceRequest": {
-            "type": "object",
-            "properties": {
-                "limit": {
-                    "type": "integer"
-                },
-                "page": {
-                    "type": "integer"
                 }
             }
         },
