@@ -1550,18 +1550,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Filter by creation date after this timestamp",
-                        "name": "createdAfter",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filter by creation date before this timestamp",
-                        "name": "createdBefore",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
                         "description": "Filter by description",
                         "name": "description",
                         "in": "query"
@@ -1575,13 +1563,13 @@ const docTemplate = `{
                     {
                         "type": "number",
                         "description": "Filter by minimum total amount",
-                        "name": "totalAmountMin",
+                        "name": "total_amount_min",
                         "in": "query"
                     },
                     {
                         "type": "number",
                         "description": "Filter by maximum total amount",
-                        "name": "totalAmountMax",
+                        "name": "total_amount_max",
                         "in": "query"
                     },
                     {
@@ -1594,6 +1582,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Page number for pagination",
                         "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "filter by fully pay",
+                        "name": "is_fully_pay",
                         "in": "query"
                     }
                 ],
@@ -1900,6 +1894,95 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/debts.PaymentList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/debts/total-sum": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get total sum of debts from company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Debts"
+                ],
+                "summary": "Get Total Sum Of Debts",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/debts.SumMoney"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/debts/total-sum/{user_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get total debts sum for a specific user from company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Debts"
+                ],
+                "summary": "Get Total Debts Sum Of User",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/debts.SumMoney"
                         }
                     },
                     "400": {
@@ -4806,6 +4889,17 @@ const docTemplate = `{
                 }
             }
         },
+        "debts.Money": {
+            "type": "object",
+            "properties": {
+                "currency": {
+                    "type": "string"
+                },
+                "sum": {
+                    "type": "number"
+                }
+            }
+        },
         "debts.PayDebtsReq": {
             "type": "object",
             "properties": {
@@ -4847,6 +4941,20 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/debts.Payment"
+                    }
+                }
+            }
+        },
+        "debts.SumMoney": {
+            "type": "object",
+            "properties": {
+                "company_id": {
+                    "type": "string"
+                },
+                "sum": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/debts.Money"
                     }
                 }
             }

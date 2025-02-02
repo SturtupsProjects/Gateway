@@ -5,6 +5,7 @@ import (
 	"gateway/internal/generated/debts"
 	pbu "gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -74,14 +75,13 @@ func (h *Handler) GetDebt(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param createdAfter query string false "Filter by creation date after this timestamp"
-// @Param createdBefore query string false "Filter by creation date before this timestamp"
 // @Param description query string false "Filter by description"
 // @Param currencyCode query string false "Filter by currency code"
-// @Param totalAmountMin query number false "Filter by minimum total amount"
-// @Param totalAmountMax query number false "Filter by maximum total amount"
+// @Param total_amount_min query number false "Filter by minimum total amount"
+// @Param total_amount_max query number false "Filter by maximum total amount"
 // @Param limit query int false "Number of results to return"
 // @Param page query int false "Page number for pagination"
+// @Param is_fully_pay query bool false "filter by fully pay"
 // @Success 200 {object} debts.DebtsList
 // @Failure 400 {object} products.Error
 // @Failure 500 {object} products.Error
@@ -90,13 +90,20 @@ func (h *Handler) GetListDebts(c *gin.Context) {
 	var filter debts.FilterDebts
 
 	// Extract query parameters
-	filter.CreatedAfter = c.Query("createdAfter")
-	filter.CreatedBefore = c.Query("createdBefore")
 	filter.Description = c.Query("description")
 	filter.CurrencyCode = c.Query("currencyCode")
+	filter.IsFullyPay = c.Query("is_fully_pay")
+
+	log.Println(filter.IsFullyPay)
+
+	if filter.IsFullyPay == "true" || filter.IsFullyPay == "false" || filter.IsFullyPay == "" {
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid value for is_fully_pay"})
+		return
+	}
 
 	// Parse numeric filters
-	if totalAmountMin := c.Query("totalAmountMin"); totalAmountMin != "" {
+	if totalAmountMin := c.Query("total_amount_min"); totalAmountMin != "" {
 		if min, err := strconv.ParseFloat(totalAmountMin, 64); err == nil {
 			filter.TotalAmountMin = min
 		} else {
@@ -106,7 +113,7 @@ func (h *Handler) GetListDebts(c *gin.Context) {
 		}
 	}
 
-	if totalAmountMax := c.Query("totalAmountMax"); totalAmountMax != "" {
+	if totalAmountMax := c.Query("total_amount_max"); totalAmountMax != "" {
 		if max, err := strconv.ParseFloat(totalAmountMax, 64); err == nil {
 			filter.TotalAmountMax = max
 		} else {
@@ -312,6 +319,74 @@ func (h *Handler) GetPayment(c *gin.Context) {
 	res, err := h.DebtClient.GetPayment(c, req)
 	if err != nil {
 		h.log.Error("Error fetching payment", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// GetTotalDebtSum godoc
+// @Summary Get Total Sum Of Debts
+// @Description Get total sum of debts from company
+// @Tags Debts
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} debts.SumMoney
+// @Failure 400 {object} products.Error
+// @Failure 500 {object} products.Error
+// @Router /debts/total-sum [get]
+func (h *Handler) GetTotalDebtSum(c *gin.Context) {
+
+	companyID := c.MustGet("company_id").(string)
+
+	req := debts.CompanyID{
+		Id: companyID,
+	}
+
+	res, err := h.DebtClient.GetTotalDebtSum(c, &req)
+	if err != nil {
+		h.log.Error("Error fetching total debt sum", "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// GetUserTotalDebt godoc
+// @Summary Get Total Debts Sum Of User
+// @Description Get total debts sum for a specific user from company
+// @Tags Debts
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param user_id path string true "User ID"
+// @Success 200 {object} debts.SumMoney
+// @Failure 400 {object} products.Error
+// @Failure 500 {object} products.Error
+// @Router /debts/total-sum/{user_id} [get]
+func (h *Handler) GetUserTotalDebt(c *gin.Context) {
+	// Извлекаем user_id из URL-параметра
+	userID := c.Param("user_id")
+	if userID == "" {
+		h.log.Error("user_id not provided in URL")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id is required"})
+		return
+	}
+
+	// Извлекаем company_id из контекста
+	companyID := c.MustGet("company_id").(string)
+
+	req := debts.ClientID{
+		Id:        userID,
+		CompanyId: companyID,
+	}
+
+	res, err := h.DebtClient.GetUserTotalDebtSum(c, &req)
+	if err != nil {
+		h.log.Error("Error fetching user total debt sum", "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
