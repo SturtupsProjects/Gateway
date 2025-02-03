@@ -146,6 +146,13 @@ definitions:
       total_amount:
         type: number
     type: object
+  debts.Money:
+    properties:
+      currency:
+        type: string
+      sum:
+        type: number
+    type: object
   debts.PayDebtsReq:
     properties:
       company_id:
@@ -173,6 +180,15 @@ definitions:
       payments:
         items:
           $ref: '#/definitions/debts.Payment'
+        type: array
+    type: object
+  debts.SumMoney:
+    properties:
+      company_id:
+        type: string
+      sum:
+        items:
+          $ref: '#/definitions/debts.Money'
         type: array
     type: object
   entity.Client:
@@ -1820,14 +1836,6 @@ paths:
       - application/json
       description: Retrieve a list of debts with optional filters
       parameters:
-      - description: Filter by creation date after this timestamp
-        in: query
-        name: createdAfter
-        type: string
-      - description: Filter by creation date before this timestamp
-        in: query
-        name: createdBefore
-        type: string
       - description: Filter by description
         in: query
         name: description
@@ -1838,11 +1846,11 @@ paths:
         type: string
       - description: Filter by minimum total amount
         in: query
-        name: totalAmountMin
+        name: total_amount_min
         type: number
       - description: Filter by maximum total amount
         in: query
-        name: totalAmountMax
+        name: total_amount_max
         type: number
       - description: Number of results to return
         in: query
@@ -1852,6 +1860,10 @@ paths:
         in: query
         name: page
         type: integer
+      - description: filter by fully pay
+        in: query
+        name: is_fully_pay
+        type: boolean
       produces:
       - application/json
       responses:
@@ -2089,6 +2101,62 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get payments by debt ID
+      tags:
+      - Debts
+  /debts/total-sum:
+    get:
+      consumes:
+      - application/json
+      description: Get total sum of debts from company
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/debts.SumMoney'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Total Sum Of Debts
+      tags:
+      - Debts
+  /debts/total-sum/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get total debts sum for a specific user from company
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/debts.SumMoney'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Total Debts Sum Of User
       tags:
       - Debts
   /products:

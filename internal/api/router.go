@@ -158,6 +158,10 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		debt.GET("/payments/:debt_id", h.GetPaymentsByDebtId)
 		debt.GET("/payment/:id", h.GetPayment)
 		debt.POST("/payments", h.Payments)
+
+		debt.GET("/total-sum", h.GetTotalDebtSum)
+		debt.GET("/total-sum/:user_id", h.GetUserTotalDebt)
+
 	}
 
 	transfers := router.Group("/transfers")
