@@ -1780,6 +1780,40 @@ paths:
       summary: Get Users Balance List
       tags:
       - Company Balance
+  /company-balance/sms:
+    post:
+      consumes:
+      - application/json
+      description: Send an SMS notification
+      parameters:
+      - description: Phone Number
+        in: body
+        name: phone_number
+        required: true
+        schema:
+          type: string
+      - description: Message content
+        in: body
+        name: message
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/company.Message'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Send SMS
+      tags:
+      - Company Balance
   /debts:
     get:
       consumes:

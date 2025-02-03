@@ -23,10 +23,11 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(middleware.CORSMiddleware())
-
-	// Swagger Documentation Route
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
+	swagger:=router.Group("/swagger/*any")
+	{
+		// Swagger Documentation Route
+		swagger.GET("/", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 	// Initialize the handler with config
 	h := handler.NewHandlerRepo(cfg)
 

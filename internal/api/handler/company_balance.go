@@ -159,3 +159,40 @@ func (h *Handler) DeleteCompanyBalance(c *gin.Context) {
 
 	c.JSON(http.StatusOK, res)
 }
+
+// @Summary Send SMS
+// @Description Send an SMS notification
+// @Tags Company Balance
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param phone_number body string true "Phone Number"
+// @Param message body string true "Message content"
+// @Success 200 {object} company.Message
+// @Failure 400 {object} string
+// @Router /company-balance/sms [post]
+func (h *Handler) SendSMS(c *gin.Context) {
+	smsRequest := company.SmsRequest{}
+	// Bind incoming JSON data to the struct
+	if err := c.ShouldBindJSON(&smsRequest); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+	smsRequest.CompanyId = c.MustGet("company_id").(string)
+	// Validate phone number and message
+	if smsRequest.Phone == "" || smsRequest.Message == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Phone number and message are required"})
+		return
+	}
+
+	// Call external SMS service or internal method to send the message
+	res, err := h.CompanyClient.SendSMS(c, &smsRequest)
+	if err != nil {
+		h.log.Error(fmt.Sprintf("SendSMS request error: %v", err))
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Respond with a success message
+	c.JSON(http.StatusOK, res)
+}
