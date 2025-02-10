@@ -2433,6 +2433,10 @@ paths:
         in: formData
         name: bill_format
         type: string
+      - description: Total count of products
+        in: formData
+        name: quantity
+        type: string
       - description: Incoming price
         in: formData
         name: incoming_price

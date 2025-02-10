@@ -2822,6 +2822,12 @@ const docTemplate = `{
                         "in": "formData"
                     },
                     {
+                        "type": "string",
+                        "description": "Total count of products",
+                        "name": "quantity",
+                        "in": "formData"
+                    },
+                    {
                         "type": "number",
                         "description": "Incoming price",
                         "name": "incoming_price",

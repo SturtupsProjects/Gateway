@@ -97,6 +97,7 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 // @Param name formData string true "Name of the product"
 // @Param category_id formData string true "Category ID"
 // @Param bill_format formData string false "Billing format"
+// @Param quantity formData string false "Total count of products"
 // @Param incoming_price formData float64 true "Incoming price"
 // @Param standard_price formData float64 true "Standard price"
 // @Param branch_id header string true "Branch ID"
@@ -162,6 +163,7 @@ type UpdateProductForm struct {
 	BillFormat    string  `form:"bill_format"`                               // Optional billing format
 	IncomingPrice float64 `form:"incoming_price" binding:"required,numeric"` // Incoming price of the product
 	StandardPrice float64 `form:"standard_price" binding:"required,numeric"` // Standard price of the product
+	Quantity      int64   `form:"quantity"`
 }
 
 // DeleteProduct godoc
