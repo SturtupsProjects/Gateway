@@ -23,10 +23,10 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(middleware.CORSMiddleware())
-	swagger:=router.Group("/swagger/*any")
+	swagger := router.Group("/swagger/*any")
 	{
 		// Swagger Documentation Route
-		swagger.GET("/", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		swagger.GET("", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 	// Initialize the handler with config
 	h := handler.NewHandlerRepo(cfg)
@@ -138,6 +138,9 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 		statics.GET("/cash/total-income", h.GetTotalIncome)
 		statics.GET("/cash/total-expense", h.GetTotalExpense)
 		statics.GET("/cash/net-profit", h.GetNetProfit)
+
+		statics.GET("/sale-statistics", h.GetSaleStatistics)
+		statics.GET("/branch-income", h.GetBranchIncome)
 	}
 
 	cash := router.Group("/cash-flow")
@@ -175,7 +178,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	{
 		balance.POST("", h.CreateCompanyBalance)
 		balance.GET("", h.GetCompanyBalance)
-		balance.PUT("/:company_id", h.UpdateCompanyBalance)
+		balance.PUT("", h.UpdateCompanyBalance)
 		balance.DELETE("/:company_id", h.DeleteCompanyBalance)
 		balance.GET("/list", h.GetUsersBalanceList)
 	}

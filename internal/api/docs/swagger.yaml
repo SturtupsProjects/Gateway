@@ -23,6 +23,13 @@ definitions:
           $ref: '#/definitions/company.CompanyBalanceResponse'
         type: array
     type: object
+  company.CompanyBalanceRequest:
+    properties:
+      balance:
+        type: integer
+      company_id:
+        type: string
+    type: object
   company.CompanyBalanceResponse:
     properties:
       balance:
@@ -77,6 +84,15 @@ definitions:
   company.Message:
     properties:
       message:
+        type: string
+    type: object
+  company.SmsRequest:
+    properties:
+      company_id:
+        type: string
+      message:
+        type: string
+      phone:
         type: string
     type: object
   company.UpdateBranchRequest:
@@ -399,6 +415,28 @@ definitions:
       token:
         type: string
     type: object
+  products.BranchIncomeData:
+    properties:
+      branch_id:
+        description: ID филиала
+        type: string
+      values:
+        description: Список доходов по методам оплаты
+        items:
+          $ref: '#/definitions/products.Price'
+        type: array
+    type: object
+  products.BranchIncomeRes:
+    properties:
+      data:
+        description: Доходы по филиалам
+        items:
+          $ref: '#/definitions/products.BranchIncomeData'
+        type: array
+      total:
+        description: Общий доход по всем филиалам
+        type: number
+    type: object
   products.BulkCreateResponse:
     properties:
       message:
@@ -670,6 +708,30 @@ definitions:
       total_sale_price:
         description: Changed to double
         type: number
+    type: object
+  products.SaleStatistics:
+    properties:
+      branch_id:
+        type: string
+      company_id:
+        type: string
+      data:
+        items:
+          $ref: '#/definitions/products.SaleStatisticsDate'
+        type: array
+      time_period:
+        type: string
+      total:
+        type: number
+    type: object
+  products.SaleStatisticsDate:
+    properties:
+      date:
+        type: string
+      values:
+        items:
+          $ref: '#/definitions/products.Price'
+        type: array
     type: object
   products.SalesItem:
     properties:
@@ -1662,12 +1724,12 @@ paths:
       - application/json
       description: Create a new company balance
       parameters:
-      - description: Balance
+      - description: Company balance request
         in: body
-        name: balance
+        name: body
         required: true
         schema:
-          type: integer
+          $ref: '#/definitions/company.CompanyBalanceRequest'
       produces:
       - application/json
       responses:
@@ -1678,7 +1740,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/products.Error'
       security:
       - ApiKeyAuth: []
       summary: Create Company Balance
@@ -1687,14 +1749,14 @@ paths:
     put:
       consumes:
       - application/json
-      description: Update a company balance
+      description: Update an existing company balance
       parameters:
-      - description: Balance
+      - description: Company balance update request
         in: body
-        name: balance
+        name: body
         required: true
         schema:
-          type: integer
+          $ref: '#/definitions/company.CompanyBalanceRequest'
       produces:
       - application/json
       responses:
@@ -1705,7 +1767,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/products.Error'
       security:
       - ApiKeyAuth: []
       summary: Update Company Balance
@@ -1715,7 +1777,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Delete a company balance by ID
+      description: Soft delete a company balance by ID
       parameters:
       - description: Company ID
         in: path
@@ -1732,7 +1794,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/products.Error'
       security:
       - ApiKeyAuth: []
       summary: Delete Company Balance
@@ -1758,7 +1820,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/products.Error'
       security:
       - ApiKeyAuth: []
       summary: Get Company Balance
@@ -1768,14 +1830,14 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get list of user balances filtered by company and user
+      description: Get list of company balances with pagination
       parameters:
-      - description: Page
+      - description: Page number
         in: query
         name: page
         required: true
         type: integer
-      - description: Limit
+      - description: Limit per page
         in: query
         name: limit
         required: true
@@ -1790,10 +1852,10 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/products.Error'
       security:
       - ApiKeyAuth: []
-      summary: Get Users Balance List
+      summary: List Company Balances
       tags:
       - Company Balance
   /company-balance/sms:
@@ -1802,18 +1864,12 @@ paths:
       - application/json
       description: Send an SMS notification
       parameters:
-      - description: Phone Number
+      - description: SMS request
         in: body
-        name: phone_number
+        name: body
         required: true
         schema:
-          type: string
-      - description: Message content
-        in: body
-        name: message
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/company.SmsRequest'
       produces:
       - application/json
       responses:
@@ -1824,7 +1880,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/products.Error'
       security:
       - ApiKeyAuth: []
       summary: Send SMS
@@ -3145,6 +3201,36 @@ paths:
       summary: Calculate total sales
       tags:
       - Sales
+  /statistics/branch-income:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve total income for a branch within a specified date range
+      parameters:
+      - description: Start date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        type: string
+      - description: End date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.BranchIncomeRes'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get branch income
+      tags:
+      - Statistics
   /statistics/cash/net-profit:
     get:
       consumes:
@@ -3431,6 +3517,49 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Calculate the total quantity of sold products
+      tags:
+      - Statistics
+  /statistics/sale-statistics:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve sales statistics based on a given time period
+      parameters:
+      - description: Start date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        type: string
+      - description: End date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        type: string
+      - description: Period (e.g., daily, weekly, monthly)
+        in: query
+        name: period
+        type: string
+      - description: Branch ID
+        in: header
+        name: branch_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.SaleStatistics'
+        "400":
+          description: Branch ID is required in the header
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get sales statistics
       tags:
       - Statistics
   /statistics/top-clients:

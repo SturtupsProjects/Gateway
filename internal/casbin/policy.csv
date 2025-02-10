@@ -47,15 +47,7 @@ p, owner, /companies, PUT
 p, owner, /companies/users, GET
 p, owner, /companies/users, POST
 
-p, owner, /statistics/products/total-price, GET
-p, owner, /statistics/products/total-sold, GET
-p, owner, /statistics/products/total-purchased, GET
-p, owner, /statistics/products/get-most-sold, GET
-p, owner, /statistics/top-clients, GET
-p, owner, /statistics/top-suppliers, GET
-p, owner, /statistics/cash/total-income, GET
-p, owner, /statistics/cash/total-expense, GET
-p, owner, /statistics/cash/net-profit, GET
+p, owner, /statistics/*, GET
 
 p, owner, /cash-flow, GET
 p, owner, /cash-flow/income, POST
@@ -131,8 +123,6 @@ p, owner, /branches/*, GET
 
 
 p, worker, /transfers/create, POST
-p, worker, /transfers/*, PUT
-p, worker, /transfers/*, DELETE
 p, worker, /transfers/, GET
 
 # Разрешения для роли owner
@@ -141,3 +131,9 @@ p, owner, /transfers/*, PUT
 p, owner, /transfers/*, DELETE
 p, owner, /transfers, GET
 p, owner, /transfers/*, GET
+
+p, owner, /company-balance, POST
+p, owner, /company-balance, PUT
+p, owner, /company-balance/*, DELETE
+p, owner, /company-balance/*, GET
+p, owner, /company-balance, GET

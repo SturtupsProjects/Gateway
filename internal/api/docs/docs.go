@@ -1314,7 +1314,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Update a company balance",
+                "description": "Update an existing company balance",
                 "consumes": [
                     "application/json"
                 ],
@@ -1327,12 +1327,12 @@ const docTemplate = `{
                 "summary": "Update Company Balance",
                 "parameters": [
                     {
-                        "description": "Balance",
-                        "name": "balance",
+                        "description": "Company balance update request",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/company.CompanyBalanceRequest"
                         }
                     }
                 ],
@@ -1346,7 +1346,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/products.Error"
                         }
                     }
                 }
@@ -1370,12 +1370,12 @@ const docTemplate = `{
                 "summary": "Create Company Balance",
                 "parameters": [
                     {
-                        "description": "Balance",
-                        "name": "balance",
+                        "description": "Company balance request",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/company.CompanyBalanceRequest"
                         }
                     }
                 ],
@@ -1389,7 +1389,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/products.Error"
                         }
                     }
                 }
@@ -1402,7 +1402,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Get list of user balances filtered by company and user",
+                "description": "Get list of company balances with pagination",
                 "consumes": [
                     "application/json"
                 ],
@@ -1412,18 +1412,18 @@ const docTemplate = `{
                 "tags": [
                     "Company Balance"
                 ],
-                "summary": "Get Users Balance List",
+                "summary": "List Company Balances",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Page",
+                        "description": "Page number",
                         "name": "page",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "Limit",
+                        "description": "Limit per page",
                         "name": "limit",
                         "in": "query",
                         "required": true
@@ -1439,7 +1439,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/products.Error"
                         }
                     }
                 }
@@ -1465,21 +1465,12 @@ const docTemplate = `{
                 "summary": "Send SMS",
                 "parameters": [
                     {
-                        "description": "Phone Number",
-                        "name": "phone_number",
+                        "description": "SMS request",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Message content",
-                        "name": "message",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/company.SmsRequest"
                         }
                     }
                 ],
@@ -1493,7 +1484,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/products.Error"
                         }
                     }
                 }
@@ -1536,7 +1527,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/products.Error"
                         }
                     }
                 }
@@ -1547,7 +1538,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Delete a company balance by ID",
+                "description": "Soft delete a company balance by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -1577,7 +1568,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/products.Error"
                         }
                     }
                 }
@@ -3617,6 +3608,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/statistics/branch-income": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve total income for a branch within a specified date range",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get branch income",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.BranchIncomeRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/statistics/cash/net-profit": {
             "get": {
                 "security": [
@@ -4051,6 +4090,73 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/sale-statistics": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve sales statistics based on a given time period",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get sales statistics",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Period (e.g., daily, weekly, monthly)",
+                        "name": "period",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.SaleStatistics"
+                        }
+                    },
+                    "400": {
+                        "description": "Branch ID is required in the header",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -4753,6 +4859,17 @@ const docTemplate = `{
                 }
             }
         },
+        "company.CompanyBalanceRequest": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "integer"
+                },
+                "company_id": {
+                    "type": "string"
+                }
+            }
+        },
         "company.CompanyBalanceResponse": {
             "type": "object",
             "properties": {
@@ -4836,6 +4953,20 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "company.SmsRequest": {
+            "type": "object",
+            "properties": {
+                "company_id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "phone": {
                     "type": "string"
                 }
             }
@@ -5333,6 +5464,38 @@ const docTemplate = `{
                 }
             }
         },
+        "products.BranchIncomeData": {
+            "type": "object",
+            "properties": {
+                "branch_id": {
+                    "description": "ID филиала",
+                    "type": "string"
+                },
+                "values": {
+                    "description": "Список доходов по методам оплаты",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/products.Price"
+                    }
+                }
+            }
+        },
+        "products.BranchIncomeRes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "Доходы по филиалам",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/products.BranchIncomeData"
+                    }
+                },
+                "total": {
+                    "description": "Общий доход по всем филиалам",
+                    "type": "number"
+                }
+            }
+        },
         "products.BulkCreateResponse": {
             "type": "object",
             "properties": {
@@ -5739,6 +5902,43 @@ const docTemplate = `{
                 "total_sale_price": {
                     "description": "Changed to double",
                     "type": "number"
+                }
+            }
+        },
+        "products.SaleStatistics": {
+            "type": "object",
+            "properties": {
+                "branch_id": {
+                    "type": "string"
+                },
+                "company_id": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/products.SaleStatisticsDate"
+                    }
+                },
+                "time_period": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                }
+            }
+        },
+        "products.SaleStatisticsDate": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/products.Price"
+                    }
                 }
             }
         },

@@ -811,3 +811,75 @@ func (h *Handler) CreateExpense(c *gin.Context) {
 
 	c.JSON(http.StatusOK, res)
 }
+
+// GetSaleStatistics godoc
+// @Summary Get sales statistics
+// @Description Retrieve sales statistics based on a given time period
+// @Tags Statistics
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param start_date query string false "Start date (YYYY-MM-DD)"
+// @Param end_date query string false "End date (YYYY-MM-DD)"
+// @Param period query string false "Period (e.g., daily, weekly, monthly)"
+// @Param branch_id header string true "Branch ID"
+// @Success 200 {object} products.SaleStatistics
+// @Failure 400 {object} products.Error "Branch ID is required in the header"
+// @Failure 500 {object} products.Error "Internal server error"
+// @Router /statistics/sale-statistics [get]
+func (h *Handler) GetSaleStatistics(c *gin.Context) {
+
+	var req products.SaleStatisticsReq
+
+	req.StartDate = c.Query("start_date")
+	req.EndDate = c.Query("end_date")
+	req.Period = c.Query("period")
+
+	req.CompanyId = c.MustGet("company_id").(string)
+
+	req.BranchId = c.GetHeader("branch_id")
+	if req.BranchId == "" {
+		h.log.Error("Branch ID is required in the header")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
+	res, err := h.ProductClient.GetSaleStatistics(c, &req)
+	if err != nil {
+		h.log.Error("Error getting sale statistics", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// GetBranchIncome godoc
+// @Summary Get branch income
+// @Description Retrieve total income for a branch within a specified date range
+// @Tags Statistics
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param start_date query string false "Start date (YYYY-MM-DD)"
+// @Param end_date query string false "End date (YYYY-MM-DD)"
+// @Success 200 {object} products.BranchIncomeRes
+// @Failure 500 {object} products.Error "Internal server error"
+// @Router /statistics/branch-income [get]
+func (h *Handler) GetBranchIncome(c *gin.Context) {
+
+	var req products.BranchIncomeReq
+
+	req.StartDate = c.Query("start_date")
+	req.EndDate = c.Query("end_date")
+	req.CompanyId = c.MustGet("company_id").(string)
+
+	res, err := h.ProductClient.GetBranchIncome(c, &req)
+	if err != nil {
+		h.log.Error("Error getting branch income", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
