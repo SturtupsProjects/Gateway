@@ -144,6 +144,7 @@ func (h *Handler) UpdateProduct(c *gin.Context) {
 		BillFormat:    form.BillFormat,
 		IncomingPrice: form.IncomingPrice,
 		StandardPrice: form.StandardPrice,
+		Quantity:      form.Quantity,
 		ImageUrl:      url,
 	}
 
