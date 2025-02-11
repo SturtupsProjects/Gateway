@@ -23,11 +23,14 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(middleware.CORSMiddleware())
-	swagger := router.Group("/swagger/*any")
+
+	swagger := router.Group("/swagger", gin.BasicAuth(gin.Accounts{
+		"smart-admin": "admin_846", // Логин и пароль
+	}))
 	{
-		// Swagger Documentation Route
-		swagger.GET("", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		swagger.GET("/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
+
 	// Initialize the handler with config
 	h := handler.NewHandlerRepo(cfg)
 
