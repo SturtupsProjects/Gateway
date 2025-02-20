@@ -21,11 +21,15 @@ import (
 // @Failure 400 {object} string
 // @Router /companies/admin [post]
 func (h *Handler) CreateCompanyA(c *gin.Context) {
+
 	var req entity.CreateCompanyRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("CreateCompany", "name", req.Name)
+
 	res, err := h.CompanyClient.CreateCompany(c, &company.CreateCompanyRequest{
 		Name:    req.Name,
 		Website: req.Website,

@@ -50,6 +50,8 @@ func (a *Handler) Login(c *gin.Context) {
 		return
 	}
 
+	a.log.Info("Login", "phone", req.Password, "company_id", c.MustGet("company_id").(string))
+
 	res, err := a.UserClient.LogIn(c.Request.Context(), &user.LogInRequest{
 		PhoneNumber: req.PhoneNumber,
 		Password:    req.Password,
