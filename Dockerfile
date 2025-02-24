@@ -1,16 +1,19 @@
 FROM golang:1.23.3 AS builder
 
+RUN apk --no-cache update && \
+apk --no-cache add git gcc libc-dev
+
 WORKDIR /app
 
 COPY go.mod go.sum ./
 COPY .env ./
-RUN go mod download && \
-    go build -o myapp -ldflags '-linkmode external -w -extldflags "-static"'
+RUN go mod download
+
 COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/app/main.go
 
-FROM busybox
+FROM alpine:latest
 
 RUN apk --no-cache add ca-certificates
 
