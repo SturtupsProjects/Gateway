@@ -9,11 +9,11 @@ RUN apt-get update && apt-get install -y \
     libc-dev
 
 COPY go.mod go.sum ./
-COPY .env /
-COPY internal/casbin /app/internal/casbin
+COPY .env ./
 RUN go mod download
 
 COPY . .
+
 
 # ВАЖНО: Включаем CGO, иначе не слинкуется с Kafka
 RUN CGO_ENABLED=1 GOOS=linux go build -o main ./cmd/app/main.go
