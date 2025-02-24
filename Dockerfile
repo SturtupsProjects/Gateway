@@ -7,21 +7,19 @@ RUN go mod download
 
 COPY . .
 
-# Устанавливаем зависимости
-RUN apt-get update && apt-get install -y librdkafka-dev gcc libc-dev
+# ✅ Используем apk вместо apt-get
+RUN apk add --no-cache librdkafka-dev gcc musl-dev
 
-# Включаем CGO для поддержки C-библиотек
+# ✅ Статическая сборка (убирает зависимости на libc)
 RUN CGO_ENABLED=1 GOOS=linux go build -o main ./cmd/app/main.go
 
-# Финальный образ (Alpine)
+# Финальный образ
 FROM alpine:latest
 
-# Устанавливаем зависимости для работы бинарника
 RUN apk --no-cache add ca-certificates librdkafka
 
 WORKDIR /app
 
-# Копируем собранный бинарник
 COPY --from=builder /app/main .
 
 RUN chmod +x ./main
