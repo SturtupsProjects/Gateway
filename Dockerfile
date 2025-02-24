@@ -2,8 +2,11 @@ FROM golang:1.23.3 AS builder
 
 WORKDIR /app
 
-# Устанавливаем зависимости, включая библиотеку Kafka
-RUN apt-get update && apt-get install -y librdkafka-dev
+# Устанавливаем необходимые зависимости
+RUN apt-get update && apt-get install -y \
+    librdkafka-dev \
+    gcc \
+    libc-dev
 
 COPY go.mod go.sum ./
 COPY .env ./
@@ -11,13 +14,13 @@ RUN go mod download
 
 COPY . .
 
-# Указываем, что нам нужна поддержка CGO для Kafka
+# Включаем CGO, теперь сборка будет работать
 RUN CGO_ENABLED=1 GOOS=linux go build -o main ./cmd/app/main.go
 
 FROM alpine:latest
 
-# Устанавливаем необходимые пакеты для работы Kafka в контейнере
-RUN apk --no-cache add ca-certificates librdkafka-dev
+# Добавляем runtime-зависимости для Kafka
+RUN apk --no-cache add ca-certificates librdkafka
 
 WORKDIR /app
 
