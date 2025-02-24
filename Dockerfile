@@ -1,27 +1,11 @@
 FROM golang:1.23.3 AS builder
 
-
-RUN apt update && apt install git ca-certificates gcc -y && update-ca-certificates
-
-ENV USER=appuser
-ENV UID=10001
-# See https://stackoverflow.com/a/55757473/12429735RUN
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    "${USER}"
-
-
 WORKDIR /app
 
 COPY go.mod go.sum ./
 COPY .env ./
-RUN go mod download
-
+RUN go mod download && \
+    go build -o myapp -ldflags '-linkmode external -w -extldflags "-static"'
 COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/app/main.go
