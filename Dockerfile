@@ -10,7 +10,7 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/app/main.go
 
-FROM alpine:latest
+FROM busybox
 
 RUN apk --no-cache add ca-certificates
 
