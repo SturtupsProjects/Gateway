@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY go.mod go.sum ./
 COPY .env /
+COPY internal/casbin /app/internal/casbin
 COPY internal/casbin/model.conf /app/internal/casbin/model.conf
 RUN go mod download
 
