@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libc-dev
 
 COPY go.mod go.sum ./
+COPY .env ./
 RUN go mod download
 
 COPY . .
