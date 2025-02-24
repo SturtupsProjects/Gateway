@@ -1,5 +1,21 @@
 FROM golang:1.23.3 AS builder
 
+
+RUN apt update && apt install git ca-certificates gcc -y && update-ca-certificates
+
+ENV USER=appuser
+ENV UID=10001
+# See https://stackoverflow.com/a/55757473/12429735RUN
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    "${USER}"
+
+
 WORKDIR /app
 
 COPY go.mod go.sum ./
