@@ -2,20 +2,21 @@ FROM golang:1.23.3 AS builder
 
 WORKDIR /app
 
+# Устанавливаем зависимости
 RUN apt-get update && apt-get install -y \
     librdkafka-dev \
     gcc \
     libc-dev
 
 COPY go.mod go.sum ./
-COPY .env ./
 RUN go mod download
 
 COPY . .
 
-# Статическая линковка, исправляет проблему "no such file or directory"
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/app/main.go
+# ВАЖНО: Включаем CGO, иначе не слинкуется с Kafka
+RUN CGO_ENABLED=1 GOOS=linux go build -o main ./cmd/app/main.go
 
+# Финальный контейнер
 FROM alpine:latest
 
 RUN apk --no-cache add ca-certificates librdkafka libc6-compat
