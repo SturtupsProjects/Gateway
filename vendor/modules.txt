@@ -56,10 +56,10 @@ github.com/cloudwego/base64x
 ## explicit; go 1.16
 github.com/cloudwego/iasm/expr
 github.com/cloudwego/iasm/x86_64
-# github.com/confluentinc/confluent-kafka-go v1.9.2
-## explicit; go 1.13
-github.com/confluentinc/confluent-kafka-go/kafka
-github.com/confluentinc/confluent-kafka-go/kafka/librdkafka_vendor
+# github.com/confluentinc/confluent-kafka-go/v2 v2.8.0
+## explicit; go 1.21
+github.com/confluentinc/confluent-kafka-go/v2/kafka
+github.com/confluentinc/confluent-kafka-go/v2/kafka/librdkafka_vendor
 # github.com/dustin/go-humanize v1.0.1
 ## explicit; go 1.16
 github.com/dustin/go-humanize
