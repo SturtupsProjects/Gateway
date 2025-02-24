@@ -3,24 +3,25 @@ FROM golang:1.23.3 AS builder
 WORKDIR /app
 
 COPY go.mod go.sum ./
+COPY .env ./
 RUN go mod download
 
 COPY . .
 
-# ✅ Используем apk вместо apt-get
-RUN apk add --no-cache librdkafka-dev gcc musl-dev
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/app/main.go
 
-# ✅ Статическая сборка (убирает зависимости на libc)
-RUN CGO_ENABLED=1 GOOS=linux go build -o main ./cmd/app/main.go
-
-# Финальный образ
 FROM alpine:latest
 
-RUN apk --no-cache add ca-certificates librdkafka
+RUN apk --no-cache add ca-certificates
 
 WORKDIR /app
 
+COPY --from=builder /app .
 COPY --from=builder /app/main .
+
+RUN mkdir -p pkg/logs
+
+EXPOSE 1111
 
 RUN chmod +x ./main
 
