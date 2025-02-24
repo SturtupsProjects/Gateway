@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"log/slog"
 )
 
 // @title API Gateway
@@ -18,7 +19,7 @@ import (
 // @in header
 // @name Authorization
 // @scheme http
-func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
+func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.Engine {
 	// Initialize the Gin router
 	router := gin.Default()
 
@@ -32,7 +33,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config) *gin.Engine {
 	}
 
 	// Initialize the handler with config
-	h := handler.NewHandlerRepo(cfg)
+	h := handler.NewHandlerRepo(cfg, log)
 
 	// User routes group
 	user := router.Group("/user")

@@ -6,6 +6,7 @@ import (
 	"gateway/internal/generated/company"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,7 +29,8 @@ func (h *Handler) CreateCompanyA(c *gin.Context) {
 		return
 	}
 
-	h.log.Info("CreateCompany", "name", req.Name)
+	h.log.Debug(fmt.Sprintf("[%s] CreateCompany name: %s",
+		time.Now().Format("02-01-2006 15:04:05"), req.Name))
 
 	res, err := h.CompanyClient.CreateCompany(c, &company.CreateCompanyRequest{
 		Name:    req.Name,

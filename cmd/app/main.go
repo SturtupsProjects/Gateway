@@ -1,23 +1,30 @@
 package main
 
 import (
+	"fmt"
 	"gateway/config"
 	api "gateway/internal/api"
 	"gateway/internal/api/token"
 	"gateway/internal/minio"
+	logger "gateway/pkg/logs"
 	"log"
+	"net"
 	"os"
+	"time"
 
 	"github.com/casbin/casbin/v2"
 )
 
 func main() {
+
 	cfg := config.Load()
+
 	path, err := os.Getwd()
 	if err != nil {
 		log.Println("mana 3")
 		log.Fatal(err)
 	}
+
 	casbinEnforcer, err := casbin.NewEnforcer(path+"/internal/casbin/model.conf", path+"/internal/casbin/policy.csv")
 	if err != nil {
 		log.Println("mana 2")
@@ -36,6 +43,40 @@ func main() {
 		log.Fatal(err)
 	}
 
-	r := api.NewRouter(casbinEnforcer, cfg)
+	log1 := logger.NewLogger()
+
+	r := api.NewRouter(casbinEnforcer, cfg, log1)
+
+	ips, err := get()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log1.Debug(fmt.Sprintf("[%s] Api Gateway is running at IP: %s",
+		time.Now().Format("02-01-2006 15:04:05"), ips))
+
 	log.Fatal(r.Run(cfg.API_GATEWAY))
+}
+
+// Getting
+func get() (string, error) {
+	name, err := os.Hostname()
+	if err != nil {
+		fmt.Printf("Oops: %v\n", err)
+		return "", err
+	}
+
+	addrs, err := net.LookupHost(name)
+	if err != nil {
+		fmt.Printf("Oops: %v\n", err)
+		return "", err
+	}
+
+	ip := ""
+
+	for _, a := range addrs {
+		ip = ip + a + "\n"
+	}
+
+	return ip, nil
 }

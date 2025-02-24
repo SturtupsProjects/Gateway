@@ -1,11 +1,13 @@
 package handler
 
 import (
+	"fmt"
 	"gateway/internal/api/token"
 	"gateway/internal/entity"
 	user "gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 // RegisterAdmin godoc
@@ -50,7 +52,7 @@ func (a *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	a.log.Info("Login", "phone", req.PhoneNumber)
+	a.log.Debug(fmt.Sprintf("[%s] Login phone: %s", time.Now().Format("02-01-2006 15:04:05"), req.PhoneNumber))
 
 	res, err := a.UserClient.LogIn(c.Request.Context(), &user.LogInRequest{
 		PhoneNumber: req.PhoneNumber,

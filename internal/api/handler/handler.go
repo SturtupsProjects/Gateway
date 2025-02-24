@@ -9,8 +9,6 @@ import (
 	"log/slog"
 
 	"gateway/pkg"
-
-	logger "gateway/pkg/logs"
 )
 
 type Handler struct {
@@ -21,12 +19,12 @@ type Handler struct {
 	log           *slog.Logger
 }
 
-func NewHandlerRepo(cfg *config.Config) *Handler {
+func NewHandlerRepo(cfg *config.Config, log *slog.Logger) *Handler {
 	return &Handler{
 		UserClient:    pkg.NewUserClient(cfg),
 		ProductClient: pkg.NewProductClient(cfg),
 		CompanyClient: pkg.NewCompanyClient(cfg),
 		DebtClient:    pkg.NewDebtClient(cfg),
-		log:           logger.NewLogger(),
+		log:           log,
 	}
 }
