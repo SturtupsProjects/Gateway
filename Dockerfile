@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     libc-dev
 
 COPY go.mod go.sum ./
-COPY .env ./
+COPY / .env
+COPY internal/casbin/model.conf /app/internal/casbin/model.conf
 RUN go mod download
 
 COPY . .
