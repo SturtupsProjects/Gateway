@@ -1,31 +1,39 @@
+# Используем Go 1.23.3 как билдовый образ
 FROM golang:1.23.3 AS builder
 
-RUN apk --no-cache update && \
-apk --no-cache add git gcc libc-dev
+# Устанавливаем нужные зависимости для Kafka
+RUN apt-get update && apt-get install -y git gcc libc-dev librdkafka-dev
 
 WORKDIR /app
 
+# Копируем файлы зависимостей
 COPY go.mod go.sum ./
-COPY .env ./
 RUN go mod download
 
+# Копируем весь код
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/app/main.go
+# Включаем CGO для работы с Kafka
+ENV CGO_ENABLED=1
 
+# Сборка бинарника
+RUN go build -o main ./cmd/app/main.go
+
+# Финальный образ с Alpine
 FROM alpine:latest
 
-RUN apk --no-cache add ca-certificates
+RUN apk --no-cache add ca-certificates librdkafka
 
 WORKDIR /app
 
-COPY --from=builder /app .
+# Копируем скомпилированный бинарник
 COPY --from=builder /app/main .
 
-RUN mkdir -p pkg/logs
-
-EXPOSE 1111
-
+# Даем права на запуск
 RUN chmod +x ./main
 
+# Открываем порт
+EXPOSE 1111
+
+# Запускаем приложение
 CMD ["./main"]
