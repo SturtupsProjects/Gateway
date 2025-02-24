@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	_ "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
 
 // Кастомный Handler, который пишет логи в файл и Kafka
