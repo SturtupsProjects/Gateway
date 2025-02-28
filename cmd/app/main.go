@@ -7,8 +7,9 @@ import (
 	"gateway/internal/api/token"
 	"gateway/internal/minio"
 	logger "gateway/pkg/logs"
+	"io"
 	"log"
-	"net"
+	"net/http"
 	"os"
 	"time"
 
@@ -60,23 +61,16 @@ func main() {
 
 // Getting
 func get() (string, error) {
-	name, err := os.Hostname()
+	resp, err := http.Get("https://api.ipify.org?format=text") // Этот сервис возвращает IPv4
 	if err != nil {
-		fmt.Printf("Oops: %v\n", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	ip, err := io.ReadAll(resp.Body)
+	if err != nil {
 		return "", err
 	}
 
-	addrs, err := net.LookupHost(name)
-	if err != nil {
-		fmt.Printf("Oops: %v\n", err)
-		return "", err
-	}
-
-	ip := ""
-
-	for _, a := range addrs {
-		ip = ip + a + "\n"
-	}
-
-	return ip, nil
+	return string(ip), nil
 }

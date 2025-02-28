@@ -432,3 +432,5 @@ time=2025-02-28T18:03:45.082+05:00 level=DEBUG msg="[28-02-2025 18:03:45] Api Ga
 time=2025-02-28T18:22:07.587+05:00 level=DEBUG msg="[28-02-2025 18:22:07] Api Gateway is running at IP: 192.168.1.8\n"
 time=2025-02-28T18:22:22.028+05:00 level=DEBUG msg="[28-02-2025 18:22:22] Api Gateway is running at IP: 192.168.1.8\n"
 time=2025-02-28T18:45:33.855+05:00 level=DEBUG msg="[28-02-2025 18:45:33] Api Gateway is running at IP: 192.168.1.8\n"
+time=2025-02-28T18:59:26.194+05:00 level=DEBUG msg="[28-02-2025 18:59:26] Api Gateway is running at IP: 2a05:45c2:2010:6100:82ef:b51f:d919:2f79"
+time=2025-02-28T19:00:38.638+05:00 level=DEBUG msg="[28-02-2025 19:00:38] Api Gateway is running at IP: 213.230.72.100"
