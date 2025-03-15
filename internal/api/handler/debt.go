@@ -393,3 +393,52 @@ func (h *Handler) GetUserTotalDebt(c *gin.Context) {
 
 	c.JSON(http.StatusOK, res)
 }
+
+// GetUserPayments godoc
+// @Summary Get All Payments for a Client
+// @Description Retrieve all payments made by the client over time
+// @Tags Debts
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param user_id path string true "User ID"
+// @Success 200 {object} debts.UserPaymentsRes
+// @Failure 400 {object} products.Error
+// @Failure 500 {object} products.Error
+// @Router /debts/payments/{user_id} [get]
+func (h *Handler) GetUserPayments(c *gin.Context) {
+
+	userID := c.Param("user_id")
+	if userID == "" {
+		h.log.Error("user_id not provided in URL")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id is required"})
+		return
+	}
+
+	companyVal, exists := c.Get("company_id")
+	if !exists {
+		h.log.Error("company_id not found in context")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "company_id is required"})
+		return
+	}
+	companyID, ok := companyVal.(string)
+	if !ok || companyID == "" {
+		h.log.Error("company_id is not a valid string")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid company_id"})
+		return
+	}
+
+	req := &debts.ClientID{
+		Id:        userID,
+		CompanyId: companyID,
+	}
+
+	res, err := h.DebtClient.GetUserPayments(c, req)
+	if err != nil {
+		h.log.Error("Error fetching user payments", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
