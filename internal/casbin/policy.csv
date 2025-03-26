@@ -137,3 +137,13 @@ p, owner, /company-balance, PUT
 p, owner, /company-balance/*, DELETE
 p, owner, /company-balance/*, GET
 p, owner, /company-balance, GET
+
+p, owner, /salary, POST
+p, owner, /salary/*, GET
+p, owner, /salary, GET
+p, owner, /salary/*, PUT
+
+p, owner, /adjustment, POST
+p, owner, /adjustment/*, GET
+p, owner, /adjustment, GET
+p, owner, /adjustment/*, PUT

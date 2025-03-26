@@ -179,15 +179,32 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 		transfers.GET("", h.GetTransferList)
 	}
 
-	balance := router.Group("/company-balance")
+	//balance := router.Group("/company-balance")
+	//{
+	//	balance.POST("", h.CreateCompanyBalance)
+	//	balance.GET("", h.GetCompanyBalance)
+	//	balance.PUT("", h.UpdateCompanyBalance)
+	//	balance.DELETE("/:company_id", h.DeleteCompanyBalance)
+	//	balance.GET("/list", h.GetUsersBalanceList)
+	//}
+
+	salary := router.Group("/salary")
 	{
-		balance.POST("", h.CreateCompanyBalance)
-		balance.GET("", h.GetCompanyBalance)
-		balance.PUT("", h.UpdateCompanyBalance)
-		balance.DELETE("/:company_id", h.DeleteCompanyBalance)
-		balance.GET("/list", h.GetUsersBalanceList)
+		salary.POST("", h.CreateSalary)
+		salary.PUT("/:salary_id", h.UpdateSalary)
+		salary.GET("/:salary_id", h.GetSalaryByID)
+		salary.GET("", h.ListSalaries)
+		salary.GET("/worker/:worker_id", h.GetWorkerAllInfo)
 	}
 
-	// Return the configured router
+	adjustment := router.Group("/adjustment")
+	{
+		adjustment.POST("", h.CreateAdjustment)
+		adjustment.PUT("/:adjustment_id", h.UpdateAdjustment)
+		adjustment.PUT("/:adjustment_id/close", h.CloseAdjustment)
+		adjustment.GET("/:adjustment_id", h.GetAdjustmentByID)
+		adjustment.GET("", h.ListAdjustments)
+	}
+
 	return router
 }

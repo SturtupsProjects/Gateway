@@ -216,3 +216,31 @@ type TransfersProductsReq struct {
 	ProductId       string `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
 	ProductQuantity int64  `protobuf:"varint,2,opt,name=product_quantity,json=productQuantity,proto3" json:"product_quantity,omitempty"`
 }
+
+type SalaryRequest struct {
+	UserId       string  `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	CurrencyCode string  `protobuf:"bytes,2,opt,name=currency_code,json=currencyCode,proto3" json:"currency_code,omitempty"`
+	Amount       float64 `protobuf:"fixed64,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	SalaryDate   string  `protobuf:"bytes,4,opt,name=salary_date,json=salaryDate,proto3" json:"salary_date,omitempty"`
+}
+
+type SalaryUpdate struct {
+	CurrencyCode string  `protobuf:"bytes,2,opt,name=currency_code,json=currencyCode,proto3" json:"currency_code,omitempty"`
+	Amount       float64 `protobuf:"fixed64,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	SalaryDate   string  `protobuf:"bytes,4,opt,name=salary_date,json=salaryDate,proto3" json:"salary_date,omitempty"`
+}
+
+type AdjustmentRequest struct {
+	UserId         string  `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	AdjustmentType string  `protobuf:"bytes,2,opt,name=adjustment_type,json=adjustmentType,proto3" json:"adjustment_type,omitempty"`
+	CurrencyCode   string  `protobuf:"bytes,3,opt,name=currency_code,json=currencyCode,proto3" json:"currency_code,omitempty"`
+	Amount         float64 `protobuf:"fixed64,4,opt,name=amount,proto3" json:"amount,omitempty"`
+	AdjustmentDate string  `protobuf:"bytes,5,opt,name=adjustment_date,json=adjustmentDate,proto3" json:"adjustment_date,omitempty"`
+}
+
+type AdjustmentUpdate struct {
+	AdjustmentType string  `protobuf:"bytes,2,opt,name=adjustment_type,json=adjustmentType,proto3" json:"adjustment_type,omitempty"`
+	CurrencyCode   string  `protobuf:"bytes,3,opt,name=currency_code,json=currencyCode,proto3" json:"currency_code,omitempty"`
+	Amount         float64 `protobuf:"fixed64,4,opt,name=amount,proto3" json:"amount,omitempty"`
+	AdjustmentDate string  `protobuf:"bytes,5,opt,name=adjustment_date,json=adjustmentDate,proto3" json:"adjustment_date,omitempty"`
+}

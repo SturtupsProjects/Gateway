@@ -15,6 +15,271 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/adjustment": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "List salary adjustments with pagination, filtering and sorting.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Adjustment-Salary-User"
+                ],
+                "summary": "List Adjustments",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit (set 0 for no limit)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page (set 0 for no pagination)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort field (e.g., adjustment_date, created_at, amount)",
+                        "name": "sort_field",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort order (ASC or DESC)",
+                        "name": "sort_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by adjustment type (e.g., bonus, penalty)",
+                        "name": "adjustment_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by active status (true or false)",
+                        "name": "is_active",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of adjustments",
+                        "schema": {
+                            "$ref": "#/definitions/user.AdjustmentList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new salary adjustment (bonus/penalty) for a user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Adjustment-Salary-User"
+                ],
+                "summary": "Create Adjustment",
+                "parameters": [
+                    {
+                        "description": "Adjustment Request",
+                        "name": "adjustment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.AdjustmentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Adjustment created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/user.AdjustmentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/adjustment/{adjustment_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve a salary adjustment record by its ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Adjustment-Salary-User"
+                ],
+                "summary": "Get Adjustment by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Adjustment ID",
+                        "name": "adjustment_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Company ID",
+                        "name": "company_id",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Adjustment data returned",
+                        "schema": {
+                            "$ref": "#/definitions/user.AdjustmentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update an existing salary adjustment record.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Adjustment-Salary-User"
+                ],
+                "summary": "Update Adjustment",
+                "parameters": [
+                    {
+                        "description": "Adjustment Update Request",
+                        "name": "adjustment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.AdjustmentUpdate"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Adjustment ID",
+                        "name": "adjustment_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Adjustment updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/user.AdjustmentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/adjustment/{adjustment_id}/close": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mark an adjustment as inactive (close it).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Adjustment-Salary-User"
+                ],
+                "summary": "Close Adjustment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Adjustment ID",
+                        "name": "adjustment_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Company ID",
+                        "name": "company_id",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Adjustment closed successfully",
+                        "schema": {
+                            "$ref": "#/definitions/user.AdjustmentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/branches/create": {
             "post": {
                 "security": [
@@ -1307,273 +1572,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/company-balance": {
-            "put": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Update an existing company balance",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Company Balance"
-                ],
-                "summary": "Update Company Balance",
-                "parameters": [
-                    {
-                        "description": "Company balance update request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/company.CompanyBalanceRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/company.CompanyBalanceResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create a new company balance",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Company Balance"
-                ],
-                "summary": "Create Company Balance",
-                "parameters": [
-                    {
-                        "description": "Company balance request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/company.CompanyBalanceRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/company.CompanyBalanceResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/company-balance/list": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get list of company balances with pagination",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Company Balance"
-                ],
-                "summary": "List Company Balances",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Page number",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Limit per page",
-                        "name": "limit",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/company.CompanyBalanceListResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/company-balance/sms": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Send an SMS notification",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Company Balance"
-                ],
-                "summary": "Send SMS",
-                "parameters": [
-                    {
-                        "description": "SMS request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/company.SmsRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/company.Message"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/company-balance/{company_id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get company balance by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Company Balance"
-                ],
-                "summary": "Get Company Balance",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Company ID",
-                        "name": "company_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/company.CompanyBalanceResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Soft delete a company balance by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Company Balance"
-                ],
-                "summary": "Delete Company Balance",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Company ID",
-                        "name": "company_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/company.Message"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/debts": {
             "get": {
                 "security": [
@@ -1939,6 +1937,55 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/debts.PaymentList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/debts/payments/{user_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve all payments made by the client over time",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Debts"
+                ],
+                "summary": "Get All Payments for a Client",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/debts.UserPaymentsRes"
                         }
                     },
                     "400": {
@@ -3238,6 +3285,252 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/salary": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "List salary records with pagination, sorting and filtering.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Adjustment-Salary-User"
+                ],
+                "summary": "List Salaries",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit (set 0 to get all records)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page (set 0 to get all records)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort field (e.g., salary_date, created_at, salary_amount)",
+                        "name": "sort_field",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort order (ASC or DESC)",
+                        "name": "sort_order",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of salaries",
+                        "schema": {
+                            "$ref": "#/definitions/user.GetSalaryList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new salary record for a user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Adjustment-Salary-User"
+                ],
+                "summary": "Create Salary",
+                "parameters": [
+                    {
+                        "description": "Salary Request",
+                        "name": "salary",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.SalaryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Salary created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/user.SalaryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/salary/worker/{worker_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve full information about a worker including user data, current salary, and all adjustments.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Adjustment-Salary-User"
+                ],
+                "summary": "Get Worker All Info",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Worker ID",
+                        "name": "worker_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Company ID",
+                        "name": "company_id",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Worker full info returned",
+                        "schema": {
+                            "$ref": "#/definitions/user.WorkerAllInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/salary/{salary_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve salary record by salary ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Adjustment-Salary-User"
+                ],
+                "summary": "Get Salary by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Salary ID",
+                        "name": "salary_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Salary data returned",
+                        "schema": {
+                            "$ref": "#/definitions/user.SalaryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update an existing salary record.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Adjustment-Salary-User"
+                ],
+                "summary": "Update Salary",
+                "parameters": [
+                    {
+                        "description": "Salary Update Request",
+                        "name": "salary",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.SalaryUpdate"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Salary ID",
+                        "name": "salary_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Salary updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/user.SalaryUpdate"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
                         }
                     }
                 }
@@ -4854,39 +5147,6 @@ const docTemplate = `{
                 }
             }
         },
-        "company.CompanyBalanceListResponse": {
-            "type": "object",
-            "properties": {
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/company.CompanyBalanceResponse"
-                    }
-                }
-            }
-        },
-        "company.CompanyBalanceRequest": {
-            "type": "object",
-            "properties": {
-                "balance": {
-                    "type": "integer"
-                },
-                "company_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "company.CompanyBalanceResponse": {
-            "type": "object",
-            "properties": {
-                "balance": {
-                    "type": "integer"
-                },
-                "company_id": {
-                    "type": "string"
-                }
-            }
-        },
         "company.CompanyResponse": {
             "type": "object",
             "properties": {
@@ -4959,20 +5219,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "company.SmsRequest": {
-            "type": "object",
-            "properties": {
-                "company_id": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "phone": {
                     "type": "string"
                 }
             }
@@ -5136,6 +5382,23 @@ const docTemplate = `{
                 }
             }
         },
+        "debts.Payments": {
+            "type": "object",
+            "properties": {
+                "debt_id": {
+                    "type": "string"
+                },
+                "payment_amount": {
+                    "type": "number"
+                },
+                "payment_date": {
+                    "type": "string"
+                },
+                "payment_id": {
+                    "type": "string"
+                }
+            }
+        },
         "debts.SumMoney": {
             "type": "object",
             "properties": {
@@ -5147,6 +5410,54 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/debts.Money"
                     }
+                }
+            }
+        },
+        "debts.UserPaymentsRes": {
+            "type": "object",
+            "properties": {
+                "payments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/debts.Payments"
+                    }
+                }
+            }
+        },
+        "entity.AdjustmentRequest": {
+            "type": "object",
+            "properties": {
+                "adjustment_date": {
+                    "type": "string"
+                },
+                "adjustment_type": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AdjustmentUpdate": {
+            "type": "object",
+            "properties": {
+                "adjustment_date": {
+                    "type": "string"
+                },
+                "adjustment_type": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "currency_code": {
+                    "type": "string"
                 }
             }
         },
@@ -5323,6 +5634,37 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "supplier_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.SalaryRequest": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "salary_date": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.SalaryUpdate": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "salary_date": {
                     "type": "string"
                 }
             }
@@ -6057,6 +6399,90 @@ const docTemplate = `{
                 }
             }
         },
+        "user.Adjustment": {
+            "type": "object",
+            "properties": {
+                "adjustment_date": {
+                    "type": "string"
+                },
+                "adjustment_id": {
+                    "type": "string"
+                },
+                "adjustment_type": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.AdjustmentList": {
+            "type": "object",
+            "properties": {
+                "adjustments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.AdjustmentResponse"
+                    }
+                }
+            }
+        },
+        "user.AdjustmentResponse": {
+            "type": "object",
+            "properties": {
+                "adjustment_date": {
+                    "type": "string"
+                },
+                "adjustment_id": {
+                    "type": "string"
+                },
+                "adjustment_type": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "company_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "user.ClientListResponse": {
             "type": "object",
             "properties": {
@@ -6117,6 +6543,17 @@ const docTemplate = `{
                 }
             }
         },
+        "user.GetSalaryList": {
+            "type": "object",
+            "properties": {
+                "salaries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.SalaryResponse"
+                    }
+                }
+            }
+        },
         "user.LogInRequest": {
             "type": "object",
             "properties": {
@@ -6132,6 +6569,81 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.Salary": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "salary_date": {
+                    "type": "string"
+                },
+                "salary_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.SalaryResponse": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "company_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "salary_date": {
+                    "type": "string"
+                },
+                "salary_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.SalaryUpdate": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "company_id": {
+                    "type": "string"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "salary_date": {
+                    "type": "string"
+                },
+                "salary_id": {
                     "type": "string"
                 }
             }
@@ -6186,6 +6698,47 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "role": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.WorkerAllInfo": {
+            "type": "object",
+            "properties": {
+                "adjustments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.Adjustment"
+                    }
+                },
+                "company_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "salary": {
+                    "$ref": "#/definitions/user.Salary"
+                },
+                "updated_at": {
                     "type": "string"
                 },
                 "user_id": {

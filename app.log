@@ -1,0 +1,5 @@
+time=2025-03-15T17:03:35.811+05:00 level=DEBUG msg="[15-03-2025 17:03:35] Api Gateway is running at IP: 90.156.161.226"
+time=2025-03-26T18:06:03.024+05:00 level=DEBUG msg="[26-03-2025 18:06:03] Login phone: string"
+time=2025-03-26T19:55:39.133+05:00 level=ERROR msg="CreateSalary: error creating salary" error="rpc error: code = Unknown desc = pq: invalid input syntax for type uuid: \"string\""
+time=2025-03-26T20:04:06.476+05:00 level=ERROR msg="ListSalaries: error getting salaries" error="rpc error: code = Unavailable desc = error reading from server: EOF"
+time=2025-03-26T23:36:07.830+05:00 level=ERROR msg="ListAdjustments: error getting adjustments" error="rpc error: code = Unknown desc = ListAdjustments scan: sql: expected 14 destination arguments in Scan, not 13"

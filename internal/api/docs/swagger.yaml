@@ -16,27 +16,6 @@ definitions:
       updated_at:
         type: string
     type: object
-  company.CompanyBalanceListResponse:
-    properties:
-      users:
-        items:
-          $ref: '#/definitions/company.CompanyBalanceResponse'
-        type: array
-    type: object
-  company.CompanyBalanceRequest:
-    properties:
-      balance:
-        type: integer
-      company_id:
-        type: string
-    type: object
-  company.CompanyBalanceResponse:
-    properties:
-      balance:
-        type: integer
-      company_id:
-        type: string
-    type: object
   company.CompanyResponse:
     properties:
       company_id:
@@ -84,15 +63,6 @@ definitions:
   company.Message:
     properties:
       message:
-        type: string
-    type: object
-  company.SmsRequest:
-    properties:
-      company_id:
-        type: string
-      message:
-        type: string
-      phone:
         type: string
     type: object
   company.UpdateBranchRequest:
@@ -198,6 +168,17 @@ definitions:
           $ref: '#/definitions/debts.Payment'
         type: array
     type: object
+  debts.Payments:
+    properties:
+      debt_id:
+        type: string
+      payment_amount:
+        type: number
+      payment_date:
+        type: string
+      payment_id:
+        type: string
+    type: object
   debts.SumMoney:
     properties:
       company_id:
@@ -206,6 +187,37 @@ definitions:
         items:
           $ref: '#/definitions/debts.Money'
         type: array
+    type: object
+  debts.UserPaymentsRes:
+    properties:
+      payments:
+        items:
+          $ref: '#/definitions/debts.Payments'
+        type: array
+    type: object
+  entity.AdjustmentRequest:
+    properties:
+      adjustment_date:
+        type: string
+      adjustment_type:
+        type: string
+      amount:
+        type: number
+      currency_code:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entity.AdjustmentUpdate:
+    properties:
+      adjustment_date:
+        type: string
+      adjustment_type:
+        type: string
+      amount:
+        type: number
+      currency_code:
+        type: string
     type: object
   entity.Client:
     properties:
@@ -320,6 +332,26 @@ definitions:
       payment_method:
         type: string
       supplier_id:
+        type: string
+    type: object
+  entity.SalaryRequest:
+    properties:
+      amount:
+        type: number
+      currency_code:
+        type: string
+      salary_date:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entity.SalaryUpdate:
+    properties:
+      amount:
+        type: number
+      currency_code:
+        type: string
+      salary_date:
         type: string
     type: object
   entity.Sale:
@@ -805,6 +837,61 @@ definitions:
       product_quantity:
         type: integer
     type: object
+  user.Adjustment:
+    properties:
+      adjustment_date:
+        type: string
+      adjustment_id:
+        type: string
+      adjustment_type:
+        type: string
+      amount:
+        type: number
+      created_at:
+        type: string
+      currency_code:
+        type: string
+      is_active:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  user.AdjustmentList:
+    properties:
+      adjustments:
+        items:
+          $ref: '#/definitions/user.AdjustmentResponse'
+        type: array
+    type: object
+  user.AdjustmentResponse:
+    properties:
+      adjustment_date:
+        type: string
+      adjustment_id:
+        type: string
+      adjustment_type:
+        type: string
+      amount:
+        type: number
+      company_id:
+        type: string
+      created_at:
+        type: string
+      currency_code:
+        type: string
+      first_name:
+        type: string
+      is_active:
+        type: string
+      last_name:
+        type: string
+      phone_number:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
   user.ClientListResponse:
     properties:
       clients:
@@ -844,6 +931,13 @@ definitions:
       type:
         type: string
     type: object
+  user.GetSalaryList:
+    properties:
+      salaries:
+        items:
+          $ref: '#/definitions/user.SalaryResponse'
+        type: array
+    type: object
   user.LogInRequest:
     properties:
       password:
@@ -854,6 +948,55 @@ definitions:
   user.MessageResponse:
     properties:
       message:
+        type: string
+    type: object
+  user.Salary:
+    properties:
+      amount:
+        type: number
+      currency_code:
+        type: string
+      salary_date:
+        type: string
+      salary_id:
+        type: string
+    type: object
+  user.SalaryResponse:
+    properties:
+      amount:
+        type: number
+      company_id:
+        type: string
+      created_at:
+        type: string
+      currency_code:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      phone_number:
+        type: string
+      salary_date:
+        type: string
+      salary_id:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  user.SalaryUpdate:
+    properties:
+      amount:
+        type: number
+      company_id:
+        type: string
+      currency_code:
+        type: string
+      salary_date:
+        type: string
+      salary_id:
         type: string
     type: object
   user.TokenResponse:
@@ -893,12 +1036,208 @@ definitions:
       user_id:
         type: string
     type: object
+  user.WorkerAllInfo:
+    properties:
+      adjustments:
+        items:
+          $ref: '#/definitions/user.Adjustment'
+        type: array
+      company_id:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      phone_number:
+        type: string
+      role:
+        type: string
+      salary:
+        $ref: '#/definitions/user.Salary'
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
 info:
   contact: {}
   description: This is a sample server
   title: API Gateway
   version: "1.0"
 paths:
+  /adjustment:
+    get:
+      consumes:
+      - application/json
+      description: List salary adjustments with pagination, filtering and sorting.
+      parameters:
+      - description: Limit (set 0 for no limit)
+        in: query
+        name: limit
+        type: integer
+      - description: Page (set 0 for no pagination)
+        in: query
+        name: page
+        type: integer
+      - description: Sort field (e.g., adjustment_date, created_at, amount)
+        in: query
+        name: sort_field
+        type: string
+      - description: Sort order (ASC or DESC)
+        in: query
+        name: sort_order
+        type: string
+      - description: Filter by adjustment type (e.g., bonus, penalty)
+        in: query
+        name: adjustment_type
+        type: string
+      - description: Filter by active status (true or false)
+        in: query
+        name: is_active
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of adjustments
+          schema:
+            $ref: '#/definitions/user.AdjustmentList'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: List Adjustments
+      tags:
+      - Adjustment-Salary-User
+    post:
+      consumes:
+      - application/json
+      description: Create a new salary adjustment (bonus/penalty) for a user.
+      parameters:
+      - description: Adjustment Request
+        in: body
+        name: adjustment
+        required: true
+        schema:
+          $ref: '#/definitions/entity.AdjustmentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Adjustment created successfully
+          schema:
+            $ref: '#/definitions/user.AdjustmentResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Adjustment
+      tags:
+      - Adjustment-Salary-User
+  /adjustment/{adjustment_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a salary adjustment record by its ID.
+      parameters:
+      - description: Adjustment ID
+        in: path
+        name: adjustment_id
+        required: true
+        type: string
+      - description: Company ID
+        in: header
+        name: company_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Adjustment data returned
+          schema:
+            $ref: '#/definitions/user.AdjustmentResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Adjustment by ID
+      tags:
+      - Adjustment-Salary-User
+    put:
+      consumes:
+      - application/json
+      description: Update an existing salary adjustment record.
+      parameters:
+      - description: Adjustment Update Request
+        in: body
+        name: adjustment
+        required: true
+        schema:
+          $ref: '#/definitions/entity.AdjustmentUpdate'
+      - description: Adjustment ID
+        in: path
+        name: adjustment_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Adjustment updated successfully
+          schema:
+            $ref: '#/definitions/user.AdjustmentResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Adjustment
+      tags:
+      - Adjustment-Salary-User
+  /adjustment/{adjustment_id}/close:
+    put:
+      consumes:
+      - application/json
+      description: Mark an adjustment as inactive (close it).
+      parameters:
+      - description: Adjustment ID
+        in: path
+        name: adjustment_id
+        required: true
+        type: string
+      - description: Company ID
+        in: header
+        name: company_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Adjustment closed successfully
+          schema:
+            $ref: '#/definitions/user.AdjustmentResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Close Adjustment
+      tags:
+      - Adjustment-Salary-User
   /branches/{branch_id}:
     delete:
       consumes:
@@ -1718,174 +2057,6 @@ paths:
       summary: Create Company User
       tags:
       - companies
-  /company-balance:
-    post:
-      consumes:
-      - application/json
-      description: Create a new company balance
-      parameters:
-      - description: Company balance request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/company.CompanyBalanceRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/company.CompanyBalanceResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/products.Error'
-      security:
-      - ApiKeyAuth: []
-      summary: Create Company Balance
-      tags:
-      - Company Balance
-    put:
-      consumes:
-      - application/json
-      description: Update an existing company balance
-      parameters:
-      - description: Company balance update request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/company.CompanyBalanceRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/company.CompanyBalanceResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/products.Error'
-      security:
-      - ApiKeyAuth: []
-      summary: Update Company Balance
-      tags:
-      - Company Balance
-  /company-balance/{company_id}:
-    delete:
-      consumes:
-      - application/json
-      description: Soft delete a company balance by ID
-      parameters:
-      - description: Company ID
-        in: path
-        name: company_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/company.Message'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/products.Error'
-      security:
-      - ApiKeyAuth: []
-      summary: Delete Company Balance
-      tags:
-      - Company Balance
-    get:
-      consumes:
-      - application/json
-      description: Get company balance by ID
-      parameters:
-      - description: Company ID
-        in: path
-        name: company_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/company.CompanyBalanceResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/products.Error'
-      security:
-      - ApiKeyAuth: []
-      summary: Get Company Balance
-      tags:
-      - Company Balance
-  /company-balance/list:
-    get:
-      consumes:
-      - application/json
-      description: Get list of company balances with pagination
-      parameters:
-      - description: Page number
-        in: query
-        name: page
-        required: true
-        type: integer
-      - description: Limit per page
-        in: query
-        name: limit
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/company.CompanyBalanceListResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/products.Error'
-      security:
-      - ApiKeyAuth: []
-      summary: List Company Balances
-      tags:
-      - Company Balance
-  /company-balance/sms:
-    post:
-      consumes:
-      - application/json
-      description: Send an SMS notification
-      parameters:
-      - description: SMS request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/company.SmsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/company.Message'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/products.Error'
-      security:
-      - ApiKeyAuth: []
-      summary: Send SMS
-      tags:
-      - Company Balance
   /debts:
     get:
       consumes:
@@ -2157,6 +2328,37 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get payments by debt ID
+      tags:
+      - Debts
+  /debts/payments/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all payments made by the client over time
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/debts.UserPaymentsRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Payments for a Client
       tags:
       - Debts
   /debts/total-sum:
@@ -2966,6 +3168,163 @@ paths:
       summary: Update an existing purchase
       tags:
       - Purchases
+  /salary:
+    get:
+      consumes:
+      - application/json
+      description: List salary records with pagination, sorting and filtering.
+      parameters:
+      - description: Limit (set 0 to get all records)
+        in: query
+        name: limit
+        type: integer
+      - description: Page (set 0 to get all records)
+        in: query
+        name: page
+        type: integer
+      - description: Sort field (e.g., salary_date, created_at, salary_amount)
+        in: query
+        name: sort_field
+        type: string
+      - description: Sort order (ASC or DESC)
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of salaries
+          schema:
+            $ref: '#/definitions/user.GetSalaryList'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: List Salaries
+      tags:
+      - Adjustment-Salary-User
+    post:
+      consumes:
+      - application/json
+      description: Create a new salary record for a user.
+      parameters:
+      - description: Salary Request
+        in: body
+        name: salary
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SalaryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Salary created successfully
+          schema:
+            $ref: '#/definitions/user.SalaryResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Salary
+      tags:
+      - Adjustment-Salary-User
+  /salary/{salary_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve salary record by salary ID.
+      parameters:
+      - description: Salary ID
+        in: path
+        name: salary_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Salary data returned
+          schema:
+            $ref: '#/definitions/user.SalaryResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Salary by ID
+      tags:
+      - Adjustment-Salary-User
+    put:
+      consumes:
+      - application/json
+      description: Update an existing salary record.
+      parameters:
+      - description: Salary Update Request
+        in: body
+        name: salary
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SalaryUpdate'
+      - description: Salary ID
+        in: path
+        name: salary_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Salary updated successfully
+          schema:
+            $ref: '#/definitions/user.SalaryUpdate'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Salary
+      tags:
+      - Adjustment-Salary-User
+  /salary/worker/{worker_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve full information about a worker including user data, current
+        salary, and all adjustments.
+      parameters:
+      - description: Worker ID
+        in: path
+        name: worker_id
+        required: true
+        type: string
+      - description: Company ID
+        in: header
+        name: company_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Worker full info returned
+          schema:
+            $ref: '#/definitions/user.WorkerAllInfo'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Worker All Info
+      tags:
+      - Adjustment-Salary-User
   /sales:
     get:
       consumes:
