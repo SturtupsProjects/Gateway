@@ -161,6 +161,8 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 		debt.GET("", h.GetListDebts)
 		debt.GET("/client/:client_id", h.GetClientDebts)
 
+		debt.GET("/excel/:currency", h.GetDebtsInExcel)
+
 		debt.POST("/pay", h.PayDebt)
 		debt.GET("/payments/:debt_id", h.GetPaymentsByDebtId)
 		debt.GET("/payment/:id", h.GetPayment)

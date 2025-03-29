@@ -1,13 +1,16 @@
 package handler
 
 import (
+	"bytes"
 	"context"
 	"gateway/internal/generated/debts"
 	pbu "gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
+	"github.com/xuri/excelize/v2"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 // CreateDebt godoc
@@ -441,4 +444,64 @@ func (h *Handler) GetUserPayments(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, res)
+}
+
+// GetDebtsInExcel godoc
+// @Summary Export debts in Excel format
+// @Description Export a list of debts as an Excel file. The report includes columns for Client Name, Client Phone, Total Debt, Amount Paid, Remaining Debt, Currency and Last Payment Date.
+// @Tags Debts
+// @Accept json
+// @Produce application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+// @Security ApiKeyAuth
+// @Param currency path string true "Currency code for filtering debts"
+// @Success 200 {file} file "Excel report file"
+// @Failure 500 {object} entity.Error "Internal server error"
+// @Router /debts/excel/{currency} [get]
+func (h *Handler) GetDebtsInExcel(c *gin.Context) {
+
+	var req debts.FilterExelDebt
+
+	req.Currency = c.Param("currency")
+	req.CompanyId = c.MustGet("company_id").(string)
+
+	res, err := h.DebtClient.GetDebtsForExel(c, &req)
+	if err != nil {
+		h.log.Error("Error fetching debts for exel", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	f := excelize.NewFile()
+
+	f.SetCellValue("Sheet1", "A1", "Client Ismi")
+	f.SetCellValue("Sheet1", "B1", "Client Telefoni")
+	f.SetCellValue("Sheet1", "C1", "Umumiy Qarz")
+	f.SetCellValue("Sheet1", "D1", "Tolangan Qarz")
+	f.SetCellValue("Sheet1", "E1", "Qoldiq Qarz")
+	f.SetCellValue("Sheet1", "F1", "Valuta")
+	f.SetCellValue("Sheet1", "G1", "Ohirgi Tolangan Sana")
+
+	for i := 0; i < len(res.Debts); i++ {
+		f.SetCellValue("Sheet1", "A"+strconv.Itoa(i+2), res.Debts[i].ClientFullName)
+		f.SetCellValue("Sheet1", "B"+strconv.Itoa(i+2), res.Debts[i].ClientPhone)
+		f.SetCellValue("Sheet1", "C"+strconv.Itoa(i+2), res.Debts[i].TotalAmount)
+		f.SetCellValue("Sheet1", "D"+strconv.Itoa(i+2), res.Debts[i].AmountPaid)
+		f.SetCellValue("Sheet1", "E"+strconv.Itoa(i+2), res.Debts[i].DebtsBalance)
+		f.SetCellValue("Sheet1", "F"+strconv.Itoa(i+2), strings.ToUpper(req.Currency))
+		f.SetCellValue("Sheet1", "G"+strconv.Itoa(i+2), res.Debts[i].LastPaymentDate)
+	}
+
+	var buf bytes.Buffer
+	if err := f.Write(&buf); err != nil {
+		h.log.Error("Error writing file to Excel", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+		return
+	}
+
+	c.Header("Content-Description", "File Transfer")
+	c.Header("Content-Disposition", "attachment; filename=report.xlsx")
+	c.Header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+	// Отправляем файл в ответе
+	c.Data(http.StatusOK, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buf.Bytes())
 }

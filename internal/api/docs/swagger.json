@@ -1746,6 +1746,49 @@
                 }
             }
         },
+        "/debts/excel/{currency}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Export a list of debts as an Excel file. The report includes columns for Client Name, Client Phone, Total Debt, Amount Paid, Remaining Debt, Currency and Last Payment Date.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                ],
+                "tags": [
+                    "Debts"
+                ],
+                "summary": "Export debts in Excel format",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Currency code for filtering debts",
+                        "name": "currency",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Excel report file",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/debts/pay": {
             "post": {
                 "security": [

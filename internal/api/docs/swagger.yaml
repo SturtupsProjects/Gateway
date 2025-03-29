@@ -2204,6 +2204,35 @@ paths:
       summary: Get debts for a client
       tags:
       - Debts
+  /debts/excel/{currency}:
+    get:
+      consumes:
+      - application/json
+      description: Export a list of debts as an Excel file. The report includes columns
+        for Client Name, Client Phone, Total Debt, Amount Paid, Remaining Debt, Currency
+        and Last Payment Date.
+      parameters:
+      - description: Currency code for filtering debts
+        in: path
+        name: currency
+        required: true
+        type: string
+      produces:
+      - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+      responses:
+        "200":
+          description: Excel report file
+          schema:
+            type: file
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Export debts in Excel format
+      tags:
+      - Debts
   /debts/pay:
     post:
       consumes:
