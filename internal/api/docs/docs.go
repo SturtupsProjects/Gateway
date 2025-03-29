@@ -155,13 +155,6 @@ const docTemplate = `{
                         "name": "adjustment_id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Company ID",
-                        "name": "company_id",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -254,13 +247,6 @@ const docTemplate = `{
                         "description": "Adjustment ID",
                         "name": "adjustment_id",
                         "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Company ID",
-                        "name": "company_id",
-                        "in": "header",
                         "required": true
                     }
                 ],

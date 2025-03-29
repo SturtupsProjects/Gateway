@@ -254,7 +254,6 @@ func (h *Handler) UpdateAdjustment(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param adjustment_id path string true "Adjustment ID"
-// @Param company_id header string true "Company ID"
 // @Success 200 {object} user.AdjustmentResponse "Adjustment closed successfully"
 // @Failure 400 {object} entity.Error "Bad request"
 // @Router /adjustment/{adjustment_id}/close [put]
@@ -286,7 +285,6 @@ func (h *Handler) CloseAdjustment(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param adjustment_id path string true "Adjustment ID"
-// @Param company_id header string true "Company ID"
 // @Success 200 {object} user.AdjustmentResponse "Adjustment data returned"
 // @Failure 400 {object} entity.Error "Bad request"
 // @Router /adjustment/{adjustment_id} [get]

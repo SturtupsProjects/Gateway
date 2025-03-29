@@ -1153,11 +1153,6 @@ paths:
         name: adjustment_id
         required: true
         type: string
-      - description: Company ID
-        in: header
-        name: company_id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -1215,11 +1210,6 @@ paths:
       - description: Adjustment ID
         in: path
         name: adjustment_id
-        required: true
-        type: string
-      - description: Company ID
-        in: header
-        name: company_id
         required: true
         type: string
       produces:
