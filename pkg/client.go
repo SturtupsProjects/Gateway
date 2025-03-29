@@ -13,7 +13,7 @@ import (
 )
 
 func NewUserClient(cfg *config.Config) pbu.AuthServiceClient {
-	conn, err := grpc.NewClient("localhost"+cfg.USER_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("crm-admin_auth"+cfg.USER_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to User Service: %v", err)
 	}
@@ -29,7 +29,7 @@ func NewProductClient(cfg *config.Config) pbp.ProductsClient {
 }
 
 func NewCompanyClient(cfg *config.Config) pbc.CompanyServiceClient {
-	conn, err := grpc.NewClient("localhost"+cfg.USER_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("crm-admin_auth"+cfg.USER_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to Client Service: %v", err)
 	}
