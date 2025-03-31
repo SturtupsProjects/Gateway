@@ -147,3 +147,19 @@ p, owner, /adjustment, POST
 p, owner, /adjustment/*, GET
 p, owner, /adjustment, GET
 p, owner, /adjustment/*, PUT
+
+
+
+p, owner, /supplier, POST
+p, owner, /supplier, GET
+p, owner, /supplier/*, GET
+p, owner, /supplier/*, PUT
+p, owner, /supplier/*, DELETE
+p, owner, /supplier/street, GET
+
+
+p, worker, /supplier, POST
+p, worker, /supplier, GET
+p, worker, /supplier/*, GET
+p, worker, /supplier/*, PUT
+p, worker, /supplier/street, GET

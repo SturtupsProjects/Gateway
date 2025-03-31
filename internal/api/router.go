@@ -47,7 +47,9 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 		user.DELETE("/delete/:id", h.DeleteUser)
 		user.POST("/get/access-token", h.GetAccessToken)
 	}
+
 	router.Use(middleware.PermissionMiddleware(enf))
+
 	// Product Category routes group
 	pcategory := router.Group("/products/category")
 	{
@@ -91,7 +93,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 		sales.POST("/calculate", h.CalculateTotalSales)
 	}
 
-	//Client routes group
+	// Client routes group
 	client := router.Group("/clients")
 	{
 		client.POST("", h.CreateClient)
@@ -100,8 +102,19 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 		client.PUT("/:id", h.UpdateClient)
 		client.DELETE("/:id", h.DeleteClient)
 
-		client.GET("/street", h.GetStreetClientList)
 	}
+
+	// Supplier routes group
+	supplier := router.Group("/supplier")
+	{
+		supplier.POST("", h.CreateSupplier)
+		supplier.GET("", h.GetSupplierList)
+		supplier.GET("/:id", h.GetSupplier)
+		supplier.PUT("/:id", h.UpdateSupplier)
+		supplier.DELETE("/:id", h.DeleteSupplier)
+	}
+
+	// Company routes group
 	company := router.Group("/companies")
 	{
 		// admin
@@ -120,6 +133,8 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 		company.POST("/users", h.CreateCompanyUser)
 
 	}
+
+	// Branch routes group
 	branch := router.Group("/branches")
 	{
 		branch.POST("/create", h.CreateBranch)
@@ -129,6 +144,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 		branch.GET("/list", h.ListBranches)
 	}
 
+	// Statistics routes group
 	statics := router.Group("/statistics")
 	{
 		statics.GET("/products/total-price", h.TotalPriceOfProducts)
@@ -147,6 +163,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 		statics.GET("/branch-income", h.GetBranchIncome)
 	}
 
+	// CashFlow group
 	cash := router.Group("/cash-flow")
 	{
 		cash.GET("", h.GetCashFlow)
@@ -154,6 +171,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 		cash.POST("/expense", h.CreateExpense)
 	}
 
+	// Debts routes group
 	debt := router.Group("/debts")
 	{
 		debt.POST("", h.CreateDebt)
@@ -174,6 +192,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 
 	}
 
+	// Transfers routes group
 	transfers := router.Group("/transfers")
 	{
 		transfers.POST("", h.CreateTransfers)
@@ -190,6 +209,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 	//	balance.GET("/list", h.GetUsersBalanceList)
 	//}
 
+	// Salary routes group
 	salary := router.Group("/salary")
 	{
 		salary.POST("", h.CreateSalary)
@@ -199,6 +219,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 		salary.GET("/worker/:worker_id", h.GetWorkerAllInfo)
 	}
 
+	// Adjustment routes group
 	adjustment := router.Group("/adjustment")
 	{
 		adjustment.POST("", h.CreateAdjustment)

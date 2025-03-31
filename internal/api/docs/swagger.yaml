@@ -223,11 +223,20 @@ definitions:
     properties:
       address:
         type: string
+      client_type:
+        type: string
       full_name:
         type: string
       phone:
         type: string
-      type:
+    type: object
+  entity.ClientRequest:
+    properties:
+      address:
+        type: string
+      full_name:
+        type: string
+      phone:
         type: string
     type: object
   entity.CreateBulkProductsRequest:
@@ -901,21 +910,6 @@ definitions:
       total_count:
         type: integer
     type: object
-  user.ClientRequest:
-    properties:
-      address:
-        type: string
-      client_type:
-        type: string
-      company_id:
-        type: string
-      full_name:
-        type: string
-      phone:
-        type: string
-      type:
-        type: string
-    type: object
   user.ClientResponse:
     properties:
       address:
@@ -1522,6 +1516,9 @@ paths:
         name: address
         type: string
       - in: query
+        name: client_type
+        type: string
+      - in: query
         name: full_name
         type: string
       - in: query
@@ -1532,9 +1529,6 @@ paths:
         type: integer
       - in: query
         name: phone
-        type: string
-      - in: query
-        name: type
         type: string
       produces:
       - application/json
@@ -1566,7 +1560,7 @@ paths:
         name: Client
         required: true
         schema:
-          $ref: '#/definitions/user.ClientRequest'
+          $ref: '#/definitions/entity.ClientRequest'
       produces:
       - application/json
       responses:
@@ -1682,44 +1676,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update an existing client
-      tags:
-      - Clients
-  /clients/street:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve a list of street clients with optional filters
-      parameters:
-      - in: query
-        name: limit
-        type: integer
-      - in: query
-        name: name
-        type: string
-      - in: query
-        name: page
-        type: integer
-      - in: query
-        name: phone
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user.ClientListResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/entity.Error'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/entity.Error'
-      security:
-      - ApiKeyAuth: []
-      summary: List all street clients
       tags:
       - Clients
   /companies:
@@ -4028,6 +3984,175 @@ paths:
       summary: Get top suppliers by value of products supplied
       tags:
       - Statistics
+  /supplier:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of suppliers with optional filters
+      parameters:
+      - in: query
+        name: address
+        type: string
+      - in: query
+        name: full_name
+        type: string
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: phone
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ClientListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: List all suppliers
+      tags:
+      - Supplier
+    post:
+      consumes:
+      - application/json
+      description: Create a new supplier with the provided details
+      parameters:
+      - description: Supplier data
+        in: body
+        name: Supplier
+        required: true
+        schema:
+          $ref: '#/definitions/entity.ClientRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/user.ClientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new supplier
+      tags:
+      - Supplier
+  /supplier/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a supplier by ID
+      parameters:
+      - description: Supplier ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a supplier
+      tags:
+      - Supplier
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a supplier by ID
+      parameters:
+      - description: Supplier ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ClientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a supplier
+      tags:
+      - Supplier
+    put:
+      consumes:
+      - application/json
+      description: Update the details of an existing supplier by ID
+      parameters:
+      - description: Supplier ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated supplier data
+        in: body
+        name: Supplier
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Client'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ClientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update an existing supplier
+      tags:
+      - Supplier
   /transfers:
     get:
       consumes:

@@ -69,10 +69,10 @@ type PurchaseItem struct {
 }
 
 type Client struct {
-	FullName string `json:"full_name"`
-	Address  string `json:"address"`
-	Phone    string `json:"phone"`
-	Type     string `json:"type"`
+	FullName   string `json:"full_name"`
+	Address    string `json:"address"`
+	Phone      string `json:"phone"`
+	ClientType string `json:"client_type"`
 }
 
 type CreateCompanyRequest struct {
@@ -197,12 +197,12 @@ type StreetClientFilter struct {
 }
 
 type ClientFilter struct {
-	FullName string `protobuf:"bytes,1,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
-	Address  string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	Phone    string `protobuf:"bytes,3,opt,name=phone,proto3" json:"phone,omitempty"`
-	Page     int32  `protobuf:"varint,4,opt,name=page,proto3" json:"page,omitempty"`
-	Limit    int32  `protobuf:"varint,5,opt,name=limit,proto3" json:"limit,omitempty"`
-	Type     string `protobuf:"bytes,6,opt,name=type,proto3" json:"type,omitempty"`
+	FullName   string `protobuf:"bytes,1,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
+	Address    string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Phone      string `protobuf:"bytes,3,opt,name=phone,proto3" json:"phone,omitempty"`
+	Page       int32  `protobuf:"varint,4,opt,name=page,proto3" json:"page,omitempty"`
+	Limit      int32  `protobuf:"varint,5,opt,name=limit,proto3" json:"limit,omitempty"`
+	ClientType string `json:"client_type,omitempty"`
 }
 
 type TransferReq struct {
@@ -243,4 +243,18 @@ type AdjustmentUpdate struct {
 	CurrencyCode   string  `protobuf:"bytes,3,opt,name=currency_code,json=currencyCode,proto3" json:"currency_code,omitempty"`
 	Amount         float64 `protobuf:"fixed64,4,opt,name=amount,proto3" json:"amount,omitempty"`
 	AdjustmentDate string  `protobuf:"bytes,5,opt,name=adjustment_date,json=adjustmentDate,proto3" json:"adjustment_date,omitempty"`
+}
+
+type ClientRequest struct {
+	FullName string `json:"full_name,omitempty"`
+	Address  string `json:"address,omitempty"`
+	Phone    string `json:"phone,omitempty"`
+}
+
+type SupplierFilter struct {
+	FullName string `protobuf:"bytes,1,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
+	Address  string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Phone    string `protobuf:"bytes,3,opt,name=phone,proto3" json:"phone,omitempty"`
+	Page     int32  `protobuf:"varint,4,opt,name=page,proto3" json:"page,omitempty"`
+	Limit    int32  `protobuf:"varint,5,opt,name=limit,proto3" json:"limit,omitempty"`
 }

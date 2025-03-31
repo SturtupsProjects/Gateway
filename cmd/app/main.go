@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"gateway/config"
 	api "gateway/internal/api"
 	"gateway/internal/api/token"
@@ -11,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 func main() {
@@ -45,20 +47,20 @@ func main() {
 
 	r := api.NewRouter(casbinEnforcer, cfg, log1)
 
-	//ips, err := get()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//log1.Debug(fmt.Sprintf("[%s] Api Gateway is running at IP: %s",
-	//	time.Now().Format("02-01-2006 15:04:05"), ips))
+	ips, err := get()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log1.Debug(fmt.Sprintf("[%s] Api Gateway is running at IP: %s",
+		time.Now().Format("02-01-2006 15:04:05"), ips))
 
 	log.Fatal(r.Run(cfg.API_GATEWAY))
 }
 
 // Getting
 func get() (string, error) {
-	resp, err := http.Get("https://api.ipify.org?format=text") // Этот сервис возвращает IPv4
+	resp, err := http.Get("https://api.ipify.org?format=text")
 	if err != nil {
 		return "", err
 	}

@@ -11,3 +11,6 @@ time=2025-03-29T20:58:00.991+05:00 level=ERROR msg="ListSalaries: error getting 
 time=2025-03-29T21:02:57.187+05:00 level=ERROR msg="GetAdjustmentByID: error getting adjustment" error="rpc error: code = Unknown desc = GetAdjustmentByID: sql: expected 14 destination arguments in Scan, not 13"
 time=2025-03-29T21:25:22.573+05:00 level=ERROR msg="ListSalaries: error getting salaries" error="rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp 127.0.0.1:9090: connect: connection refused\""
 time=2025-03-29T21:34:57.356+05:00 level=ERROR msg="ListSalaries: error getting salaries" error="rpc error: code = Unknown desc = ListSalaries: pq: for SELECT DISTINCT, ORDER BY expressions must appear in select list"
+time=2025-03-31T21:55:08.834+05:00 level=DEBUG msg="[31-03-2025 21:55:08] Api Gateway is running at IP: 185.213.229.13"
+time=2025-03-31T21:56:00.439+05:00 level=DEBUG msg="[31-03-2025 21:56:00] Login phone: string"
+time=2025-03-31T21:59:37.348+05:00 level=DEBUG msg="[31-03-2025 21:59:37] Api Gateway is running at IP: 185.213.229.13"
