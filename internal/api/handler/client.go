@@ -209,6 +209,7 @@ func (h *Handler) CreateSupplier(c *gin.Context) {
 
 	req.CompanyId = c.MustGet("company_id").(string)
 	req.Type = "supplier"
+	req.ClientType = "client"
 
 	res, err := h.UserClient.CreateClient(c, &req)
 	if err != nil {
