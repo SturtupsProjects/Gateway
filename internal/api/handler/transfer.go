@@ -87,6 +87,7 @@ func (h *Handler) GetTransfers(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param branch_id header string true "Branch ID"
+// @Param transferred_by query string false "Transferred By"
 // @Param limit query int false "Number of products "
 // @Param page query int false "Offset for pagination "
 // @Param product_name query string false "filter by product_name"
@@ -100,6 +101,7 @@ func (h *Handler) GetTransferList(c *gin.Context) {
 	limitSt := c.Query("limit")
 	pageSt := c.Query("page")
 	filter.ProductName = c.Query("product_name")
+	filter.TransferredBy = c.Query("transferred_by")
 
 	limit, err := strconv.Atoi(limitSt)
 	if err != nil {

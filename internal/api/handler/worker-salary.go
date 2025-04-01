@@ -382,7 +382,6 @@ func (h *Handler) ListAdjustments(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param worker_id path string true "Worker ID"
-// @Param company_id header string true "Company ID"
 // @Success 200 {object} user.WorkerAllInfo "Worker full info returned"
 // @Failure 400 {object} entity.Error "Bad request"
 // @Router /salary/worker/{worker_id} [get]

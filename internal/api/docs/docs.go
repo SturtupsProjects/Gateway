@@ -542,29 +542,38 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "Limit",
+                        "type": "integer",
+                        "description": "Limit of records per page (default: 10)",
                         "name": "limit",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "Page",
+                        "type": "integer",
+                        "description": "Page number for pagination (default: 1)",
                         "name": "page",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Description",
+                        "description": "Filter transactions by description",
                         "name": "description",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Branch ID",
+                        "description": "Transaction Type (income | expense)",
+                        "name": "transaction_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Payment Method (uzs | usd | card)",
+                        "name": "payment_method",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID of the company",
                         "name": "branch_id",
                         "in": "header",
                         "required": true
@@ -572,19 +581,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "List of cash flow transactions with pagination details",
                         "schema": {
                             "$ref": "#/definitions/products.ListCashFlow"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid input parameters or missing required values",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -2389,6 +2398,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "Filter by created_by name",
+                        "name": "created_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "Limit",
                         "name": "limit",
                         "in": "query"
@@ -2960,11 +2975,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "name": "branch_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
                         "name": "created_at",
                         "in": "query"
                     },
@@ -2996,6 +3006,11 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "supplier_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "name": "total_cost",
                         "in": "query"
                     },
                     {
@@ -3384,13 +3399,6 @@ const docTemplate = `{
                         "description": "Worker ID",
                         "name": "worker_id",
                         "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Company ID",
-                        "name": "company_id",
-                        "in": "header",
                         "required": true
                     }
                 ],
@@ -4849,6 +4857,12 @@ const docTemplate = `{
                         "name": "branch_id",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Transferred By",
+                        "name": "transferred_by",
+                        "in": "query"
                     },
                     {
                         "type": "integer",

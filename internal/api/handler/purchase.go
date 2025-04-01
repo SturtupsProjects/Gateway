@@ -113,6 +113,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 	createdAt := c.Query("created_at")
 	branchId := c.GetHeader("branch_id") // Получаем из заголовков
 	description := c.Query("description")
+	totalCost := c.Query("total_cost")
 
 	// Пагинация
 	limitStr := c.Query("limit")
@@ -142,6 +143,17 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 		}
 	}
 
+	var totalCostFloat float64 = 0
+	if totalCost != "" {
+		var err error
+		totalCostFloat, err = strconv.ParseFloat(totalCost, 64)
+		if err != nil {
+			h.log.Error("Error parsing total cost", "error", err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid total cost parameter"})
+			return
+		}
+	}
+
 	// Логируем параметры запроса для отладки
 	log.Println("ProductId:", productName, "SupplierId:", supplierId, "PurchasedBy:", purchasedBy, "CreatedAt:", createdAt, "BranchId:", branchId, "Limit:", limit, "Page:", page, "ProductName", productName)
 
@@ -153,7 +165,6 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 
 	// Создаем фильтр
 	filter = products.FilterPurchase{
-		ProductName: productName,
 		SupplierId:  supplierId,
 		PurchasedBy: purchasedBy,
 		CompanyId:   companyId,
@@ -162,9 +173,9 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 		Limit:       limit,
 		Page:        page,
 		Description: description,
+		TotalCost:   totalCostFloat,
 	}
 
-	// Получаем список покупок с учетом фильтрации
 	res, err := h.ProductClient.GetListPurchase(c, &filter)
 	if err != nil {
 		h.log.Error("Error retrieving purchase list", "error", err.Error())
@@ -172,9 +183,7 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 		return
 	}
 
-	// Дополнительная информация (например, поставщик и покупатель)
 	for i, purchase := range res.Purchases {
-		// Получаем информацию о поставщике
 		clientRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.SupplierId, CompanyId: filter.CompanyId})
 		if err == nil {
 			res.Purchases[i].SupplierName = clientRes.FullName
@@ -182,7 +191,6 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 			h.log.Error("Error fetching supplier details", "supplier_id", purchase.SupplierId, "error", err.Error())
 		}
 
-		// Получаем информацию о покупателе
 		purchaserRes, err := h.UserClient.GetClient(c, &user.UserIDRequest{Id: purchase.PurchasedBy, CompanyId: filter.CompanyId})
 		if err == nil {
 			res.Purchases[i].PurchaserPhoneNumber = purchaserRes.Phone
@@ -191,7 +199,6 @@ func (h *Handler) GetListPurchase(c *gin.Context) {
 		}
 	}
 
-	// Возвращаем ответ
 	c.JSON(http.StatusOK, res)
 }
 

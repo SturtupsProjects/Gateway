@@ -643,32 +643,35 @@ func (h *Handler) GetNetProfit(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param start_date query string true "Start Date (YYYY-MM-DD)"
 // @Param end_date query string true "End Date (YYYY-MM-DD)"
-// @Param limit query string true "Limit"
-// @Param page query string true "Page"
-// @Param description query string true "Description"
-// @Param branch_id header string true "Branch ID"
-// @Success 200 {object} products.ListCashFlow
-// @Failure 400 {object} products.Error
-// @Failure 500 {object} products.Error
+// @Param limit query integer false "Limit of records per page (default: 10)"
+// @Param page query integer false "Page number for pagination (default: 1)"
+// @Param description query string false "Filter transactions by description"
+// @Param transaction_type query string false "Transaction Type (income | expense)"
+// @Param payment_method query string false "Payment Method (uzs | usd | card)"
+// @Param branch_id header string true "Branch ID of the company"
+// @Success 200 {object} products.ListCashFlow "List of cash flow transactions with pagination details"
+// @Failure 400 {object} products.Error "Invalid input parameters or missing required values"
+// @Failure 500 {object} products.Error "Internal server error"
 // @Router /cash-flow [get]
 func (h *Handler) GetCashFlow(c *gin.Context) {
 
 	companyId := c.MustGet("company_id").(string)
-
 	description := c.Query("description")
 	startDate := c.DefaultQuery("start_date", "")
 	endDate := c.DefaultQuery("end_date", "")
+	transactionType := c.Query("transaction_type")
+	paymentMethod := c.Query("payment_method")
 	limit := c.Query("limit")
 	page := c.Query("page")
 
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
-		limitInt = 0
+		limitInt = 10 // Default limit
 	}
 
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
-		pageInt = 0
+		pageInt = 1 // Default page
 	}
 
 	if startDate == "" || endDate == "" {
@@ -677,7 +680,7 @@ func (h *Handler) GetCashFlow(c *gin.Context) {
 		return
 	}
 
-	layout := "2006-01-02" // Человечный формат
+	layout := "2006-01-02"
 	parsedStartDate, err := time.Parse(layout, startDate)
 	if err != nil {
 		h.log.Error("Invalid start_date format", "error", err.Error())
@@ -698,14 +701,16 @@ func (h *Handler) GetCashFlow(c *gin.Context) {
 		return
 	}
 
-	req := &products.StatisticReq{
-		CompanyId:   companyId,
-		StartDate:   parsedStartDate.Format(time.RFC3339),
-		EndDate:     parsedEndDate.Format(time.RFC3339),
-		BranchId:    branchId,
-		Description: description,
-		Limit:       int64(limitInt),
-		Page:        int64(pageInt),
+	req := &products.CashFlowReq{
+		CompanyId:       companyId,
+		BranchId:        branchId,
+		StartDate:       parsedStartDate.Format(time.RFC3339),
+		EndDate:         parsedEndDate.Format(time.RFC3339),
+		TransactionType: transactionType,
+		PaymentMethod:   paymentMethod,
+		Description:     description,
+		Limit:           int64(limitInt),
+		Page:            int64(pageInt),
 	}
 
 	res, err := h.ProductClient.GetCashFlow(c, req)

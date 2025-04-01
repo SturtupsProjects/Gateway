@@ -114,14 +114,14 @@ type ProductFilter struct {
 }
 
 type FilterPurchase struct {
-	ProductName string `protobuf:"bytes,1,opt,name=product_name,json=product_name,proto3" json:"product_name,omitempty"`
-	SupplierId  string `protobuf:"bytes,2,opt,name=supplier_id,json=supplierId,proto3" json:"supplier_id,omitempty"`
-	PurchasedBy string `protobuf:"bytes,3,opt,name=purchased_by,json=purchasedBy,proto3" json:"purchased_by,omitempty"`
-	CreatedAt   string `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	BranchId    string `protobuf:"bytes,6,opt,name=branch_id,json=branchId,proto3" json:"branch_id,omitempty"`
-	Limit       int64  `protobuf:"varint,7,opt,name=limit,proto3" json:"limit,omitempty"`
-	Page        int64  `protobuf:"varint,8,opt,name=page,proto3" json:"page,omitempty"`
-	Description string `protobuf:"bytes,9,opt,name=description,proto3" json:"description,omitempty"`
+	ProductName string  `protobuf:"bytes,1,opt,name=product_name,json=product_name,proto3" json:"product_name,omitempty"`
+	SupplierId  string  `protobuf:"bytes,2,opt,name=supplier_id,json=supplierId,proto3" json:"supplier_id,omitempty"`
+	PurchasedBy string  `protobuf:"bytes,3,opt,name=purchased_by,json=purchasedBy,proto3" json:"purchased_by,omitempty"`
+	CreatedAt   string  `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Limit       int64   `protobuf:"varint,7,opt,name=limit,proto3" json:"limit,omitempty"`
+	Page        int64   `protobuf:"varint,8,opt,name=page,proto3" json:"page,omitempty"`
+	Description string  `protobuf:"bytes,9,opt,name=description,proto3" json:"description,omitempty"`
+	TotalCost   float64 `json:"total_cost,omitempty"`
 }
 
 type PurchaseUpdate struct {
