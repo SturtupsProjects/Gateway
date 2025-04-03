@@ -37,7 +37,7 @@ func NewCompanyClient(cfg *config.Config) pbc.CompanyServiceClient {
 }
 
 func NewDebtClient(cfg *config.Config) pbd.DebtsServiceClient {
-	conn, err := grpc.NewClient("localhost"+cfg.DEBT_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("debts-service"+cfg.DEBT_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to Debt Service: %v", err)
 	}

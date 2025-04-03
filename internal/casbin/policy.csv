@@ -163,3 +163,13 @@ p, worker, /supplier, GET
 p, worker, /supplier/*, GET
 p, worker, /supplier/*, PUT
 p, worker, /supplier/street, GET
+
+p, owner, /creditor, POST
+p, owner, /creditor/, POST
+p, owner, /creditor, GET
+p, owner, /creditor/, GET
+
+p, worker, /creditor, POST
+p, worker, /creditor/, POST
+p, worker, /creditor, GET
+p, worker, /creditor/, GET
