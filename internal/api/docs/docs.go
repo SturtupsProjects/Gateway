@@ -1505,14 +1505,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/debts": {
+        "/creditor": {
             "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Retrieve a list of debts with optional filters",
+                "description": "Retrieve a list of creditor records with optional filters.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1520,10 +1520,22 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Debts"
+                    "Creditor"
                 ],
-                "summary": "Get list of debts",
+                "summary": "List creditor records",
                 "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "Filter by fully paid status",
+                        "name": "is_fully_pay",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by currency code",
+                        "name": "currency_code",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "Filter by description",
@@ -1531,26 +1543,14 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "Filter by currency code",
-                        "name": "currencyCode",
-                        "in": "query"
-                    },
-                    {
-                        "type": "number",
-                        "description": "Filter by minimum total amount",
-                        "name": "total_amount_min",
-                        "in": "query"
-                    },
-                    {
-                        "type": "number",
-                        "description": "Filter by maximum total amount",
-                        "name": "total_amount_max",
+                        "type": "boolean",
+                        "description": "Filter by unpaid credits",
+                        "name": "no_paid_credits",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Number of results to return",
+                        "description": "Maximum results",
                         "name": "limit",
                         "in": "query"
                     },
@@ -1559,29 +1559,23 @@ const docTemplate = `{
                         "description": "Page number for pagination",
                         "name": "page",
                         "in": "query"
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "filter by fully pay",
-                        "name": "is_fully_pay",
-                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "List of creditor records",
                         "schema": {
                             "$ref": "#/definitions/debts.DebtsList"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid filter value",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -1594,7 +1588,443 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Add a new debt for a client with the specified details",
+                "description": "Create a new creditor record.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Creditor"
+                ],
+                "summary": "Create creditor",
+                "parameters": [
+                    {
+                        "description": "Creditor details",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.DebtsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created creditor record",
+                        "schema": {
+                            "$ref": "#/definitions/debts.Debts"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/creditor/pay": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Make a payment toward a creditor record.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Creditor"
+                ],
+                "summary": "Process creditor payment",
+                "parameters": [
+                    {
+                        "description": "Payment details",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/debts.PayDebtsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated creditor record",
+                        "schema": {
+                            "$ref": "#/definitions/debts.Debts"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/creditor/payment/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve details for a specific creditor payment.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Creditor"
+                ],
+                "summary": "Get creditor payment details",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Payment details",
+                        "schema": {
+                            "$ref": "#/definitions/debts.Payment"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid payment ID",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/creditor/payments/{credit_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve all payments for a specific creditor record.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Creditor"
+                ],
+                "summary": "List payments by creditor ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Creditor ID",
+                        "name": "credit_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of payments",
+                        "schema": {
+                            "$ref": "#/definitions/debts.PaymentList"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid creditor ID",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/creditor/payments/{supplier_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve all payments made to a specific supplier for creditor records.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Creditor"
+                ],
+                "summary": "List payments to supplier",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Supplier ID",
+                        "name": "supplier_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Supplier payment records",
+                        "schema": {
+                            "$ref": "#/definitions/debts.UserPaymentsRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid supplier ID",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/creditor/supplier/{supplier_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve creditor records for a specific supplier.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Creditor"
+                ],
+                "summary": "Get credits records for supplier",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Supplier ID",
+                        "name": "supplier_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Creditor records for the supplier",
+                        "schema": {
+                            "$ref": "#/definitions/debts.DebtsList"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid supplier ID",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/creditor/total-sum": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve the total amount of creditor records for the company.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Creditor"
+                ],
+                "summary": "Get total creditor sum",
+                "responses": {
+                    "200": {
+                        "description": "Total creditor sum",
+                        "schema": {
+                            "$ref": "#/definitions/debts.SumMoney"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/creditor/total-sum/{supplier_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve the total creditor amount for a specific supplier.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Creditor"
+                ],
+                "summary": "Get supplier's total creditor sum",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Supplier ID",
+                        "name": "supplier_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Supplier's total creditor sum",
+                        "schema": {
+                            "$ref": "#/definitions/debts.SumMoney"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid supplier ID",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/creditor/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve creditor details using its ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Creditor"
+                ],
+                "summary": "Get creditor by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Creditor ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Creditor details",
+                        "schema": {
+                            "$ref": "#/definitions/debts.Debts"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/debts": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve debtor records with optional filters.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1604,33 +2034,109 @@ const docTemplate = `{
                 "tags": [
                     "Debts"
                 ],
-                "summary": "Create a new debt",
+                "summary": "List debtor records",
                 "parameters": [
                     {
-                        "description": "Debt creation details",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/debts.DebtsRequest"
-                        }
+                        "type": "boolean",
+                        "description": "Filter by fully paid status",
+                        "name": "is_fully_pay",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by currency code",
+                        "name": "currency_code",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by description",
+                        "name": "description",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Filter by unpaid debts",
+                        "name": "no_paid_debts",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Maximum results",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number for pagination",
+                        "name": "page",
+                        "in": "query"
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Debt successfully created",
+                    "200": {
+                        "description": "List of debtor records",
                         "schema": {
-                            "$ref": "#/definitions/debts.Debts"
+                            "$ref": "#/definitions/debts.DebtsList"
                         }
                     },
                     "400": {
-                        "description": "Invalid input or bad request",
+                        "description": "Invalid filter value",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal server error",
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new debtor record.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Debts"
+                ],
+                "summary": "Create debtor",
+                "parameters": [
+                    {
+                        "description": "Debtor details",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.DebtsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created debtor record",
+                        "schema": {
+                            "$ref": "#/definitions/debts.Debts"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -1645,7 +2151,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Retrieve a list of debts associated with a specific client",
+                "description": "Retrieve debtor records for a specific client.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1655,7 +2161,7 @@ const docTemplate = `{
                 "tags": [
                     "Debts"
                 ],
-                "summary": "Get debts for a client",
+                "summary": "Get client debtor records",
                 "parameters": [
                     {
                         "type": "string",
@@ -1667,19 +2173,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Debtor records for the client",
                         "schema": {
                             "$ref": "#/definitions/debts.DebtsList"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid client ID",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -1694,7 +2200,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Export a list of debts as an Excel file. The report includes columns for Client Name, Client Phone, Total Debt, Amount Paid, Remaining Debt, Currency and Last Payment Date.",
+                "description": "Export debtor records as an Excel file filtered by currency.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1704,11 +2210,11 @@ const docTemplate = `{
                 "tags": [
                     "Debts"
                 ],
-                "summary": "Export debts in Excel format",
+                "summary": "Export debts to Excel",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Currency code for filtering debts",
+                        "description": "Currency code",
                         "name": "currency",
                         "in": "path",
                         "required": true
@@ -1716,13 +2222,13 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Excel report file",
+                        "description": "Excel file with debtor records",
                         "schema": {
                             "type": "file"
                         }
                     },
                     "500": {
-                        "description": "Internal server error",
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/entity.Error"
                         }
@@ -1737,7 +2243,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Make a payment towards a specific debt",
+                "description": "Make a payment toward a debtor record.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1747,7 +2253,7 @@ const docTemplate = `{
                 "tags": [
                     "Debts"
                 ],
-                "summary": "Pay a debt",
+                "summary": "Process debtor payment",
                 "parameters": [
                     {
                         "description": "Payment details",
@@ -1755,25 +2261,25 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/debts.PayDebtsReq"
+                            "$ref": "#/definitions/entity.PayDebtReq"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Updated debtor record",
                         "schema": {
                             "$ref": "#/definitions/debts.Debts"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid input",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -1788,7 +2294,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Retrieve details of a specific payment by ID",
+                "description": "Retrieve details for a specific payment.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1798,7 +2304,7 @@ const docTemplate = `{
                 "tags": [
                     "Debts"
                 ],
-                "summary": "Get a payment by ID",
+                "summary": "Get payment details",
                 "parameters": [
                     {
                         "type": "string",
@@ -1810,19 +2316,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Payment details",
                         "schema": {
                             "$ref": "#/definitions/debts.Payment"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid payment ID",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -1888,7 +2394,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Retrieve all payments associated with a specific debt",
+                "description": "Retrieve all payments for a specific debtor record.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1898,11 +2404,11 @@ const docTemplate = `{
                 "tags": [
                     "Debts"
                 ],
-                "summary": "Get payments by debt ID",
+                "summary": "List payments by debtor ID",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Debt ID",
+                        "description": "Debtor ID",
                         "name": "debt_id",
                         "in": "path",
                         "required": true
@@ -1910,19 +2416,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "List of payments",
                         "schema": {
                             "$ref": "#/definitions/debts.PaymentList"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid debtor ID",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -1937,7 +2443,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Retrieve all payments made by the client over time",
+                "description": "Retrieve all payments made by a specific user.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1947,7 +2453,7 @@ const docTemplate = `{
                 "tags": [
                     "Debts"
                 ],
-                "summary": "Get All Payments for a Client",
+                "summary": "List user payments",
                 "parameters": [
                     {
                         "type": "string",
@@ -1959,19 +2465,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "User payment records",
                         "schema": {
                             "$ref": "#/definitions/debts.UserPaymentsRes"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid user ID",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -1986,7 +2492,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Get total sum of debts from company",
+                "description": "Retrieve the total amount of debtor records for the company.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1996,22 +2502,22 @@ const docTemplate = `{
                 "tags": [
                     "Debts"
                 ],
-                "summary": "Get Total Sum Of Debts",
+                "summary": "Get total debtor sum",
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Total debtor sum",
                         "schema": {
                             "$ref": "#/definitions/debts.SumMoney"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -2026,7 +2532,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Get total debts sum for a specific user from company",
+                "description": "Retrieve the total debtor amount for a specific user.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2036,7 +2542,7 @@ const docTemplate = `{
                 "tags": [
                     "Debts"
                 ],
-                "summary": "Get Total Debts Sum Of User",
+                "summary": "Get user's total debtor sum",
                 "parameters": [
                     {
                         "type": "string",
@@ -2048,19 +2554,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "User's total debtor sum",
                         "schema": {
                             "$ref": "#/definitions/debts.SumMoney"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid user ID",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -2075,7 +2581,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Retrieve details of a specific debt by ID",
+                "description": "Retrieve debtor details using its ID.",
                 "consumes": [
                     "application/json"
                 ],
@@ -2085,11 +2591,11 @@ const docTemplate = `{
                 "tags": [
                     "Debts"
                 ],
-                "summary": "Get a debt by ID",
+                "summary": "Get debtor by ID",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Debt ID",
+                        "description": "Debtor ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -2097,19 +2603,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Debtor details",
                         "schema": {
                             "$ref": "#/definitions/debts.Debts"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid ID",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
@@ -5512,6 +6018,9 @@ const docTemplate = `{
                 "amount_paid": {
                     "type": "number"
                 },
+                "balance_of_debt": {
+                    "type": "number"
+                },
                 "client_id": {
                     "type": "string"
                 },
@@ -5530,6 +6039,9 @@ const docTemplate = `{
                 "currency_code": {
                     "type": "string"
                 },
+                "debt_type": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -5537,6 +6049,12 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "last_payment_date": {
+                    "type": "string"
+                },
+                "sale_id": {
+                    "type": "string"
+                },
+                "should_pay_at": {
                     "type": "string"
                 },
                 "total_amount": {
@@ -5555,23 +6073,6 @@ const docTemplate = `{
                 },
                 "total_count": {
                     "type": "integer"
-                }
-            }
-        },
-        "debts.DebtsRequest": {
-            "type": "object",
-            "properties": {
-                "client_id": {
-                    "type": "string"
-                },
-                "company_id": {
-                    "type": "string"
-                },
-                "currency_code": {
-                    "type": "string"
-                },
-                "total_amount": {
-                    "type": "number"
                 }
             }
         },
@@ -5597,6 +6098,9 @@ const docTemplate = `{
                 },
                 "paid_amount": {
                     "type": "number"
+                },
+                "pay_type": {
+                    "type": "string"
                 }
             }
         },
@@ -5610,6 +6114,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "installment_id": {
+                    "type": "string"
+                },
+                "pay_type": {
                     "type": "string"
                 },
                 "payment_amount": {
@@ -5635,6 +6142,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "debt_id": {
+                    "type": "string"
+                },
+                "pay_type": {
                     "type": "string"
                 },
                 "payment_amount": {
@@ -5813,11 +6323,39 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.DebtsRequest": {
+            "type": "object",
+            "properties": {
+                "client_id": {
+                    "type": "string"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "should_pay_at": {
+                    "type": "string"
+                },
+                "total_amount": {
+                    "type": "number"
+                }
+            }
+        },
         "entity.Error": {
             "type": "object",
             "properties": {
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.PayDebtReq": {
+            "type": "object",
+            "properties": {
+                "debt_id": {
+                    "type": "string"
+                },
+                "paid_amount": {
+                    "type": "number"
                 }
             }
         },

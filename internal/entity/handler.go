@@ -258,3 +258,15 @@ type SupplierFilter struct {
 	Page     int32  `protobuf:"varint,4,opt,name=page,proto3" json:"page,omitempty"`
 	Limit    int32  `protobuf:"varint,5,opt,name=limit,proto3" json:"limit,omitempty"`
 }
+
+type DebtsRequest struct {
+	ClientId     string  `protobuf:"bytes,1,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	TotalAmount  float64 `protobuf:"fixed64,3,opt,name=total_amount,json=totalAmount,proto3" json:"total_amount,omitempty"`
+	CurrencyCode string  `protobuf:"bytes,4,opt,name=currency_code,json=currencyCode,proto3" json:"currency_code,omitempty"`
+	ShouldPayAt  string  `protobuf:"bytes,6,opt,name=should_pay_at,json=shouldPayAt,proto3" json:"should_pay_at,omitempty"`
+}
+
+type PayDebtReq struct {
+	DebtId     string  `protobuf:"bytes,1,opt,name=debt_id,json=debtId,proto3" json:"debt_id,omitempty"`
+	PaidAmount float64 `protobuf:"fixed64,3,opt,name=paid_amount,json=paidAmount,proto3" json:"paid_amount,omitempty"`
+}

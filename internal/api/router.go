@@ -192,6 +192,23 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 
 	}
 
+	creditor := router.Group("/creditor")
+	{
+		creditor.POST("", h.CreateCreditor)
+		creditor.GET("/:id", h.GetCreditors)
+		creditor.GET("", h.GetListCreditors)
+		creditor.GET("/client/:supplier_id", h.GetCreditsFromSupplier)
+
+		creditor.POST("/pay", h.PayCredit)
+		creditor.GET("/payments/:creditor_id", h.GetPaymentsByCreditId)
+		creditor.GET("/payment/:id", h.GetCreditPayment)
+		creditor.GET("/creditors/payments/:supplier_id", h.GetPaymentsToSupplier)
+
+		creditor.GET("/total-sum", h.GetTotalCreditSum)
+		creditor.GET("/total-sum/:user_id", h.GetTotalCreditFromSupplier)
+
+	}
+
 	// Transfers routes group
 	transfers := router.Group("/transfers")
 	{
