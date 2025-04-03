@@ -59,18 +59,15 @@ func (h *Handler) CalculateTotalSales(c *gin.Context) {
 func (h *Handler) CreateSales(c *gin.Context) {
 	var req products.SaleRequest
 
-	// 1. Парсинг JSON-запроса
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.log.Error("Error parsing CreateSales request body", "error", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
 
-	// 2. Извлечение данных из контекста
 	req.SoldBy, _ = c.MustGet("id").(string)
 	req.CompanyId, _ = c.MustGet("company_id").(string)
 
-	// 3. Проверка обязательного заголовка branch_id
 	branchId := c.GetHeader("branch_id")
 	if branchId == "" {
 		h.log.Error("Missing branch_id in header")
@@ -79,7 +76,6 @@ func (h *Handler) CreateSales(c *gin.Context) {
 	}
 	req.BranchId = branchId
 
-	// 4. Проверка клиента (ClientId или ClientName)
 	if len(req.ClientId) < 16 {
 		if req.ClientName == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Client ID or Client Name is required"})
@@ -110,7 +106,6 @@ func (h *Handler) CreateSales(c *gin.Context) {
 		}
 	}
 
-	// 5. Создаем продажу
 	res, err := h.ProductClient.CreateSales(c, &req)
 	if err != nil {
 		h.log.Error("Error creating sale", "error", err.Error())
@@ -118,13 +113,14 @@ func (h *Handler) CreateSales(c *gin.Context) {
 		return
 	}
 
-	// 6. Создание долга, если это покупка в долг
 	if req.IsForDebt {
 		debReq := debts.DebtsRequest{
+			SaleId:       res.Id,
 			CompanyId:    req.CompanyId,
 			ClientId:     req.ClientId,
 			TotalAmount:  res.TotalSalePrice,
 			CurrencyCode: req.PaymentMethod,
+			DebtType:     "debtor",
 		}
 
 		debtRes, err := h.DebtClient.CreateDebts(c, &debReq)
@@ -140,7 +136,6 @@ func (h *Handler) CreateSales(c *gin.Context) {
 			return
 		}
 
-		// 7. Оплата долга, если указана оплаченная сумма
 		if req.PaidAmount > 0 {
 			reqPay := debts.PayDebtsReq{
 				CompanyId:  req.CompanyId,
@@ -156,7 +151,6 @@ func (h *Handler) CreateSales(c *gin.Context) {
 		}
 	}
 
-	// 8. Возвращаем успешный ответ
 	c.JSON(http.StatusCreated, res)
 }
 
