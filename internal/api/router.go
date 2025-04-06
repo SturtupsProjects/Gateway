@@ -161,7 +161,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 
 		statics.GET("/sale-statistics", h.GetSaleStatistics)
 		statics.GET("/branch-income", h.GetBranchIncome)
-		statics.GET("client-dashboard", h.GetClientDashboard)
+		statics.GET("client-dashboard/:client_id", h.GetClientDashboard)
 	}
 
 	// CashFlow group

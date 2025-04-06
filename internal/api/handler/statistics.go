@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"gateway/internal/entity"
 	"gateway/internal/generated/products"
 	pbu "gateway/internal/generated/user"
@@ -897,22 +898,24 @@ func (h *Handler) GetBranchIncome(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param client_id path string true "Client ID"
-// @Param branch_id header string true "branch ID"
+// @Param branch_id header string true "Branch ID"
 // @Success 200 {object} products.GetClientDashboardResponse
 // @Failure 500 {object} products.Error "Internal server error"
-// @Router /statistics/client-dashboard [get]
+// @Router /statistics/client-dashboard/{client_id} [get]
 func (h *Handler) GetClientDashboard(c *gin.Context) {
-	req := products.GetClientDashboardRequest{
-		CompanyId: c.MustGet("company_id").(string),
-		BranchId:  c.GetHeader("branch_id"),
-		ClientId:  c.Param("client_id"),
-	}
-	if req.BranchId == "" {
+	clientId := c.Param("client_id")
+	branchId := c.GetHeader("branch_id")
+	if branchId == "" {
 		h.log.Error("Branch ID is required in the header")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
 		return
 	}
-
+	req := products.GetClientDashboardRequest{
+		CompanyId: c.MustGet("company_id").(string),
+		BranchId:  branchId,
+		ClientId:  clientId,
+	}
+	fmt.Println("Client ID:", clientId, "Branch ID:", branchId, "Company ID:", req.CompanyId)
 	res, err := h.ProductClient.GetClientDashboard(c, &req)
 	if err != nil {
 		h.log.Error("Error getting client dashboard", "error", err.Error())

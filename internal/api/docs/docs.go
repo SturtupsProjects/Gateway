@@ -4625,7 +4625,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/statistics/client-dashboard": {
+        "/statistics/client-dashboard/{client_id}": {
             "get": {
                 "security": [
                     {
@@ -6845,11 +6845,17 @@ const docTemplate = `{
                 "average_receipt": {
                     "type": "number"
                 },
+                "balance": {
+                    "type": "number"
+                },
                 "top_transaction": {
                     "type": "number"
                 },
                 "total_purchase_sum": {
                     "type": "number"
+                },
+                "type_of_client": {
+                    "type": "string"
                 },
                 "visit_count": {
                     "type": "integer"
