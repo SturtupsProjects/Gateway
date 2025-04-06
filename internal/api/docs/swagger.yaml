@@ -590,6 +590,21 @@ definitions:
       error:
         type: string
     type: object
+  products.GetClientDashboardResponse:
+    properties:
+      average_discount:
+        type: number
+      average_product_count:
+        type: number
+      average_receipt:
+        type: number
+      top_transaction:
+        type: number
+      total_purchase_sum:
+        type: number
+      visit_count:
+        type: integer
+    type: object
   products.GetTopEntitiesResponse:
     properties:
       entities:
@@ -4034,6 +4049,38 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Calculate the total income
+      tags:
+      - Statistics
+  /statistics/client-dashboard:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve dashboard data for a client
+      parameters:
+      - description: Client ID
+        in: path
+        name: client_id
+        required: true
+        type: string
+      - description: Branch ID
+        in: header
+        name: branch_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.GetClientDashboardResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get client dashboard data
       tags:
       - Statistics
   /statistics/products/most-sold:

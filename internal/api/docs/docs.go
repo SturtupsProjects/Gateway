@@ -4625,6 +4625,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/statistics/client-dashboard": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve dashboard data for a client",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get client dashboard data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client ID",
+                        "name": "client_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/products.GetClientDashboardResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/statistics/products/most-sold": {
             "get": {
                 "security": [
@@ -6780,6 +6830,29 @@ const docTemplate = `{
             "properties": {
                 "error": {
                     "type": "string"
+                }
+            }
+        },
+        "products.GetClientDashboardResponse": {
+            "type": "object",
+            "properties": {
+                "average_discount": {
+                    "type": "number"
+                },
+                "average_product_count": {
+                    "type": "number"
+                },
+                "average_receipt": {
+                    "type": "number"
+                },
+                "top_transaction": {
+                    "type": "number"
+                },
+                "total_purchase_sum": {
+                    "type": "number"
+                },
+                "visit_count": {
+                    "type": "integer"
                 }
             }
         },

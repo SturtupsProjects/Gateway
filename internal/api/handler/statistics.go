@@ -888,3 +888,37 @@ func (h *Handler) GetBranchIncome(c *gin.Context) {
 
 	c.JSON(http.StatusOK, res)
 }
+
+// GetClientDashboard godoc
+// @Summary Get client dashboard data
+// @Description Retrieve dashboard data for a client
+// @Tags Statistics
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param client_id path string true "Client ID"
+// @Param branch_id header string true "branch ID"
+// @Success 200 {object} products.GetClientDashboardResponse
+// @Failure 500 {object} products.Error "Internal server error"
+// @Router /statistics/client-dashboard [get]
+func (h *Handler) GetClientDashboard(c *gin.Context) {
+	req := products.GetClientDashboardRequest{
+		CompanyId: c.MustGet("company_id").(string),
+		BranchId:  c.GetHeader("branch_id"),
+		ClientId:  c.Param("client_id"),
+	}
+	if req.BranchId == "" {
+		h.log.Error("Branch ID is required in the header")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		return
+	}
+
+	res, err := h.ProductClient.GetClientDashboard(c, &req)
+	if err != nil {
+		h.log.Error("Error getting client dashboard", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
