@@ -598,15 +598,22 @@ definitions:
         type: number
       average_receipt:
         type: number
-      balance:
-        type: number
       top_transaction:
         type: number
       total_purchase_sum:
         type: number
-      type_of_client:
-        type: string
       visit_count:
+        type: integer
+    type: object
+  products.GetProductsDashboardRes:
+    properties:
+      amount_delivery_price:
+        type: number
+      amount_sale_price:
+        type: number
+      product_items:
+        type: integer
+      product_units:
         type: integer
     type: object
   products.GetTopEntitiesResponse:
@@ -3261,6 +3268,43 @@ paths:
       summary: Update Product Category
       tags:
       - Category
+  /products/dashboard/{currency}:
+    get:
+      consumes:
+      - application/json
+      description: Get a summary of product statistics (items count, units, delivery
+        price and sale price)
+      parameters:
+      - description: Branch ID
+        in: header
+        name: branch_id
+        required: true
+        type: string
+      - description: 'Currency type (allowed values: ''uzs'', ''usd'', ''card'')'
+        in: path
+        name: currency
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Dashboard data retrieved successfully
+          schema:
+            $ref: '#/definitions/products.GetProductsDashboardRes'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Retrieve products dashboard data
+      tags:
+      - Products
   /products/excel-upload/{category_id}:
     post:
       consumes:

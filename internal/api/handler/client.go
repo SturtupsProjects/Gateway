@@ -213,7 +213,7 @@ func (h *Handler) CreateSupplier(c *gin.Context) {
 
 	res, err := h.UserClient.CreateClient(c, &req)
 	if err != nil {
-		h.log.Error("Error creating supplier", "error", err.Error())
+		h.log.Error("Error creating suppeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJiZGIzNTZiLTU2MWYtNDMwNC1iZjBjLTYwZDZlOWQ2YjEwOCIsImZpcnN0X25hbWUiOiJJYnJvaGltIiwicGhvbmVfbnVtYmVyIjoiKzk5ODk0NjkxMTExMSIsImNvbXBhbnlfaWQiOiI2YTVjZjYwZC1mMzZjLTQyNmQtODBkNy0xNWRlOGIzOWUwOTciLCJyb2xlIjoib3duZXIiLCJleHAiOjE3NDQxNDgwNTUsImlhdCI6MTc0NDEwNDg1NX0._kAyg2nsG4gc0jUasgQSKvBtRNThdkFP6CFULEbSZi8lier", "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

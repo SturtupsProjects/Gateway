@@ -3172,6 +3172,62 @@
                 }
             }
         },
+        "/products/dashboard/{currency}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get a summary of product statistics (items count, units, delivery price and sale price)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Retrieve products dashboard data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Branch ID",
+                        "name": "branch_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Currency type (allowed values: 'uzs', 'usd', 'card')",
+                        "name": "currency",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dashboard data retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/products.GetProductsDashboardRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/products/excel-upload/{category_id}": {
             "post": {
                 "security": [
@@ -6837,19 +6893,30 @@
                 "average_receipt": {
                     "type": "number"
                 },
-                "balance": {
-                    "type": "number"
-                },
                 "top_transaction": {
                     "type": "number"
                 },
                 "total_purchase_sum": {
                     "type": "number"
                 },
-                "type_of_client": {
-                    "type": "string"
-                },
                 "visit_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "products.GetProductsDashboardRes": {
+            "type": "object",
+            "properties": {
+                "amount_delivery_price": {
+                    "type": "number"
+                },
+                "amount_sale_price": {
+                    "type": "number"
+                },
+                "product_items": {
+                    "type": "integer"
+                },
+                "product_units": {
                     "type": "integer"
                 }
             }

@@ -455,6 +455,43 @@ func (h *Handler) CreateBulkProducts(c *gin.Context) {
 	c.JSON(http.StatusCreated, resp)
 }
 
+// GetProductsDashboard godoc
+// @Summary      Retrieve products dashboard data
+// @Description  Get a summary of product statistics (items count, units, delivery price and sale price)
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Param        branch_id header   string true "Branch ID"
+// @Param        currency  path     string true "Currency type (allowed values: 'uzs', 'usd')"
+// @Security     ApiKeyAuth
+// @Success      200  {object}  products.GetProductsDashboardRes "Dashboard data retrieved successfully"
+// @Failure      400  {object}  products.Error             "Invalid request parameters"
+// @Failure      500  {object}  products.Error             "Internal server error"
+// @Router       /products/dashboard/{currency} [get]
+func (h *Handler) GetProductsDashboard(c *gin.Context) {
+
+	var req products.GetProductsDashboardReq
+
+	req.BranchId = c.GetHeader("branch_id")
+	if req.BranchId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Branch ID is required in the header"})
+		h.log.Error("Branch ID is required")
+		return
+	}
+
+	req.Currency = c.Param("currency")
+	req.CompanyId = c.MustGet("company_id").(string)
+
+	res, err := h.ProductClient.GetProductDashboard(c, &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get products dashboard: " + err.Error()})
+		h.log.Error("Failed to get products dashboard", "error", err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
 // Helper function to parse string to float64
 func parseToFloat64(value string) float64 {
 	value = strings.ReplaceAll(value, " ", "") // Remove spaces
