@@ -3208,7 +3208,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Currency type (allowed values: 'uzs', 'usd', 'card')",
+                        "description": "Currency type (allowed values: 'uzs', 'usd')",
                         "name": "currency",
                         "in": "path",
                         "required": true
