@@ -66,6 +66,10 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 		log.Println("No file uploaded, continuing without an image")
 	}
 
+	log.Println(req.Quantity)
+	log.Println(req.Quantity)
+	log.Println(req.Quantity)
+
 	res, err := h.ProductClient.CreateProduct(c, &products.CreateProductRequest{
 		CreatedBy:     c.MustGet("id").(string),
 		CategoryId:    req.CategoryID,

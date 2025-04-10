@@ -66,3 +66,7 @@ time=2025-04-03T23:27:47.365+05:00 level=ERROR msg="Error creating creditor" err
 time=2025-04-08T21:52:53.788+05:00 level=DEBUG msg="[08-04-2025 21:52:53] Api Gateway is running at IP: 185.213.230.20"
 time=2025-04-08T21:56:18.210+05:00 level=DEBUG msg="[08-04-2025 21:56:18] Api Gateway is running at IP: 185.213.230.20"
 time=2025-04-10T14:30:54.128+05:00 level=DEBUG msg="[10-04-2025 14:30:54] Api Gateway is running at IP: 185.213.230.17"
+time=2025-04-10T22:33:33.431+05:00 level=DEBUG msg="[10-04-2025 22:33:33] Api Gateway is running at IP: 185.213.229.66"
+time=2025-04-10T22:34:46.512+05:00 level=ERROR msg="Error creating product" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2025-04-10T22:35:21.784+05:00 level=DEBUG msg="[10-04-2025 22:35:21] Api Gateway is running at IP: 185.213.229.66"
+time=2025-04-10T22:35:26.282+05:00 level=ERROR msg="Error creating product" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
