@@ -30,6 +30,7 @@ import (
 // @Param bill_format formData string true "Billing format of the product"
 // @Param incoming_price formData float64 true "Incoming price of the product"
 // @Param standard_price formData float64 true "Standard price of the product"
+// @Param quantity formData int64 false "Standard price of the product"
 // @Param branch_id header string true "Branch ID"
 // @Success 201 {object} products.Product "Product successfully created"
 // @Failure 400 {object} products.Error "Invalid input or bad request"
@@ -72,6 +73,7 @@ func (h *Handler) CreateProduct(c *gin.Context) {
 		BillFormat:    req.BillFormat,
 		IncomingPrice: req.IncomingPrice,
 		StandardPrice: req.StandardPrice,
+		TotalCount:    req.Quantity,
 		ImageUrl:      url,
 		CompanyId:     c.MustGet("company_id").(string),
 		BranchId:      branchID, // Pass branch ID
@@ -386,7 +388,7 @@ func (h *Handler) UploadAndProcessExcel(c *gin.Context) {
 			IncomingPrice: parseToFloat64(row[3]),
 			StandardPrice: parseToFloat64(row[3]) * 1.1,
 			ImageUrl:      "https://smartadmin.uz/static/media/gif2.aff05f0cb04b5d100ae4.png",
-			TotalCount:    parseToString(row[2]),
+			TotalCount:    int64(parseToFloat64(row[2])),
 			CompanyId:     c.MustGet("company_id").(string),
 			CreatedBy:     c.MustGet("id").(string),
 		}

@@ -2770,6 +2770,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
+                        "type": "integer",
+                        "description": "Standard price of the product",
+                        "name": "quantity",
+                        "in": "formData"
+                    },
+                    {
                         "type": "string",
                         "description": "Branch ID",
                         "name": "branch_id",

@@ -65,3 +65,4 @@ time=2025-04-03T23:27:00.328+05:00 level=ERROR msg="Error fetching creditor list
 time=2025-04-03T23:27:47.365+05:00 level=ERROR msg="Error creating creditor" error="rpc error: code = Unknown desc = could not create debt: invalid date format for should_pay_at, expected dd-mm-yyyy: parsing time \"string\" as \"02-01-2006\": cannot parse \"string\" as \"02\""
 time=2025-04-08T21:52:53.788+05:00 level=DEBUG msg="[08-04-2025 21:52:53] Api Gateway is running at IP: 185.213.230.20"
 time=2025-04-08T21:56:18.210+05:00 level=DEBUG msg="[08-04-2025 21:56:18] Api Gateway is running at IP: 185.213.230.20"
+time=2025-04-10T14:30:54.128+05:00 level=DEBUG msg="[10-04-2025 14:30:54] Api Gateway is running at IP: 185.213.230.17"

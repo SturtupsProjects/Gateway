@@ -25,6 +25,7 @@ type CreateProductRequest struct {
 	BillFormat    string  `json:"bill_format" form:"bill_format"`
 	IncomingPrice float64 `json:"incoming_price" form:"incoming_price"`
 	StandardPrice float64 `json:"standard_price" form:"standard_price"`
+	Quantity      int64   `json:"quantity" from:"quantity"`
 }
 
 type Sale struct {

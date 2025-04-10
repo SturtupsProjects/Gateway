@@ -2856,6 +2856,10 @@ paths:
         name: standard_price
         required: true
         type: number
+      - description: Standard price of the product
+        in: formData
+        name: quantity
+        type: integer
       - description: Branch ID
         in: header
         name: branch_id
