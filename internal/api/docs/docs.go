@@ -1732,55 +1732,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/creditor/payments/{credit_id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Retrieve all payments for a specific creditor record.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Creditor"
-                ],
-                "summary": "List payments by creditor ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Creditor ID",
-                        "name": "credit_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of payments",
-                        "schema": {
-                            "$ref": "#/definitions/debts.PaymentList"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid creditor ID",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Server error",
-                        "schema": {
-                            "$ref": "#/definitions/products.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/creditor/payments/{supplier_id}": {
             "get": {
                 "security": [

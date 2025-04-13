@@ -2230,37 +2230,6 @@ paths:
       summary: Get creditor payment details
       tags:
       - Creditor
-  /creditor/payments/{credit_id}:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve all payments for a specific creditor record.
-      parameters:
-      - description: Creditor ID
-        in: path
-        name: credit_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: List of payments
-          schema:
-            $ref: '#/definitions/debts.PaymentList'
-        "400":
-          description: Invalid creditor ID
-          schema:
-            $ref: '#/definitions/products.Error'
-        "500":
-          description: Server error
-          schema:
-            $ref: '#/definitions/products.Error'
-      security:
-      - ApiKeyAuth: []
-      summary: List payments by creditor ID
-      tags:
-      - Creditor
   /creditor/payments/{supplier_id}:
     get:
       consumes:

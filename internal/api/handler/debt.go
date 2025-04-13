@@ -672,13 +672,13 @@ func (h *Handler) PayCredit(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Accept json
 // @Produce json
-// @Param credit_id path string true "Creditor ID"
+// @Param supplier_id path string true "Creditor ID"
 // @Success 200 {object} debts.PaymentList "List of payments"
 // @Failure 400 {object} products.Error "Invalid creditor ID"
 // @Failure 500 {object} products.Error "Server error"
-// @Router /creditor/payments/{credit_id} [get]
+// @Router /creditor/payments/{supplier_id} [get]
 func (h *Handler) GetPaymentsByCreditId(c *gin.Context) {
-	creditId := c.Param("credit_id")
+	creditId := c.Param("supplier_id")
 	req := &debts.PayDebtsID{
 		Id:      creditId,
 		PayType: "in",
@@ -686,7 +686,7 @@ func (h *Handler) GetPaymentsByCreditId(c *gin.Context) {
 
 	res, err := h.DebtClient.GetPaymentsByDebtsId(c, req)
 	if err != nil {
-		h.log.Error("Error fetching payments for creditor", "credit_id", creditId, "error", err.Error())
+		h.log.Error("Error fetching payments for creditor", "supplier_id", creditId, "error", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

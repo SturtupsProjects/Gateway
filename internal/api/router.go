@@ -202,7 +202,7 @@ func NewRouter(enf *casbin.Enforcer, cfg *config.Config, log *slog.Logger) *gin.
 		creditor.GET("/client/:supplier_id", h.GetCreditsFromSupplier)
 
 		creditor.POST("/pay", h.PayCredit)
-		creditor.GET("/payments/:creditor_id", h.GetPaymentsByCreditId)
+		creditor.GET("/payments/:supplier_id", h.GetPaymentsByCreditId)
 		creditor.GET("/payment/:id", h.GetCreditPayment)
 		creditor.GET("/creditors/payments/:supplier_id", h.GetPaymentsToSupplier)
 
