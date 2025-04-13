@@ -109,12 +109,9 @@ p, worker, /debts/payment/*, GET
 
 
 
-
-# Разрешения для роли worker
 p, worker, /branches/list, GET
 p, owner, /branches/*, GET
 
-# Разрешения для роли owner
 p, owner, /branches/create, POST
 p, owner, /branches/*, PUT
 p, owner, /branches/*, DELETE
@@ -165,11 +162,11 @@ p, worker, /supplier/*, PUT
 p, worker, /supplier/street, GET
 
 p, owner, /creditor, POST
-p, owner, /creditor/, POST
+p, owner, /creditor/*, POST
 p, owner, /creditor, GET
-p, owner, /creditor/, GET
+p, owner, /creditor/*, GET
 
 p, worker, /creditor, POST
-p, worker, /creditor/, POST
+p, worker, /creditor/*, POST
 p, worker, /creditor, GET
-p, worker, /creditor/, GET
+p, worker, /creditor/*, GET
