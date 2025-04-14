@@ -676,9 +676,9 @@ func (h *Handler) PayCredit(c *gin.Context) {
 // @Success 200 {object} debts.PaymentList "List of payments"
 // @Failure 400 {object} products.Error "Invalid creditor ID"
 // @Failure 500 {object} products.Error "Server error"
-// @Router /creditor/payments/{supplier_id} [get]
+// @Router /creditor/payments/{credit_id} [get]
 func (h *Handler) GetPaymentsByCreditId(c *gin.Context) {
-	creditId := c.Param("supplier_id")
+	creditId := c.Param("credit_id")
 	req := &debts.PayDebtsID{
 		Id:      creditId,
 		PayType: "in",
@@ -796,7 +796,7 @@ func (h *Handler) GetTotalCreditFromSupplier(c *gin.Context) {
 // @Success 200 {object} debts.UserPaymentsRes "Supplier payment records"
 // @Failure 400 {object} products.Error "Invalid supplier ID"
 // @Failure 500 {object} products.Error "Server error"
-// @Router /creditor/payments/{supplier_id} [get]
+// @Router /creditor/pay/{supplier_id} [get]
 func (h *Handler) GetPaymentsToSupplier(c *gin.Context) {
 	supplierID := c.Param("supplier_id")
 	if supplierID == "" {

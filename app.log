@@ -70,3 +70,5 @@ time=2025-04-10T22:33:33.431+05:00 level=DEBUG msg="[10-04-2025 22:33:33] Api Ga
 time=2025-04-10T22:34:46.512+05:00 level=ERROR msg="Error creating product" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
 time=2025-04-10T22:35:21.784+05:00 level=DEBUG msg="[10-04-2025 22:35:21] Api Gateway is running at IP: 185.213.229.66"
 time=2025-04-10T22:35:26.282+05:00 level=ERROR msg="Error creating product" error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup product on 127.0.0.53:53: server misbehaving"
+time=2025-04-14T21:17:55.350+05:00 level=DEBUG msg="[14-04-2025 21:17:55] Api Gateway is running at IP: 185.213.229.61"
+time=2025-04-14T21:25:04.659+05:00 level=DEBUG msg="[14-04-2025 21:25:04] Api Gateway is running at IP: 185.213.229.61"

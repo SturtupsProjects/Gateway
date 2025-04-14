@@ -1683,6 +1683,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/creditor/pay/{supplier_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve all payments made to a specific supplier for creditor records.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Creditor"
+                ],
+                "summary": "List payments to supplier",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Supplier ID",
+                        "name": "supplier_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Supplier payment records",
+                        "schema": {
+                            "$ref": "#/definitions/debts.UserPaymentsRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid supplier ID",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/products.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/creditor/payment/{id}": {
             "get": {
                 "security": [
@@ -1732,14 +1781,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/creditor/payments/{supplier_id}": {
+        "/creditor/payments/{credit_id}": {
             "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Retrieve all payments made to a specific supplier for creditor records.",
+                "description": "Retrieve all payments for a specific creditor record.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1749,11 +1798,11 @@ const docTemplate = `{
                 "tags": [
                     "Creditor"
                 ],
-                "summary": "List payments to supplier",
+                "summary": "List payments by creditor ID",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Supplier ID",
+                        "description": "Creditor ID",
                         "name": "supplier_id",
                         "in": "path",
                         "required": true
@@ -1761,13 +1810,13 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Supplier payment records",
+                        "description": "List of payments",
                         "schema": {
-                            "$ref": "#/definitions/debts.UserPaymentsRes"
+                            "$ref": "#/definitions/debts.PaymentList"
                         }
                     },
                     "400": {
-                        "description": "Invalid supplier ID",
+                        "description": "Invalid creditor ID",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }

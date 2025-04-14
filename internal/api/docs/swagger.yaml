@@ -2199,6 +2199,38 @@ paths:
       summary: Process creditor payment
       tags:
       - Creditor
+  /creditor/pay/{supplier_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all payments made to a specific supplier for creditor
+        records.
+      parameters:
+      - description: Supplier ID
+        in: path
+        name: supplier_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Supplier payment records
+          schema:
+            $ref: '#/definitions/debts.UserPaymentsRes'
+        "400":
+          description: Invalid supplier ID
+          schema:
+            $ref: '#/definitions/products.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/products.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: List payments to supplier
+      tags:
+      - Creditor
   /creditor/payment/{id}:
     get:
       consumes:
@@ -2230,14 +2262,13 @@ paths:
       summary: Get creditor payment details
       tags:
       - Creditor
-  /creditor/payments/{supplier_id}:
+  /creditor/payments/{credit_id}:
     get:
       consumes:
       - application/json
-      description: Retrieve all payments made to a specific supplier for creditor
-        records.
+      description: Retrieve all payments for a specific creditor record.
       parameters:
-      - description: Supplier ID
+      - description: Creditor ID
         in: path
         name: supplier_id
         required: true
@@ -2246,11 +2277,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: Supplier payment records
+          description: List of payments
           schema:
-            $ref: '#/definitions/debts.UserPaymentsRes'
+            $ref: '#/definitions/debts.PaymentList'
         "400":
-          description: Invalid supplier ID
+          description: Invalid creditor ID
           schema:
             $ref: '#/definitions/products.Error'
         "500":
@@ -2259,7 +2290,7 @@ paths:
             $ref: '#/definitions/products.Error'
       security:
       - ApiKeyAuth: []
-      summary: List payments to supplier
+      summary: List payments by creditor ID
       tags:
       - Creditor
   /creditor/supplier/{supplier_id}:
