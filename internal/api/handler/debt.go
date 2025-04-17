@@ -7,6 +7,7 @@ import (
 	pbu "gateway/internal/generated/user"
 	"github.com/gin-gonic/gin"
 	"github.com/xuri/excelize/v2"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -616,10 +617,17 @@ func (h *Handler) GetListCreditors(c *gin.Context) {
 // @Router /creditor/supplier/{supplier_id} [get]
 func (h *Handler) GetCreditsFromSupplier(c *gin.Context) {
 	supplierID := c.Param("supplier_id")
+	if supplierID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "supplier_id is required"})
+		return
+	}
+
 	req := &debts.ClientID{
 		Id:       supplierID,
 		DebtType: "creditor", // исправлено: кредитор, а не должник
 	}
+
+	log.Println(supplierID)
 
 	res, err := h.DebtClient.GetClientDebts(c, req)
 	if err != nil {
@@ -666,19 +674,24 @@ func (h *Handler) PayCredit(c *gin.Context) {
 }
 
 // GetPaymentsByCreditId godoc
-// @Summary List payments by creditor ID
+// @Summary     List payments by creditor ID
 // @Description Retrieve all payments for a specific creditor record.
-// @Tags Creditor
-// @Security ApiKeyAuth
-// @Accept json
-// @Produce json
-// @Param supplier_id path string true "Creditor ID"
-// @Success 200 {object} debts.PaymentList "List of payments"
-// @Failure 400 {object} products.Error "Invalid creditor ID"
-// @Failure 500 {object} products.Error "Server error"
-// @Router /creditor/payments/{credit_id} [get]
+// @Tags        Creditor
+// @Security    ApiKeyAuth
+// @Accept      json
+// @Produce     json
+// @Param       credit_id path string true "Creditor ID"           // renamed from supplier_id
+// @Success     200       {object} debts.PaymentList "List of payments"
+// @Failure     400       {object} products.Error     "Invalid creditor ID format"
+// @Failure     500       {object} products.Error     "Server error"
+// @Router      /creditor/payments/{credit_id} [get]
 func (h *Handler) GetPaymentsByCreditId(c *gin.Context) {
 	creditId := c.Param("credit_id")
+	if creditId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "credit_id is required"})
+		return
+	}
+
 	req := &debts.PayDebtsID{
 		Id:      creditId,
 		PayType: "in",
@@ -686,7 +699,7 @@ func (h *Handler) GetPaymentsByCreditId(c *gin.Context) {
 
 	res, err := h.DebtClient.GetPaymentsByDebtsId(c, req)
 	if err != nil {
-		h.log.Error("Error fetching payments for creditor", "supplier_id", creditId, "error", err.Error())
+		h.log.Error("Error fetching payments for creditor", "credit_id", creditId, "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

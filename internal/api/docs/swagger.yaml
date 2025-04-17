@@ -2270,7 +2270,7 @@ paths:
       parameters:
       - description: Creditor ID
         in: path
-        name: supplier_id
+        name: credit_id
         required: true
         type: string
       produces:
@@ -2281,7 +2281,7 @@ paths:
           schema:
             $ref: '#/definitions/debts.PaymentList'
         "400":
-          description: Invalid creditor ID
+          description: Invalid creditor ID format
           schema:
             $ref: '#/definitions/products.Error'
         "500":

@@ -1803,7 +1803,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Creditor ID",
-                        "name": "supplier_id",
+                        "name": "credit_id",
                         "in": "path",
                         "required": true
                     }
@@ -1816,7 +1816,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid creditor ID",
+                        "description": "Invalid creditor ID format",
                         "schema": {
                             "$ref": "#/definitions/products.Error"
                         }
