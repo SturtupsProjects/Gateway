@@ -623,8 +623,9 @@ func (h *Handler) GetCreditsFromSupplier(c *gin.Context) {
 	}
 
 	req := &debts.ClientID{
-		Id:       supplierID,
-		DebtType: "creditor", // исправлено: кредитор, а не должник
+		Id:        supplierID,
+		CompanyId: c.MustGet("company_id").(string),
+		DebtType:  "creditor", // исправлено: кредитор, а не должник
 	}
 
 	log.Println(supplierID)
