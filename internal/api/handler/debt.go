@@ -695,7 +695,7 @@ func (h *Handler) GetPaymentsByCreditId(c *gin.Context) {
 
 	req := &debts.PayDebtsID{
 		Id:      creditId,
-		PayType: "in",
+		PayType: "out",
 	}
 
 	res, err := h.DebtClient.GetPaymentsByDebtsId(c, req)
