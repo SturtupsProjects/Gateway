@@ -78,3 +78,5 @@ time=2025-04-17T21:50:44.505+05:00 level=DEBUG msg="[17-04-2025 21:50:44] Api Ga
 time=2025-04-17T21:52:16.731+05:00 level=ERROR msg="Error fetching payments for creditor" credit_id=asdfasdfasd error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup debts-service on 127.0.0.53:53: server misbehaving"
 time=2025-04-17T22:02:38.741+05:00 level=DEBUG msg="[17-04-2025 22:02:38] Api Gateway is running at IP: 185.213.229.31"
 time=2025-04-17T22:02:53.562+05:00 level=ERROR msg="Error fetching supplier creditor records" supplier_id=asdf error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup debts-service on 127.0.0.53:53: server misbehaving"
+time=2025-05-01T21:33:54.956+05:00 level=DEBUG msg="[01-05-2025 21:33:54] Api Gateway is running at IP: 90.156.167.112"
+time=2025-05-06T18:49:00.461+05:00 level=DEBUG msg="[06-05-2025 18:49:00] Api Gateway is running at IP: 90.156.167.10"
