@@ -80,3 +80,7 @@ time=2025-04-17T22:02:38.741+05:00 level=DEBUG msg="[17-04-2025 22:02:38] Api Ga
 time=2025-04-17T22:02:53.562+05:00 level=ERROR msg="Error fetching supplier creditor records" supplier_id=asdf error="rpc error: code = Unavailable desc = dns: A record lookup error: lookup debts-service on 127.0.0.53:53: server misbehaving"
 time=2025-05-01T21:33:54.956+05:00 level=DEBUG msg="[01-05-2025 21:33:54] Api Gateway is running at IP: 90.156.167.112"
 time=2025-05-06T18:49:00.461+05:00 level=DEBUG msg="[06-05-2025 18:49:00] Api Gateway is running at IP: 90.156.167.10"
+time=2025-05-15T22:08:43.931+05:00 level=DEBUG msg="[15-05-2025 22:08:43] Api Gateway is running at IP: 94.230.230.200"
+time=2025-05-15T22:09:33.524+05:00 level=ERROR msg="Error creating category" error="rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp 127.0.0.1:8070: connect: connection refused\""
+time=2025-05-15T22:10:43.995+05:00 level=ERROR msg="Error creating category" error="rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp 127.0.0.1:8070: connect: connection refused\""
+time=2025-05-15T22:15:20.806+05:00 level=ERROR msg="Error creating category" error="rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp 127.0.0.1:8070: connect: connection refused\""

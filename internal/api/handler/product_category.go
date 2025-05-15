@@ -56,6 +56,10 @@ func (h *Handler) CreateCategory(c *gin.Context) {
 		log.Println("No file uploaded, continuing without an image")
 	}
 
+	log.Println(url)
+	log.Println(url)
+	log.Println(url)
+
 	res, err := h.ProductClient.CreateCategory(c, &products.CreateCategoryRequest{
 		Name:      req.Name,
 		CreatedBy: c.MustGet("id").(string),

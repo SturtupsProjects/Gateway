@@ -12,11 +12,11 @@ import (
 )
 
 var MinioClient *minio.Client
-var Endpoint = "minio.manageapp.uz" // Уберите https://
+var Endpoint = "minio.smartadmin.uz" // Уберите https://
 
 func InitMiniOClient() error {
-	accessKeyID := "minio"
-	secretAccessKey := "minio-secret"
+	accessKeyID := "minioadmin"
+	secretAccessKey := "minioadmin"
 
 	minioClient, err := minio.New(Endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
